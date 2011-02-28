@@ -3,7 +3,8 @@ CXXFLAGS=-Wall -pedantic -g
 
 GEOMETRY_PAKAGE=
 
-.PHONY: install uninstall clean
+
+.PHONY: install uninstall clean test
 
 %.o: %.cpp
 
@@ -18,6 +19,9 @@ install:
 
 uninstall:
 	
+
+test:
+
 
 clean:
 	rm -rf *.o *.so *~
