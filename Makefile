@@ -27,10 +27,10 @@ $(LIB_OBJECTS): %.o: %.cpp
 
 # TEST Object files and sources ##########################
 
-TEST_UNITS=
+# Unit tests
+TEST_UNITS=tests/units/point.class.test.o
 
-TEST_MAIN=test/main.cpp
-
+TEST_MAIN=test/main.o
 TEST_OBJECTS=test/unit.o $(TEST_UNITS) $(TEST_MAIN)
 
 $(TEST_OBJECTS): %.o: %.cpp
