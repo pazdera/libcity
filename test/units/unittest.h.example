@@ -1,0 +1,38 @@
+/**
+ * This code is part of libcity library.
+ *
+ * @file unittest.h
+ * @date 17.02.2011
+ * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
+ *
+ * @brief Unit test of ...
+ *
+ * Unit test is a class derived from Unit. It's defined
+ * inline in the declaration.
+ */
+
+// Includes
+#include <string>
+#include <iostream>
+
+#include <stdlib.h>
+#include <assert.h>
+
+// Modules
+#include "../unit.h"
+//#include "../../src/.h"
+
+class UnitTest : public Unit
+{
+  public
+    UnitTest()
+      : Unit()
+    {
+      
+    }
+
+    bool run()
+    {
+      return true;
+    }
+};
