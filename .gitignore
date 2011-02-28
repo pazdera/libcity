@@ -1,0 +1,6 @@
+*.a
+*.so
+*.o
+*~
+libcity
+libcity_test
