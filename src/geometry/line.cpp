@@ -19,8 +19,11 @@ Line::Line()
 }
 
 Line::Line(Point &first, Point &second)
-  : begining(first), end(second)
-{}
+  : begining(0), end(0)
+{
+  begining = new Point(first);
+  end      = new Point(second);
+}
 
 Line::~Line()
 {

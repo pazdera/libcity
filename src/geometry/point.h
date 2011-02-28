@@ -23,9 +23,9 @@ class Point
     int zPosition;
 
   public:
-    int x() const;
-    int y() const;
-    int z() const;
+    inline int x() const;
+    inline int y() const;
+    inline int z() const;
 
     void setX(int coordinate);
     void setY(int coordinate);

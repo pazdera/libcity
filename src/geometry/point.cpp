@@ -9,6 +9,8 @@
  *
  */
 
+#include "point.h"
+
 Point::Point()
   : xPosition(0), yPosition(0), zPosition(0)
 {}
@@ -24,32 +26,32 @@ Point::Point(int x, int y, int z)
 Point::~Point()
 {}
 
-int Point::x()
+int Point::x() const
 {
   return xPosition;
 }
 
-int Point::y()
+int Point::y() const
 {
   return yPosition;
 }
 
-int Point::z()
+int Point::z() const
 {
   return zPosition;
 }
 
-void setX(int coordinate)
+void Point::setX(int coordinate)
 {
   xPosition = coordinate;
 }
 
-void setY(int coordinate)
+void Point::setY(int coordinate)
 {
   yPosition = coordinate;
 }
 
-void setZ(int coordinate)
+void Point::setZ(int coordinate)
 {
   zPosition = coordinate;
 }
