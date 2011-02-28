@@ -11,8 +11,12 @@
 
 #include "unit.h"
 
+#include "units/point.class.test.cpp"
+
 int main()
 {
-  
-  return 0;
+  bool status = true;
+
+  status = status && PointClassTest().run();
+  return status;
 }

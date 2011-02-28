@@ -28,7 +28,7 @@ $(LIB_OBJECTS): %.o: %.cpp
 # TEST Object files and sources ##########################
 
 # Unit tests
-TEST_UNITS=tests/units/point.class.test.o
+TEST_UNITS=test/units/point.class.test.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=test/unit.o $(TEST_UNITS) $(TEST_MAIN)
@@ -48,8 +48,8 @@ install:
 uninstall:
 	
 
-test: $(TEST_OBJECTS) dynamic
-	$(COMPILER) $(COMPILER_FLAGS) -L. -lcity -o $(TEST_FILENAME) $(TEST_OBJECTS)
+test: $(TEST_OBJECTS) static
+	$(COMPILER) $(COMPILER_FLAGS) -static -L. -lcity -o $(TEST_FILENAME) $(TEST_OBJECTS)
 
 clean:
 	rm -rf *.o *.so *~

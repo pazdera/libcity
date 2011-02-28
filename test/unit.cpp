@@ -21,6 +21,10 @@
 // Modules
 
 Unit::Unit()
+  : status(false)
+{}
+
+Unit::~Unit()
 {}
 
 void Unit::printMessage(std::string message)

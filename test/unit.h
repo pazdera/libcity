@@ -23,6 +23,10 @@
 
 class Unit
 {
+  public:
+    Unit();
+    virtual ~Unit();
+
   private:
     int testCount;
     std::string currentTest;
@@ -35,9 +39,6 @@ class Unit
     void finishTest();
 
   public:
-    Unit();
-    virtual ~Unit();
-
     bool run();
 };
 
