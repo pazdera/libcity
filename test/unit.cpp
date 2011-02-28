@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file unit.h
+ * @file unit.cpp
  * @date 17.02.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -21,10 +21,6 @@
 // Modules
 
 Unit::Unit()
-  : status(true), numberOfTests(0)
-{}
-
-Unit::~Unit
 {}
 
 void Unit::printMessage(std::string message)
@@ -44,6 +40,7 @@ void Unit::startTest(std::string name)
   if (currentTest == "")
   {
     currentTest = name;
+    testCount++;
     printMessage("TEST case \"" + name + "\" started.");
   }
   else
@@ -57,7 +54,7 @@ void Unit::finishTest()
 {
   if (currentTest != "")
   {
-    printMessage("TEST case \"" + name + "\" finished.");
+    printMessage("TEST case \"" + currentTest + "\" finished.");
     currentTest = "";
   }
   else

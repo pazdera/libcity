@@ -9,6 +9,9 @@
  *
  */
 
+#ifndef _UNIT_H_
+#define _UNIT_H_
+
 // Includes
 #include <string>
 #include <iostream>
@@ -20,10 +23,6 @@
 
 class Unit
 {
-  public:
-    Unit();
-    virtual ~Unit();
-
   private:
     int testCount;
     std::string currentTest;
@@ -36,5 +35,10 @@ class Unit
     void finishTest();
 
   public:
-    virtual bool run();
+    Unit();
+    virtual ~Unit();
+
+    bool run();
 };
+
+#endif
