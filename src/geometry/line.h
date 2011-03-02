@@ -9,7 +9,10 @@
  *
  */
 
-#include "point.h"
+#ifndef _LINE_H_
+#define _LINE_H_
+
+class Point;
 
 class Line
 {
@@ -23,3 +26,5 @@ class Line
     Point *begining;
     Point *end;
 };
+
+#endif

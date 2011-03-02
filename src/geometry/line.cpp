@@ -10,6 +10,7 @@
  */
 
 #include "line.h"
+#include "point.h"
 
 Line::Line()
   : begining(0), end(0)

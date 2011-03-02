@@ -9,6 +9,9 @@
  *
  */
 
-/* Basic unit for the whole library (in pixels). */
-#define meter  100
-#define meters meter
+namespace libcity
+{
+  /* Basic unit for the whole library (in pixels). */
+  const int METER  = 100;
+  const int METERS = METER;
+};

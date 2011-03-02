@@ -9,12 +9,16 @@
  *
  */
 
+#ifndef _POINT_H_
+#define _POINT_H_
+
 class Point
 {
   public:
-    Point();
-    Point(int x, int y);
-    Point(int x, int y, int z);
+    Point(); /**< [0,0,0] */
+    Point(int x, int y); /**< 2D */
+    Point(int x, int y, int z); /**< 3D */
+
     ~Point();
 
   private:
@@ -23,11 +27,44 @@ class Point
     int zPosition;
 
   public:
-    inline int x() const;
-    inline int y() const;
-    inline int z() const;
+    int x() const;
+    int y() const;
+    int z() const; /**< Undefined in 2D. */
 
     void setX(int coordinate);
     void setY(int coordinate);
     void setZ(int coordinate);
 };
+
+
+inline int Point::x() const
+{
+  return xPosition;
+}
+
+inline int Point::y() const
+{
+  return yPosition;
+}
+
+inline int Point::z() const
+{
+  return zPosition;
+}
+
+inline void Point::setX(int coordinate)
+{
+  xPosition = coordinate;
+}
+
+inline void Point::setY(int coordinate)
+{
+  yPosition = coordinate;
+}
+
+inline void Point::setZ(int coordinate)
+{
+  zPosition = coordinate;
+}
+
+#endif

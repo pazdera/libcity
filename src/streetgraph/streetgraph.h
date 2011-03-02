@@ -5,32 +5,43 @@
  * @date 17.02.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief Classes for street graph representation
+ * @brief Street graph representation
+ *
+ * Roads and Intersections form together an undirected
+ * plannar graph. There are two levels of the graph.
+ *
+ * On a *topological* level, the streetgraph says where
+ * a certain road begins and where it leads to.
+ * On the lower level, the *geometrical* level, the graph
+ * says where exactly in the space are the topological
+ * elements (Intersection, Roads) located by specifying
+ * position (Point) for an intersection and path (Line)
+ * for a road.
  *
  */
 
 #ifndef _STREETGRAPH_H_
 #define _STREETGRAPH_H_
 
-class Intersection
+#include <list>
+
+class Intersection;
+class Road;
+
+class StreetGraph
 {
   public:
-    Intersection();
-    ~Intersection();
+    StreetGraph();
+    ~StreetGraph();
 
   private:
-    Point *position;
-    Road  roads;
-};
+    /** All intersections in the street graph. */
+    std::list<Intersection> *intersections;
 
-class Road
-{
-  public:
-    Road();
-    ~Road();
-
-  private:
-    
+    /** All roads in the street graph.
+        This is not neccessary, but could be
+        useful. */
+    std::list<Road> *roads;
 };
 
 #endif

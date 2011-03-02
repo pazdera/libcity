@@ -7,9 +7,9 @@ ARCHIVER_FLAGS=rcs
 LIB_FILENAME=libcity
 TEST_FILENAME=libcity_test
 
-.PHONY: install uninstall static dynamic clean test
+.PHONY: install uninstall static dynamic clean doc test
 
-all: static
+all: static dynamic
 
 # LIB Object files and sources ##########################
 
@@ -18,7 +18,15 @@ GEOMETRY_PACKAGE=src/geometry/curve.o \
                  src/geometry/line.o \
                  src/geometry/point.o
 
-LIB_OBJECTS=$(GEOMETRY_PACKAGE)
+# Streetgraph package
+STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
+                    src/streetgraph/intersection.o \
+                    src/streetgraph/road.o \
+                    src/streetgraph/primaryroad.o \
+                    src/streetgraph/secondaryroad.o \
+                    src/streetgraph/streetgraph.o
+
+LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE)
 
 $(LIB_OBJECTS): %.o: %.cpp
 	$(COMPILER) $(COMPILER_FLAGS) -c $< -o $@
@@ -51,5 +59,9 @@ uninstall:
 test: $(TEST_OBJECTS) static
 	$(COMPILER) $(COMPILER_FLAGS) -static -L. -lcity -o $(TEST_FILENAME) $(TEST_OBJECTS)
 
+doc:
+	doxygen Doxyfile
+
 clean:
 	rm -rf *.o *.so *~
+	rm -rf doc

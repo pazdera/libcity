@@ -25,33 +25,3 @@ Point::Point(int x, int y, int z)
 
 Point::~Point()
 {}
-
-int Point::x() const
-{
-  return xPosition;
-}
-
-int Point::y() const
-{
-  return yPosition;
-}
-
-int Point::z() const
-{
-  return zPosition;
-}
-
-void Point::setX(int coordinate)
-{
-  xPosition = coordinate;
-}
-
-void Point::setY(int coordinate)
-{
-  yPosition = coordinate;
-}
-
-void Point::setZ(int coordinate)
-{
-  zPosition = coordinate;
-}
