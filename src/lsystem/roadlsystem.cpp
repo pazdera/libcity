@@ -11,3 +11,8 @@
 
 #include "roadlsystem.h"
 
+RoadLSystem::RoadLSystem()
+{}
+
+RoadLSystem::~RoadLSystem()
+{}
