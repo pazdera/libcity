@@ -18,7 +18,7 @@ class Line
 {
   public:
     Line();
-    Line(Point &first, Point &second);
+    Line(Point first, Point second);
 
     ~Line();
 

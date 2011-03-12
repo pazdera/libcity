@@ -9,6 +9,8 @@
  *
  */
 
+class Point;
+
 class Curve
 {
   public:

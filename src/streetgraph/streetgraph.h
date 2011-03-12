@@ -27,12 +27,16 @@
 
 class Intersection;
 class Road;
+class Point;
 
 class StreetGraph
 {
   public:
     StreetGraph();
     ~StreetGraph();
+
+    void addPrimaryRoad(Point from, Point to);
+    void addSecondaryRoad(Point from, Point to);
 
   private:
     /** All intersections in the street graph. */

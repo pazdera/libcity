@@ -1,12 +1,13 @@
 /**
  * This code is part of libcity library.
  *
- * @file libcity.h
- * @date 17.02.2011
+ * @file lsystem/graphiclsystem.cpp
+ * @date 12.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief Main header file
+ * @see roadlsystem.h
  *
  */
 
-#include "streetgraph.h"
+#include "roadlsystem.h"
+

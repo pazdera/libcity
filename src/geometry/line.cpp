@@ -19,7 +19,7 @@ Line::Line()
   end      = new Point(0,0,0);
 }
 
-Line::Line(Point &first, Point &second)
+Line::Line(Point first, Point second)
   : begining(0), end(0)
 {
   begining = new Point(first);

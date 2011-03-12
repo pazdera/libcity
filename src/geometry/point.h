@@ -34,6 +34,8 @@ class Point
     void setX(int coordinate);
     void setY(int coordinate);
     void setZ(int coordinate);
+
+    bool operator==(Point &second);
 };
 
 

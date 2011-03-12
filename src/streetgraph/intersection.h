@@ -20,8 +20,10 @@ class Road;
 
 class Intersection
 {
-  public:
+  private:
     Intersection();
+
+  public:
     Intersection(Point coordinates);
 
     ~Intersection();
@@ -30,11 +32,12 @@ class Intersection
     void  setPosition(Point coordinates);
 
     int  numberOfWays() const; /**< Number of ways of the intersection */
-    void addRoad(Road* road);
+    void addRoad(Road* road) throw();
 
   private:
     std::list<Road*> *roads;     /**< Topological information */
     Point *geometrical_position; /**< Geometrical information */
 };
+
 
 #endif

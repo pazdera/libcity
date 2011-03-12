@@ -27,10 +27,10 @@ class Road
     virtual ~Road();
 
     Intersection* begining() const;
-    Intersection* ending() const;
+    Intersection* end() const;
 
     void setBegining(Intersection* intersection);
-    void setEnding(Intersection* intersection);
+    void setEnd(Intersection* intersection);
 
     Line* path() const;
 
@@ -43,14 +43,18 @@ class Road
 
     /* Geometrical information */
     Line* geometrical_path; /**< Path that the road takes between the two topological points */
+
+    void estimatePath();
 };
+
+/* Inlines */
 
 inline Intersection* Road::begining() const
 {
   return from;
 }
 
-inline Intersection* Road::ending() const
+inline Intersection* Road::end() const
 {
   return to;
 }
@@ -60,7 +64,7 @@ inline void Road::setBegining(Intersection* intersection)
   from = intersection;
 }
 
-inline void Road::setEnding(Intersection* intersection)
+inline void Road::setEnd(Intersection* intersection)
 {
   to = intersection;
 }

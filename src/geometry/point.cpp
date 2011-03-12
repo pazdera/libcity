@@ -25,3 +25,8 @@ Point::Point(int x, int y, int z)
 
 Point::~Point()
 {}
+
+bool Point::operator==(Point &second)
+{
+  return xPosition == second.x() && yPosition == second.y() && zPosition == second.z();
+}

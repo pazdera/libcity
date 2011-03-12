@@ -12,6 +12,7 @@
 #include "road.h"
 #include "intersection.h"
 #include "../geometry/line.h"
+#include "../geometry/point.h"
 
 /** No places (intersections), no path between them.
     There's no use for such object. */
@@ -41,4 +42,14 @@ void Road::setPath(Line& roadPath) throw()
   //TODO: check if the path start and end matches the intersections
   delete geometrical_path;
   geometrical_path = new Line(roadPath);
+}
+
+void Road::estimatePath()
+{
+  if (geometrical_path != 0)
+  {
+    delete geometrical_path;
+  }
+
+  geometrical_path = new Line(from->position(), to->position());
 }
