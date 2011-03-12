@@ -11,19 +11,79 @@
 
 #include "lsystem.h"
 
+/* ************************** */
+/* *** LSystem IMPLEMENTATION */
 LSystem::LSystem()
-  : axiom(""), rules(), iterations(0), outputString()
+  : axiom(""), rules(), producedString()
 {}
 
 LSystem::~LSystem()
 {}
 
-void LSystem::doSingleIteration()
+void LSystem::setAxiom(std::string startingSequence)
 {
-  std::list<char>::iterator position = outputString.begin();
-  std::list<char>::iterator nextPosition;
+  if (startingSequence == "" || !isInAlphabet(startingSequence))
+  {
+    // FIXME throw exception
+  }
 
-  while (position != outputString.end())
+  axiom = startingSequence;
+
+  producedString.clear();
+  for (std::string::iterator position = axiom.begin();
+       position != axiom.end();
+       position++)
+  {
+    producedString.push_back(Symbol(*position));
+  }
+}
+
+bool LSystem::isInAlphabet(char checkedCharacter) const
+{
+  return alphabet.find(checkedCharacter) != alphabet.end();
+}
+
+bool LSystem::isInAlphabet(std::string checkedString) const
+{
+  std::string::iterator position = checkedString.begin();
+  while (position != checkedString.end())
+  /* Iterate through the whole string and check all the characters */
+  {
+    if (!isInAlphabet(*position))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void LSystem::addRule(char predecessor, std::string successor)
+{
+  if (!isInAlphabet(predecessor) || !isInAlphabet(successor))
+  {
+    //FIXME throw exception
+  }
+
+  std::map<char, ProductionRule>::iterator existingRule = rules.find(predecessor);
+  if (existingRule != rules.end())
+  /* Rule with the same left side already exists */
+  {
+    existingRule->second.addSuccessor(successor);
+  }
+  else
+  /* Create new rule */
+  {
+    rules[predecessor] = ProductionRule(predecessor, successor);
+  }
+}
+
+void LSystem::doNextIteration()
+{
+  std::list<Symbol>::iterator position = producedString.begin();
+  std::list<Symbol>::iterator nextPosition;
+
+  while (position != producedString.end())
   {
     /* Save the iterator for the next character, because
        the list can change and we don't want to expand
@@ -37,9 +97,9 @@ void LSystem::doSingleIteration()
   }
 }
 
-void LSystem::rewrite(std::list<char>::iterator position)
+void LSystem::rewrite(std::list<Symbol>::iterator position)
 {
-  char predecessor = *position;
+  Symbol predecessor = *position;
   std::string successor;
 
   if (rules.find(predecessor) != rules.end())
@@ -48,16 +108,30 @@ void LSystem::rewrite(std::list<char>::iterator position)
     successor = rules[predecessor].successor();
 
     /* Insert the successor before the character at position */
-    outputString.insert(position, successor.begin(), successor.end());
+    producedString.insert(position, successor.begin(), successor.end());
 
     /* And remove the rewrited character from the string */
-    outputString.erase(position);
+    producedString.erase(position);
   }
   else
   /* Constant symbol, do nothing. */
   {}
 }
 
+std::string LSystem::getProducedString() const
+{
+  std::string output;
+  for (std::list<Symbol>::const_iterator position = producedString.begin();
+       position != producedString.end();
+       position++)
+  {
+    output += *position;
+  }
+
+  return output;
+}
+
+/* ********************************* */
 /* *** ProductionRule IMPLEMENTATION */
 LSystem::ProductionRule::ProductionRule()
   : leftSide(0), rightSide()
@@ -74,13 +148,53 @@ void LSystem::ProductionRule::addSuccessor(std::string rightSideString)
   rightSide.push_back(rightSideString);
 }
 
-char LSystem::ProductionRule::predecessor()
+char LSystem::ProductionRule::predecessor() const
 {
   return leftSide;
 }
 
-std::string LSystem::ProductionRule::successor()
+std::string LSystem::ProductionRule::successor() const
 {
   // FIXME: Must return RANDOM successor not the FIRST one!
   return rightSide.front();
+}
+
+/* ********************* */
+/* Symbol IMPLEMENTATION */
+LSystem::Symbol::Symbol(char character)
+  : symbol(character)
+{}
+
+LSystem::Symbol::~Symbol()
+{}
+
+bool LSystem::Symbol::isMarkedRead() const
+{
+  return alreadyRead;
+}
+
+LSystem::Symbol::operator char() const
+{
+  return symbol;
+}
+
+bool LSystem::Symbol::operator==(char character) const
+{
+  return symbol == character;
+}
+
+bool LSystem::Symbol::operator==(Symbol another) const
+{
+  return (char)another == symbol;
+}
+
+
+void LSystem::Symbol::markAsRead()
+{
+  alreadyRead = true;
+}
+
+char LSystem::Symbol::getSymbol() const
+{
+  return symbol;
 }

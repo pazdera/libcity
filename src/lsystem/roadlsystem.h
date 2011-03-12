@@ -17,17 +17,17 @@
 
 #include "graphiclsystem.h"
 
+class Point;
+class Vector;
+class Road;
+
 class RoadLSystem : public GraphicLSystem
 {
   public:
     RoadLSystem();
     virtual ~RoadLSystem();
 
-    void setPosition(Point position);
-    void setDirection(Vector direction);
-
-  protected:
-
+    Road* getNextIdealRoadSegment();
 };
 
 #endif

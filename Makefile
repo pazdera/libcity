@@ -34,7 +34,7 @@ LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
 
 LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE)
 
-$(LIB_OBJECTS): %.o: %.cpp
+$(LIB_OBJECTS): %.o: %.cpp %.h
 	$(COMPILER) $(COMPILER_FLAGS) -c $< -o $@
 
 
@@ -74,3 +74,5 @@ doc:
 clean:
 	rm -rf *.o *.so *~
 	rm -rf doc
+	rm $(LIB_OBJECTS)
+	rm $(TEST_OBJECTS)

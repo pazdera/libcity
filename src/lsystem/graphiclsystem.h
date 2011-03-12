@@ -35,21 +35,42 @@ class GraphicLSystem : public LSystem
     GraphicLSystem();
     virtual ~GraphicLSystem();
 
+    /* WARNING Will reset produced string to axiom  */
+    void setStartingPosition(Point position);
+    void setStartingDirection(Vector direction);
+
   protected:
-    void setAxiom(std::string startingSequence, Point startingPosition, Vector startingDirection);
+    virtual void readNextSymbol();
+    virtual void interpretSymbol(char symbol);
 
     void pushCursor();
-    void popCursor(); /** Does nothing when the stack is empty */
+    void popCursor(); /**< Does nothing when the stack is empty */
 
-    Point  currentPosition();
-    Vector currentDirection();
+    /**
+     * Represents a drawing cursor in the LSystem
+     */
+    class Cursor
+    {
+      public:
+        Cursor();
+        Cursor(Point inputPosition, Vector inputDirection);
+        Cursor(const Cursor& anotherCursor);
+        ~Cursor();
+
+        Point  getPosition() const;
+        Vector getDirection() const;
+
+        void setPosition(Point newPosition);
+        void setDirection(Vector newDirection);
+      private:
+        Point*  position;
+        Vector* direction;
+    };
+
+    Cursor cursor; /**< Drawing cursor */
   private:
-    /* Drawing cursor */
-    Point*  cursorPosition;
-    Vector* cursorDirection;
-    std::vector< std::pair<Point*,Vector*> > cursorStack;
-
-    void moveCursorOneStep();
+    std::list<Symbol>::iterator currentStringPosition;
+    std::vector<Cursor> cursorStack; /**< Stack for pushing cursors */
 
     void defineAlphabet();
 };

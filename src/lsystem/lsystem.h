@@ -29,7 +29,27 @@ class LSystem
     LSystem();
     virtual ~LSystem();
 
-    /** Production rule of a LSystem.
+    /**
+     * WARNING: will delete producedString!
+     */
+    void setAxiom(std::string startingSequence);
+
+    /**
+     * Does one rewriting iteration on the productionString.
+     * NOTICE might return number of rewrites done
+     */
+    void doNextIteration();
+
+    /**
+     * Adds a new rule to the LSystem. All the symbols in
+     * the rule must be in the LSystem's alphabet.
+     */
+    void addRule(char predecessor, std::string successor);
+
+    std::string getProducedString() const; /**< Returns the whole produced string */
+
+  protected:
+    /** Internal representation of production rule of a LSystem.
         With one successor it's a deterministic rule,
         with more successors it's stochastic rule with a
         1/number_of_successors chance of occurence. */
@@ -39,8 +59,8 @@ class LSystem
         ProductionRule();
         ProductionRule(char leftSide, std::string rightSide);
 
-        char predecessor();
-        std::string successor();
+        char predecessor() const;
+        std::string successor() const;
         void addSuccessor(std::string rightSideString);
 
       private:
@@ -48,13 +68,31 @@ class LSystem
         std::list<std::string> rightSide;
     };
 
-    void setIterations(int numberOfIterations);
+    /** 
+     * Internal representation of a symbol in a
+     * LSystem. It's just a single character, but
+     * extended to store various parameters.
+     */
+    class Symbol
+    {
+      public:
+        Symbol(char character);
+        virtual ~Symbol();
 
-    void newRule(char predecessor, std::string successor);
+        void markAsRead();
 
-    std::string producedString();
+        bool isMarkedRead() const;
+        char getSymbol() const;
 
-  protected:
+        operator char() const;
+        bool operator==(char character) const;
+        bool operator==(Symbol another) const;
+
+      protected:
+        char symbol;
+        bool alreadyRead;
+    };
+
     std::set<char> alphabet; /**< Finite set of symbols */
     std::string axiom; /**< Initial string */
 
@@ -64,18 +102,16 @@ class LSystem
         the rule. @see LSystem::ProductionRule */
     std::map<char, ProductionRule> rules;
 
-    int iterations;
+    std::list<Symbol> producedString; /**< Produced string */
 
-    std::list<char> outputString; /**< Produced string */
-
-    std::list<char>::iterator currentPosition;
-
-    void doSingleIteration();
-    void rewrite();
-    void rewrite(std::list<char>::iterator position);
+    /** 
+     * Attempts to rewrite character specified by
+     * the position iterator. */
+    void rewrite(std::list<Symbol>::iterator position);
 
   private:
-    bool isResultReady;
+    bool isInAlphabet(char checkedCharacter) const; /**< Check if character is in this LSystem's alphabet */
+    bool isInAlphabet(std::string checkedString) const; /**< Checks the whole string */
 };
 
 #endif

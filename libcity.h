@@ -224,21 +224,42 @@ class GraphicLSystem : public LSystem
     GraphicLSystem();
     virtual ~GraphicLSystem();
 
+    /* WARNING Will reset produced string to axiom  */
+    void setStartingPosition(Point position);
+    void setStartingDirection(Vector direction);
+
   protected:
-    void setAxiom(std::string startingSequence, Point startingPosition, Vector startingDirection);
+    virtual void readNextSymbol();
+    virtual void interpretSymbol(char symbol);
 
     void pushCursor();
-    void popCursor(); /** Does nothing when the stack is empty */
+    void popCursor(); /**< Does nothing when the stack is empty */
 
-    Point  currentPosition();
-    Vector currentDirection();
+    /**
+     * Represents a drawing cursor in the LSystem
+     */
+    class Cursor
+    {
+      public:
+        Cursor();
+        Cursor(Point inputPosition, Vector inputDirection);
+        Cursor(const Cursor& anotherCursor);
+        ~Cursor();
+
+        Point  getPosition() const;
+        Vector getDirection() const;
+
+        void setPosition(Point newPosition);
+        void setDirection(Vector newDirection);
+      private:
+        Point*  position;
+        Vector* direction;
+    };
+
+    Cursor cursor; /**< Drawing cursor */
   private:
-    /* Drawing cursor */
-    Point*  cursorPosition;
-    Vector* cursorDirection;
-    std::vector< std::pair<Point*,Vector*> > cursorStack;
-
-    void moveCursorOneStep();
+    std::list<Symbol>::iterator currentStringPosition;
+    std::vector<Cursor> cursorStack; /**< Stack for pushing cursors */
 
     void defineAlphabet();
 };
@@ -275,7 +296,27 @@ class LSystem
     LSystem();
     virtual ~LSystem();
 
-    /** Production rule of a LSystem.
+    /**
+     * WARNING: will delete producedString!
+     */
+    void setAxiom(std::string startingSequence);
+
+    /**
+     * Does one rewriting iteration on the productionString.
+     * NOTICE might return number of rewrites done
+     */
+    void doNextIteration();
+
+    /**
+     * Adds a new rule to the LSystem. All the symbols in
+     * the rule must be in the LSystem's alphabet.
+     */
+    void addRule(char predecessor, std::string successor);
+
+    std::string getProducedString() const; /**< Returns the whole produced string */
+
+  protected:
+    /** Internal representation of production rule of a LSystem.
         With one successor it's a deterministic rule,
         with more successors it's stochastic rule with a
         1/number_of_successors chance of occurence. */
@@ -285,8 +326,8 @@ class LSystem
         ProductionRule();
         ProductionRule(char leftSide, std::string rightSide);
 
-        char predecessor();
-        std::string successor();
+        char predecessor() const;
+        std::string successor() const;
         void addSuccessor(std::string rightSideString);
 
       private:
@@ -294,13 +335,31 @@ class LSystem
         std::list<std::string> rightSide;
     };
 
-    void setIterations(int numberOfIterations);
+    /** 
+     * Internal representation of a symbol in a
+     * LSystem. It's just a single character, but
+     * extended to store various parameters.
+     */
+    class Symbol
+    {
+      public:
+        Symbol(char character);
+        virtual ~Symbol();
 
-    void newRule(char predecessor, std::string successor);
+        void markAsRead();
 
-    std::string producedString();
+        bool isMarkedRead() const;
+        char getSymbol() const;
 
-  protected:
+        operator char() const;
+        bool operator==(char character) const;
+        bool operator==(Symbol another) const;
+
+      protected:
+        char symbol;
+        bool alreadyRead;
+    };
+
     std::set<char> alphabet; /**< Finite set of symbols */
     std::string axiom; /**< Initial string */
 
@@ -310,44 +369,16 @@ class LSystem
         the rule. @see LSystem::ProductionRule */
     std::map<char, ProductionRule> rules;
 
-    int iterations;
+    std::list<Symbol> producedString; /**< Produced string */
 
-    std::list<char> outputString; /**< Produced string */
-
-    std::list<char>::iterator currentPosition;
-
-    void doSingleIteration();
-    void rewrite();
-    void rewrite(std::list<char>::iterator position);
+    /** 
+     * Attempts to rewrite character specified by
+     * the position iterator. */
+    void rewrite(std::list<Symbol>::iterator position);
 
   private:
-    bool isResultReady;
-};
-
-#endif
-/**
- * This code is part of libcity library.
- *
- * @file lsystem/lsystemstring.h
- * @date 10.03.2011
- * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
- *
- * @brief FIXME
- */
-
-#ifndef _LSYSTEMSTRING_H_
-#define _LSYSTEMSTRING_H_
-
-#include <list>
-
-class LSystemSymbol;
-
-class LSystemString : public std::list<LSystemSymbol*>
-{
-  public:
-    LSystemString();
-
-//     void rewrite(Parent::Iterator position, LSystemString);
+    bool isInAlphabet(char checkedCharacter) const; /**< Check if character is in this LSystem's alphabet */
+    bool isInAlphabet(std::string checkedString) const; /**< Checks the whole string */
 };
 
 #endif
@@ -370,90 +401,19 @@ class LSystemString : public std::list<LSystemSymbol*>
 
 #include "graphiclsystem.h"
 
+class Point;
+class Vector;
+class Road;
+
 class RoadLSystem : public GraphicLSystem
 {
   public:
     RoadLSystem();
     virtual ~RoadLSystem();
 
-    void setPosition(Point position);
-    void setDirection(Vector direction);
+    Road* getNextIdealRoadSegment();
   protected:
 
-};
-
-#endif
-/**
- * This code is part of libcity library.
- *
- * @file lsystem/symbols.h
- * @date 10.03.2011
- * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
- *
- * @brief Symbols used in LSystem
- *
- * Set of symbols, that can be used in LSystem. This
- * architecture was chosen, because it's extensibility.
- * Another symbols can be easily added, parameters
- * can be modified and much more functionality added.
- */
-
-#ifndef _SYMBOLS_H_
-#define _SYMBOLS_H_
-
-#include <set>
-#include <map>
-#include <list>
-#include <string>
-
-class LSystemSymbol
-{
-  public:
-    enum definedSymbols
-    {
-      PUSH_POSITION = '[',
-      POP_POSITION  = ']',
-      DRAW_LINE     = 'L',
-      DRAW_POINT    = 'P',
-      TURN_ANGLE    = 'T',
-      MOVE_FORWARD  = 'M'
-    };
-
-    LSystemSymbol();
-    virtual ~LSystemSymbol();
-
-    char getSymbol();
-
-    bool operator==(char character);
-    bool operator==(LSystemSymbol another);
-
-  protected:
-    char symbol;
-};
-
-class GenericSymbol : public LSystemSymbol
-{
-  public:
-    GenericSymbol(char identifier);
-};
-
-/* Graphical symbols */
-class DrawLineSymbol : public LSystemSymbol
-{
-  public:
-    DrawLineSymbol(double distance, char identifier = LSystemSymbol::DRAW_LINE);
-
-  private:
-    double distance;
-};
-
-class TurnAngleSymbol : public LSystemSymbol
-{
-  public:
-    TurnAngleSymbol(double angle, char identifier = LSystemSymbol::TURN_ANGLE);
-
-  private:
-    double angle;
 };
 
 #endif
