@@ -7,7 +7,7 @@ ARCHIVER_FLAGS=rcs
 LIB_FILENAME=libcity
 TEST_FILENAME=unit_tests
 
-UNITTESTCPP_LIB_DIR=../UnitTest++
+UNITTESTCPP_LIB=../UnitTest++/libUnitTest++.a
 UNITTESTCPP_INCLUDE_DIR=../UnitTest++/src/
 
 .PHONY: install uninstall static dynamic clean doc header test
@@ -45,8 +45,9 @@ $(LIB_OBJECTS): %.o: %.cpp %.h
 # TEST Object files and sources ##########################
 
 # Unit tests
-TEST_UNITS=test/units/point.class.test.o \
-           test/units/vector.class.test.o
+TEST_UNITS=test/testPoint.o  \
+           test/testVector.o \
+           test/testLSystem.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)
@@ -70,7 +71,7 @@ uninstall:
 	
 
 test: $(TEST_OBJECTS) static
-	$(COMPILER) $(COMPILER_FLAGS) -static -L. -lcity -L$(UNITTESTCPP_LIB_DIR) -lUnitTest++ -I$(UNITTESTCPP_INCLUDE_DIR) -o $(TEST_FILENAME) $(TEST_OBJECTS)
+	$(COMPILER) $(COMPILER_FLAGS) -I$(UNITTESTCPP_INCLUDE_DIR) -o $(TEST_FILENAME) $(TEST_OBJECTS) $(UNITTESTCPP_LIB) libcity.a
 
 doc:
 	doxygen Doxyfile

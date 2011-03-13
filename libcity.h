@@ -96,55 +96,56 @@ class Point
 {
   public:
     Point(); /**< [0,0,0] */
-    Point(int x, int y); /**< 2D */
-    Point(int x, int y, int z); /**< 3D */
+    Point(double x, double y); /**< 2D */
+    Point(double x, double y, double z); /**< 3D */
 
     ~Point();
 
   private:
-    int xPosition;
-    int yPosition;
-    int zPosition;
+    double xPosition;
+    double yPosition;
+    double zPosition;
 
   public:
-    int x() const;
-    int y() const;
-    int z() const; /**< Undefined in 2D. */
+    double x() const;
+    double y() const;
+    double z() const; /**< Undefined in 2D. */
 
-    void setX(int coordinate);
-    void setY(int coordinate);
-    void setZ(int coordinate);
+    void set(double xCoord, double yCoord, double zCoord = 0);
+    void setX(double coordinate);
+    void setY(double coordinate);
+    void setZ(double coordinate);
 
     bool operator==(Point &second);
 };
 
 
-inline int Point::x() const
+inline double Point::x() const
 {
   return xPosition;
 }
 
-inline int Point::y() const
+inline double Point::y() const
 {
   return yPosition;
 }
 
-inline int Point::z() const
+inline double Point::z() const
 {
   return zPosition;
 }
 
-inline void Point::setX(int coordinate)
+inline void Point::setX(double coordinate)
 {
   xPosition = coordinate;
 }
 
-inline void Point::setY(int coordinate)
+inline void Point::setY(double coordinate)
 {
   yPosition = coordinate;
 }
 
-inline void Point::setZ(int coordinate)
+inline void Point::setZ(double coordinate)
 {
   zPosition = coordinate;
 }
@@ -203,6 +204,7 @@ class Vector
 
     double length();
 
+    void set(double xCoord, double yCoord, double zCoord = 0);
     void setX(double coordinate);
     void setY(double coordinate);
     void setZ(double coordinate);
@@ -213,10 +215,10 @@ class Vector
 
     void normalize();
 
-    bool operator==(Vector &second);
-    Vector operator*(double &constant);
-    Vector operator/(double &constant);
-    Vector operator+(Vector &vector);
+    bool operator==(Vector second);
+    Vector operator*(double constant);
+    Vector operator/(double constant);
+    Vector operator+(Vector vector);
 
 };
 #endif/**
@@ -971,13 +973,18 @@ class LSystem
     virtual ~LSystem();
 
     /**
-     * WARNING: will delete producedString!
+     * \WARNING: Will delete axiom and all rules
+     */
+    void setAlphabet(std::string alphabetCharacters);
+
+    /**
+     * \WARNING: Will delete producedString
      */
     void setAxiom(std::string startingSequence);
 
     /**
      * Does one rewriting iteration on the productionString.
-     * NOTICE might return number of rewrites done
+     * NOTICE: Might return number of rewrites done
      */
     void doNextIteration();
 

@@ -1,0 +1,26 @@
+Plan:
+  - DONE implement LSystem::addRule()
+  - DONE implement LSystem::Symbol
+  - DONE reimplement LSystem using LSystem::Symbol instead of char
+  - DONE clean up and comment lsystem.cpp ans lsystem.h files, divide it into sections
+  - DONE implement cursor stack in GraphicLSystem
+  - DONE consider implementing cursor class
+  - DONE implement GraphicLSystem::Cursor class
+  - DONE reimplement GraphicLSystem using Cursor class
+  - DONE implement symbol interpretation and reading
+  - DONE implement continuous iterating through the LSystem with continuous expanding
+  - DONE implement some interface for LSystem and GraphicLSystem so they can be used without creating a child class
+  - DONE implement Vector normalization and rotations
+  - DONE write graphic representation of line, point and turn symbols to RoadLSystem
+  - DONE clean up unit testing system a little
+  - DONE migrate to UnitTest++ testing framework
+  - DONE unit test for Vector class
+  - DONE unit test for Point class
+  - DONE unit test for LSystem
+  - unit test for GraphicLSystem
+  - create LSystem class for each road pattern (checkquers, organic, radial)
+  - design error handling and exceptions
+
+  - !!! NAPAD: Cist retezec, dokud se neobjevi v zasobniku nejaka silnice pak ji vratit
+  - !!! NAPAD: kazdy symbol ma pozici kurzoru od ktere se interpretuje a nebo na kterou je nastaven kurzor PO jeho interpretaci?
+  - !!! ZASEK: Nutnost přidat pozici k symbolu

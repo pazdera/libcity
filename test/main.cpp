@@ -9,16 +9,9 @@
  *
  */
 
-#include "unit.h"
-
-#include "units/point.class.test.cpp"
-#include "units/vector.class.test.cpp"
+#include <UnitTest++.h>
 
 int main()
 {
-  bool status = true;
-
-  status = status && PointClassTest().run();
-  status = status && VectorClassTest().run();
-  return status;
+  UnitTest::RunAllTests();
 }

@@ -15,16 +15,23 @@ Point::Point()
   : xPosition(0), yPosition(0), zPosition(0)
 {}
 
-Point::Point(int x, int y)
+Point::Point(double x, double y)
   : xPosition(x), yPosition(y), zPosition(0)
 {}
 
-Point::Point(int x, int y, int z)
+Point::Point(double x, double y, double z)
   : xPosition(x), yPosition(y), zPosition(z)
 {}
 
 Point::~Point()
 {}
+
+void Point::set(double xCoord, double yCoord, double zCoord)
+{
+  xPosition = xCoord;
+  yPosition = yCoord;
+  zPosition = zCoord;
+}
 
 bool Point::operator==(Point &second)
 {

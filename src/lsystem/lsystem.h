@@ -30,15 +30,25 @@ class LSystem
     virtual ~LSystem();
 
     /**
-     * WARNING: will delete producedString!
+     * \WARNING: Will delete axiom and all rules
+     */
+    void setAlphabet(std::string alphabetCharacters);
+
+    /**
+     * \WARNING: Will delete producedString
      */
     void setAxiom(std::string startingSequence);
 
     /**
-     * Does one rewriting iteration on the productionString.
-     * NOTICE might return number of rewrites done
+     * Does one rewriting iteration through the productionString.
+     * NOTICE: Might return number of rewrites done
      */
-    void doNextIteration();
+    void doIteration();
+
+    /**
+     * Does specified number of iterations
+     */
+    void doIterations(int howManyIterations);
 
     /**
      * Adds a new rule to the LSystem. All the symbols in

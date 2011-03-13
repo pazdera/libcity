@@ -10,6 +10,7 @@
  */
 
 #include "lsystem.h"
+#include "../debug.h"
 
 /* ************************** */
 /* *** LSystem IMPLEMENTATION */
@@ -20,6 +21,21 @@ LSystem::LSystem()
 LSystem::~LSystem()
 {}
 
+void LSystem::setAlphabet(std::string alphabetCharacters)
+{
+  alphabet.clear();
+  axiom = "";
+  rules.clear();
+  producedString.clear();
+
+  for (std::string::iterator position = alphabetCharacters.begin();
+       position != alphabetCharacters.end();
+       position++)
+  {
+    alphabet.insert(*position);
+  }
+}
+
 void LSystem::setAxiom(std::string startingSequence)
 {
   if (startingSequence == "" || !isInAlphabet(startingSequence))
@@ -28,8 +44,8 @@ void LSystem::setAxiom(std::string startingSequence)
   }
 
   axiom = startingSequence;
-
   producedString.clear();
+
   for (std::string::iterator position = axiom.begin();
        position != axiom.end();
        position++)
@@ -53,6 +69,7 @@ bool LSystem::isInAlphabet(std::string checkedString) const
     {
       return false;
     }
+    position++;
   }
 
   return true;
@@ -78,7 +95,7 @@ void LSystem::addRule(char predecessor, std::string successor)
   }
 }
 
-void LSystem::doNextIteration()
+void LSystem::doIteration()
 {
   std::list<Symbol>::iterator position = producedString.begin();
   std::list<Symbol>::iterator nextPosition;
@@ -94,6 +111,14 @@ void LSystem::doNextIteration()
     rewrite(position);
 
     position = nextPosition;
+  }
+}
+
+void LSystem::doIterations(int howManyIterations)
+{
+  for (int iteration = 0; iteration < howManyIterations; iteration++)
+  {
+    doIteration();
   }
 }
 
