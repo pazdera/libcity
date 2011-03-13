@@ -28,6 +28,14 @@ class RoadLSystem : public GraphicLSystem
     virtual ~RoadLSystem();
 
     Road* getNextIdealRoadSegment();
+
+  protected:
+    virtual void interpretSymbol(char symbol);
+
+    void turnLeft90Degrees();
+    void turnRight90Degrees();
+  private:
+    void defineAlphabet();
 };
 
 #endif

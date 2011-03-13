@@ -1,11 +1,11 @@
 /**
  * This code is part of libcity library.
  *
- * @file unittest.h
- * @date 17.02.2011
+ * @file point.class.test.h
+ * @date 23.02.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief Unit test of ...
+ * @brief Unit test of Point class
  *
  * Unit test is a class derived from Unit. It's defined
  * inline in the declaration.
@@ -20,17 +20,19 @@
 
 // Modules
 #include "../unit.h"
-//#include "../../src/.h"
+#include "../../src/geometry/point.h"
 
-class UnitTest : public Unit
+class PointClassTest : public Unit
 {
-  public
-    UnitTest()
-      : Unit()
-    {
-      
-    }
+  public:
+    PointClassTest()
+      : Unit("Point class")
+    {}
 
+  private:
+//     bool 
+
+  public:
     bool run()
     {
       return true;

@@ -20,9 +20,11 @@
 
 // Modules
 
-Unit::Unit()
-  : status(false)
-{}
+Unit::Unit(std::string name)
+  : status(false), unitName(name)
+{
+  printMessage("NOW TESTING \"" + unitName + "\".");
+}
 
 Unit::~Unit()
 {}

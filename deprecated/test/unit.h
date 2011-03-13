@@ -24,7 +24,7 @@
 class Unit
 {
   public:
-    Unit();
+    Unit(std::string name);
     virtual ~Unit();
 
   private:
@@ -34,12 +34,13 @@ class Unit
     void printMessage(std::string message);
   protected:
     bool status;
+    std::string unitName;
 
     void startTest(std::string name);
     void finishTest();
 
   public:
-    bool run();
+    virtual bool run() = 0;
 };
 
 #endif

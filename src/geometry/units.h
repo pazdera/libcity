@@ -14,4 +14,6 @@ namespace libcity
   /* Basic unit for the whole library (in pixels). */
   const int METER  = 100;
   const int METERS = METER;
-};
+
+  const int PI = 3.14159265;
+}

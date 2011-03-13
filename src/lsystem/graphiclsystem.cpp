@@ -32,10 +32,6 @@ void GraphicLSystem::defineAlphabet()
   alphabet.insert('['); //! Push current position
   alphabet.insert(']'); //! Pop current position
 
-  alphabet.insert('D'); //! Draw line of a random length
-
-  alphabet.insert('L'); //! Turn left 90 degrees
-  alphabet.insert('R'); //! Turn right 90 degrees
 }
 
 void GraphicLSystem::pushCursor()
