@@ -29,11 +29,14 @@ Plan:
   - DONE fix the fu*king segfault GraphicLSystem in readNextSymbol
   - DONE unit test for GraphicLSystem
   - DONE appending new characters to alphabet
-  - expand RoadLSystem implementation
-  - create LSystem class for each road pattern (checkquers, organic, radial)
-  - destruct GraphicInformation in GraphicLSystem properly
-  - figure out how return graphical representation
+  - DONE expand RoadLSystem implementation
+  - DONE create raster road pattern class
+  - DONE destruct GraphicInformation in GraphicLSystem properly
+  - DONE figure out how to return graphical representation
+  - DONE implement low level road construction
+  - design streetgraph
   - implement 2d drawing
+  - create LSystem class for each road pattern (checkquers, organic, radial)
   - design error handling and exceptions
 
   - !!! NAPAD: Cist retezec, dokud se neobjevi v zasobniku nejaka silnice pak ji vratit
@@ -41,3 +44,4 @@ Plan:
   - !!! ZASEK: Nutnost přidat pozici k symbolu
   - NAPAD: GraphicInformation je jen base. V odvozenych tridach si muzeme pro kazdy symbol udelat decka. Pro ruzne typy symbolu
            a pak s nimi tak pracovat. To umozni udelat streetgraph primo v lsystemu.
+  - NAPAD: Road lze zkonstruhovat jen s určenou low level reprezentací high level příjde potom

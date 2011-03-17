@@ -33,6 +33,10 @@ class LSystem
      * \WARNING: Will delete axiom and all rules
      */
     void setAlphabet(std::string alphabetCharacters);
+
+    /**
+     * Inserts new symbols into alphabet.
+     */
     void addToAlphabet(std::string alphabetCharacters);
 
     /**

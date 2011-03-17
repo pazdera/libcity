@@ -16,19 +16,16 @@
 
 #include "../lsystem/roadlsystem.h"
 
-class RasterRoadPattern : protected RoadLSystem
+class RasterRoadPattern : public RoadLSystem
 {
   public:
     RasterRoadPattern();
     virtual ~RasterRoadPattern();
 
-    Road* getNextIdealRoadSegment();
-
   protected:
-    virtual void interpretSymbol(char symbol);
+    double getTurnAngle();
+    double getRoadSegmentLength();
 
-    void turnLeft();
-    void turnRight();
   private:
     
 };

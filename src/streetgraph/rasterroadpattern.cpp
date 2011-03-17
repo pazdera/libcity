@@ -15,23 +15,21 @@
 #include "../geometry/vector.h"
 
 RasterRoadPattern::RasterRoadPattern()
-{}
+{
+  setAxiom("E");
+
+  // Rules
+  addRule('E', "[[-_E]+_E]_E");
+}
 
 RasterRoadPattern::~RasterRoadPattern()
 {}
 
-void RoadLSystem::turnLeft()
+double getTurnAngle()
 {
-  Vector direction = cursor.getDirection();
-  direction.rotateAroundZ(-90);
-
-  cursor.setDirection(direction);
+  return 90;
 }
-
-void RoadLSystem::turnRight()
+double getRoadSegmentLength()
 {
-  Vector direction = cursor.getDirection();
-  direction.rotateAroundZ(90);
-
-  cursor.setDirection(direction);
+  return 100;
 }

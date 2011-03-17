@@ -24,6 +24,11 @@ class Road
     /** Create road between two intersections.
         Path is determined automaticaly.*/
     Road(Intersection *first, Intersection *second);
+
+    /**
+     * Create just path of the road.
+     **/
+    Road(Line path);
     virtual ~Road();
 
     Intersection* begining() const;

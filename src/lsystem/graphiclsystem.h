@@ -71,6 +71,9 @@ class GraphicLSystem : public LSystem
 
         void setPosition(Point newPosition);
         void setDirection(Vector newDirection);
+
+        void move(double distance);
+        void turn(double angle);
       private:
         Point*  position;
         Vector* direction;
@@ -89,6 +92,7 @@ class GraphicLSystem : public LSystem
     Cursor cursor; /**< Drawing cursor */
   private:
     std::map<Symbol*, GraphicInformation*>* graphicInformationForSymbols;
+    void freeGraphicInformation();
 
     std::vector<Cursor> cursorStack; /**< Stack for pushing cursors */
 };

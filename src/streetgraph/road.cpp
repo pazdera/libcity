@@ -23,7 +23,13 @@ Road::Road()
 Road::Road(Intersection *first, Intersection *second)
   : from(first), to(second), geometrical_path(0)
 {
-  geometrical_path = new Line();
+  geometrical_path = new Line(from->position(), to->position());
+}
+
+Road::Road(Line path)
+  : from(0), to(0), geometrical_path(0)
+{
+  geometrical_path = new Line(path);
 }
 
 Road::~Road()

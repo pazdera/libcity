@@ -24,9 +24,9 @@ GraphicLSystem::GraphicLSystem()
    *  [ - push current position
    *  ] - pop current position
    *  . - draw point
-   *  - - draw line forward FIXME of what length?
+   *  _ - draw line forward FIXME of what length?
    */
-  setAlphabet("[].-");
+  setAlphabet("[]._");
 
   // FIXME set axiom and copy it to producedString
   setAxiom(".");
@@ -34,6 +34,18 @@ GraphicLSystem::GraphicLSystem()
 
 GraphicLSystem::~GraphicLSystem()
 {
+  freeGraphicInformation();
+}
+
+void GraphicLSystem::freeGraphicInformation()
+{
+  for (std::map<Symbol*, GraphicInformation*>::iterator position = graphicInformationForSymbols->begin();
+       position != graphicInformationForSymbols->end();
+       position++)
+  {
+    delete position->second;
+  }
+
   delete graphicInformationForSymbols;
 }
 
@@ -130,7 +142,7 @@ void GraphicLSystem::interpretSymbol(char symbol)
     case '.':
       drawPoint();
       break;
-    case '-':
+    case '_':
       drawLine();
       break;
     default:
@@ -198,5 +210,20 @@ void GraphicLSystem::Cursor::setPosition(Point newPosition)
 
 void GraphicLSystem::Cursor::setDirection(Vector newDirection)
 {
+  newDirection.normalize();
   *direction = newDirection;
+}
+
+void GraphicLSystem::Cursor::move(double distance)
+{
+  direction->normalize();
+  position->setX(position->x() + direction->x()*distance);
+  position->setY(position->y() + direction->y()*distance);
+  position->setZ(position->z() + direction->z()*distance);
+}
+
+void GraphicLSystem::Cursor::turn(double angle)
+{
+  direction->rotateAroundZ(angle);
+  direction->normalize();
 }

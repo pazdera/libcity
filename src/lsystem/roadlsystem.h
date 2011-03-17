@@ -27,20 +27,22 @@ class RoadLSystem : public GraphicLSystem
     RoadLSystem();
     virtual ~RoadLSystem();
 
-    Road* getNextIdealRoadSegment();
+    virtual Road* getNextIdealRoadSegment();
 
   protected:
     virtual void interpretSymbol(char symbol);
 
-    virtual void turnLeft()  = 0;
-    virtual void turnRight() = 0;
+    virtual void turnLeft();
+    virtual void turnRight();
 
     virtual void drawLine();
 
     virtual double getRoadSegmentLength() = 0;
     virtual double getTurningAngle() = 0;
+
   private:
-    
+    std::list<Road*> *generatedRoads;
+    void freeGeneratedRoads();
 };
 
 #endif

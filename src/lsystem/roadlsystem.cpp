@@ -11,6 +11,10 @@
 
 #include "roadlsystem.h"
 #include "../geometry/vector.h"
+#include "../geometry/point.h"
+#include "../geometry/line.h"
+
+#include "../streetgraph/road.h"
 
 RoadLSystem::RoadLSystem()
 {
@@ -21,15 +25,29 @@ RoadLSystem::RoadLSystem()
    */
   addToAlphabet("-+E");
   setAxiom("E");
+
+  generatedRoads = new std::list<Road*>;
 }
 
 RoadLSystem::~RoadLSystem()
-{}
+{
+  freeGeneratedRoads();
+}
+
+void RoadLSystem::freeGeneratedRoads()
+{
+  for(std::list<Road*>::iterator position = generatedRoads->begin();
+      position != generatedRoads->end();
+      position++)
+  {
+    delete *position;
+  }
+
+  delete generatedRoads;
+}
 
 void RoadLSystem::interpretSymbol(char symbol)
 {
-  GraphicLSystem::interpretSymbol(symbol);
-
   switch (symbol)
   {
     case '-':
@@ -42,8 +60,43 @@ void RoadLSystem::interpretSymbol(char symbol)
       // nothing just control character
       break;
     default:
-      // nothing
+      /* Try to interpret symbols defined in parent. */
+      GraphicLSystem::interpretSymbol(symbol);
       break;
   }
 }
 
+Road* RoadLSystem::getNextIdealRoadSegment()
+{
+  while (generatedRoads->empty())
+  /* Keep generating until a road comes up */
+  {
+    readNextSymbol();
+  }
+
+  Road* road = generatedRoads->front();
+  generatedRoads->erase(generatedRoads->begin());
+  return road;
+}
+
+void RoadLSystem::turnLeft()
+{
+  Vector direction = cursor.getDirection();
+  direction.rotateAroundZ((-1) * getTurningAngle());
+
+  cursor.setDirection(direction);
+}
+
+void RoadLSystem::turnRight()
+{
+  cursor.turn(getTurningAngle());
+}
+
+void RoadLSystem::drawLine()
+{
+  Point previousPosition = cursor.getPosition();
+  cursor.move(getRoadSegmentLength());
+  Point currentPosition = cursor.getPosition();
+
+  generatedRoads->push_back(new Road(Line(previousPosition, currentPosition)));
+}
