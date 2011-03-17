@@ -32,10 +32,15 @@ class RoadLSystem : public GraphicLSystem
   protected:
     virtual void interpretSymbol(char symbol);
 
-    void turnLeft90Degrees();
-    void turnRight90Degrees();
+    virtual void turnLeft()  = 0;
+    virtual void turnRight() = 0;
+
+    virtual void drawLine();
+
+    virtual double getRoadSegmentLength() = 0;
+    virtual double getTurningAngle() = 0;
   private:
-    void defineAlphabet();
+    
 };
 
 #endif

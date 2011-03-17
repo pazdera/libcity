@@ -11,27 +11,30 @@
 
 #include "graphiclsystem.h"
 
+#include "../debug.h"
 #include "../geometry/point.h"
 #include "../geometry/vector.h"
 
 GraphicLSystem::GraphicLSystem()
-  : LSystem(), cursor(), currentStringPosition()
+  : LSystem(), cursor(), graphicInformationForSymbols(0)
 {
-  defineAlphabet();
+  graphicInformationForSymbols = new std::map<Symbol*, GraphicInformation*>;
+
+  /* Symbols:
+   *  [ - push current position
+   *  ] - pop current position
+   *  . - draw point
+   *  - - draw line forward FIXME of what length?
+   */
+  setAlphabet("[].-");
 
   // FIXME set axiom and copy it to producedString
-  currentStringPosition = producedString.begin();
+  setAxiom(".");
 }
 
 GraphicLSystem::~GraphicLSystem()
 {
-}
-
-void GraphicLSystem::defineAlphabet()
-{
-  alphabet.insert('['); //! Push current position
-  alphabet.insert(']'); //! Pop current position
-
+  delete graphicInformationForSymbols;
 }
 
 void GraphicLSystem::pushCursor()
@@ -45,31 +48,72 @@ void GraphicLSystem::popCursor()
   cursorStack.pop_back();
 }
 
-void GraphicLSystem::readNextSymbol()
+void GraphicLSystem::drawLine()
+{}
+
+void GraphicLSystem::drawPoint()
+{}
+
+void GraphicLSystem::loadCursorPositionForSymbol(Symbol *symbol)
 {
-  if (producedString.empty())
+  if (graphicInformationForSymbols->find(symbol) == graphicInformationForSymbols->end())
+  {
+    (*graphicInformationForSymbols)[symbol] = new GraphicInformation();
+  }
+
+  cursor = (*graphicInformationForSymbols)[symbol]->cursorAfterInterpretation;
+}
+
+void GraphicLSystem::saveCursorPositionForSymbol(Symbol *symbol)
+{
+  (*graphicInformationForSymbols)[symbol] = new GraphicInformation;
+  (*graphicInformationForSymbols)[symbol]->cursorAfterInterpretation = cursor;
+}
+
+void GraphicLSystem::removeSymbol(SymbolString::iterator position)
+{
+  graphicInformationForSymbols->erase(*position);
+  LSystem::removeSymbol(position);
+}
+
+char GraphicLSystem::readNextSymbol()
+{
+  if (producedString->empty())
   /* Should not happen */
   {
-    return;
+    return '\0';
   }
 
-  if (currentStringPosition != producedString.end())
-  /* We've reached the end */
+  SymbolString::iterator position = producedString->begin();
+  Symbol *currentSymbol;
+  while(position != producedString->end())
+  /* Seek first unread symbol. */
   {
-    doNextIteration();
-    currentStringPosition = producedString.begin();
+    currentSymbol = *position;
+    if (!currentSymbol->isMarkedRead())
+    {
+      break;
+    }
+    else
+    {
+      loadCursorPositionForSymbol(currentSymbol);
+      position++;
+    }
   }
 
-  if (currentStringPosition->isMarkedRead())
+  if (position == producedString->end())
+  /* If all symbols have been already read, generate some more. */
   {
-    currentStringPosition++;
-    readNextSymbol();
+    doIterations(1);
+    return readNextSymbol();
   }
   else
   {
-    interpretSymbol(currentStringPosition->getSymbol());
-    currentStringPosition->markAsRead();
-    currentStringPosition++;
+    interpretSymbol(currentSymbol->getSymbol());
+    currentSymbol->markAsRead();
+    saveCursorPositionForSymbol(currentSymbol);
+
+    return currentSymbol->getSymbol();
   }
 }
 
@@ -83,18 +127,24 @@ void GraphicLSystem::interpretSymbol(char symbol)
     case ']':
       popCursor();
       break;
+    case '.':
+      drawPoint();
+      break;
+    case '-':
+      drawLine();
+      break;
     default:
       /* do nothing */
       break;
   }
 }
 
-void GraphicLSystem::setStartingPosition(Point position)
+void GraphicLSystem::setInitialPosition(Point position)
 {
   cursor.setPosition(position);
 }
 
-void GraphicLSystem::setStartingDirection(Vector direction)
+void GraphicLSystem::setInitialDirection(Vector direction)
 {
   cursor.setDirection(direction);
 }

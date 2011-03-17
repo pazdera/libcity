@@ -17,10 +17,27 @@ Plan:
   - DONE unit test for Vector class
   - DONE unit test for Point class
   - DONE unit test for LSystem
-  - unit test for GraphicLSystem
+  - DONE figure out how store position of symbols (possibly new string of graphical information tight to the previous string)
+  - DONE rewrite symbol list using pointers
+  - DONE add additional graphical information to symbols in GraphicLSystem
+  - DONE add isTerminal() method to LSystem
+  - DONE virtual method for dealocating Symbols in LSystem
+  - DONE don't forget destructing graphicInformation
+  - DONE clean up LSystem code a little (add some functions)
+  - DONE clean up GraphicLSystem code a little (add some functions)
+  - DONE figure out stringPosition issues in GraphicLSystem stringPosition removed for now
+  - DONE fix the fu*king segfault GraphicLSystem in readNextSymbol
+  - DONE unit test for GraphicLSystem
+  - DONE appending new characters to alphabet
+  - expand RoadLSystem implementation
   - create LSystem class for each road pattern (checkquers, organic, radial)
+  - destruct GraphicInformation in GraphicLSystem properly
+  - figure out how return graphical representation
+  - implement 2d drawing
   - design error handling and exceptions
 
   - !!! NAPAD: Cist retezec, dokud se neobjevi v zasobniku nejaka silnice pak ji vratit
   - !!! NAPAD: kazdy symbol ma pozici kurzoru od ktere se interpretuje a nebo na kterou je nastaven kurzor PO jeho interpretaci?
   - !!! ZASEK: Nutnost přidat pozici k symbolu
+  - NAPAD: GraphicInformation je jen base. V odvozenych tridach si muzeme pro kazdy symbol udelat decka. Pro ruzne typy symbolu
+           a pak s nimi tak pracovat. To umozni udelat streetgraph primo v lsystemu.

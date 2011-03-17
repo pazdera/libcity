@@ -33,6 +33,7 @@ class LSystem
      * \WARNING: Will delete axiom and all rules
      */
     void setAlphabet(std::string alphabetCharacters);
+    void addToAlphabet(std::string alphabetCharacters);
 
     /**
      * \WARNING: Will delete producedString
@@ -56,7 +57,7 @@ class LSystem
      */
     void addRule(char predecessor, std::string successor);
 
-    std::string getProducedString() const; /**< Returns the whole produced string */
+    std::string getProducedString(); /**< Returns the whole produced string */
 
   protected:
     /** Internal representation of production rule of a LSystem.
@@ -112,16 +113,41 @@ class LSystem
         the rule. @see LSystem::ProductionRule */
     std::map<char, ProductionRule> rules;
 
-    std::list<Symbol> producedString; /**< Produced string */
+    /**
+     *  Symbol sequence type, now just alias
+     *  for std::list.
+     */
+    typedef std::list<Symbol*> SymbolString;
+
+    SymbolString* producedString; /**< Produced string */
 
     /** 
      * Attempts to rewrite character specified by
      * the position iterator. */
-    void rewrite(std::list<Symbol>::iterator position);
+    void rewrite(SymbolString::iterator position);
+
+    /**
+     * Character must be in alphabet.
+     */
+    bool isTerminal(char character) const;
+
+    virtual void removeSymbol(SymbolString::iterator symbolPosition);
 
   private:
     bool isInAlphabet(char checkedCharacter) const; /**< Check if character is in this LSystem's alphabet */
     bool isInAlphabet(std::string checkedString) const; /**< Checks the whole string */
+
+    void freeProducedString();
+
+    /** Sets produced string back to axiom. */
+    void reset();
+
+    /** Initialize all member variables. */
+    void initialize();
+
+  protected:
+    /** Uses debug() for printing (debugging must be ON to see something). */
+    void debugDumpProducedStringAddresses();
 };
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file vector.class.test.h
+ * @file test/testlsystem->h
  * @date 13.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -17,6 +17,7 @@
 // Includes
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 // Tested modules
 #include "../src/lsystem/lsystem.h"
@@ -25,55 +26,69 @@ SUITE(LSystemClass)
 {
   TEST(Algae)
   {
-    LSystem lsystem;
-    lsystem.setAlphabet("AB");
-    lsystem.setAxiom("A");
+    LSystem *lsystem = new LSystem();
+    lsystem->setAlphabet("AB");
+    lsystem->setAxiom("A");
 
-    lsystem.addRule('A', "AB");
-    lsystem.addRule('B', "A");
+    lsystem->addRule('A', "AB");
+    lsystem->addRule('B', "A");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "AB");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "AB");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "ABA");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "ABA");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "ABAAB");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "ABAAB");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "ABAABABA");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "ABAABABA");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "ABAABABAABAAB");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "ABAABABAABAAB");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "ABAABABAABAABABAABABA");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "ABAABABAABAABABAABABA");
 
-    lsystem.doIterations(1);
-    CHECK_EQUAL(lsystem.getProducedString(), "ABAABABAABAABABAABABAABAABABAABAAB");
+    lsystem->doIterations(1);
+    CHECK_EQUAL(lsystem->getProducedString(), "ABAABABAABAABABAABABAABAABABAABAAB");
+
+    delete lsystem;
   }
 
   TEST(Fibonacci)
   {
-    LSystem lsystem;
-    lsystem.setAlphabet("AB");
-    lsystem.setAxiom("A");
+    LSystem *lsystem = new LSystem();
+    lsystem->setAlphabet("AB");
+    lsystem->setAxiom("A");
 
-    lsystem.addRule('A', "B");
-    lsystem.addRule('B', "AB");
+    lsystem->addRule('A', "B");
+    lsystem->addRule('B', "AB");
 
-    lsystem.doIterations(7);
-    CHECK_EQUAL(lsystem.getProducedString(), "BABABBABABBABBABABBAB");
+    lsystem->doIterations(7);
+    CHECK_EQUAL(lsystem->getProducedString(), "BABABBABABBABBABABBAB");
   }
 
   TEST(Misc)
   {
-    LSystem lsystem;
-    CHECK_EQUAL(lsystem.getProducedString(), "");
+    LSystem *lsystem = new LSystem();
+    CHECK_EQUAL(lsystem->getProducedString(), "");
 
     /* Alphabet not set */
-//     lsystem.setAxiom("A");
-//     CHECK_EQUAL(lsystem.getProducedString(), "");
+    //lsystem->setAxiom("A"); // Should throw something
+    //CHECK_EQUAL(lsystem->getProducedString(), "");
+
+    lsystem->addToAlphabet("AB");
+    lsystem->setAxiom("A");
+    CHECK_EQUAL(lsystem->getProducedString(), "A");
+
+    /* Is already in alphabet */
+    lsystem->addToAlphabet("A");
+
+    /* No rules set, should do nothing */
+    lsystem->setAxiom("AB");
+    lsystem->doIterations(10);
+    CHECK_EQUAL(lsystem->getProducedString(), "AB");
   }
 }

@@ -36,15 +36,24 @@ class GraphicLSystem : public LSystem
     virtual ~GraphicLSystem();
 
     /* WARNING Will reset produced string to axiom  */
-    void setStartingPosition(Point position);
-    void setStartingDirection(Vector direction);
+    void setInitialPosition(Point position);
+    void setInitialDirection(Vector direction);
+
+    virtual char readNextSymbol();
 
   protected:
-    virtual void readNextSymbol();
     virtual void interpretSymbol(char symbol);
 
     void pushCursor();
     void popCursor(); /**< Does nothing when the stack is empty */
+    virtual void drawLine();
+    virtual void drawPoint();
+
+    void loadCursorPositionForSymbol(Symbol *symbol);
+    void saveCursorPositionForSymbol(Symbol *symbol);
+
+    /** Removes graphic representation for symbol as well. */
+    virtual void removeSymbol(SymbolString::iterator position);
 
     /**
      * Represents a drawing cursor in the LSystem
@@ -67,12 +76,21 @@ class GraphicLSystem : public LSystem
         Vector* direction;
     };
 
+    /**
+     *  Additional graphic information stored for
+     *  each symbol in SymbolString.
+     */
+    class GraphicInformation
+    {
+      public:
+        Cursor cursorAfterInterpretation;
+    };
+
     Cursor cursor; /**< Drawing cursor */
   private:
-    std::list<Symbol>::iterator currentStringPosition;
-    std::vector<Cursor> cursorStack; /**< Stack for pushing cursors */
+    std::map<Symbol*, GraphicInformation*>* graphicInformationForSymbols;
 
-    void defineAlphabet();
+    std::vector<Cursor> cursorStack; /**< Stack for pushing cursors */
 };
 
 #endif

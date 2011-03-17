@@ -14,19 +14,17 @@
 
 RoadLSystem::RoadLSystem()
 {
-  defineAlphabet();
+  /* Symbols:
+   *  - - turn left
+   *  + - turn right
+   *  E - growth control
+   */
+  addToAlphabet("-+E");
+  setAxiom("E");
 }
 
 RoadLSystem::~RoadLSystem()
 {}
-
-void RoadLSystem::defineAlphabet()
-{
-  alphabet.insert('D'); //! Draw line of a random length
-
-  alphabet.insert('L'); //! Turn left 90 degrees
-  alphabet.insert('R'); //! Turn right 90 degrees
-}
 
 void RoadLSystem::interpretSymbol(char symbol)
 {
@@ -34,13 +32,14 @@ void RoadLSystem::interpretSymbol(char symbol)
 
   switch (symbol)
   {
-    case 'D':
-      // draw line
-    case 'L':
-      turnLeft90Degrees();
+    case '-':
+      turnLeft();
       break;
-    case 'R':
-      turnRight90Degrees();
+    case '+':
+      turnRight();
+      break;
+    case 'E':
+      // nothing just control character
       break;
     default:
       // nothing
@@ -48,18 +47,3 @@ void RoadLSystem::interpretSymbol(char symbol)
   }
 }
 
-void RoadLSystem::turnLeft90Degrees()
-{
-  Vector direction = cursor.getDirection();
-  direction.rotateAroundZ(-90);
-
-  cursor.setDirection(direction);
-}
-
-void RoadLSystem::turnRight90Degrees()
-{
-  Vector direction = cursor.getDirection();
-  direction.rotateAroundZ(90);
-
-  cursor.setDirection(direction);
-}

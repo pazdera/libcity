@@ -15,24 +15,72 @@
 /* ************************** */
 /* *** LSystem IMPLEMENTATION */
 LSystem::LSystem()
-  : axiom(""), rules(), producedString()
-{}
+{
+  producedString = new SymbolString;
+  initialize();
+}
 
 LSystem::~LSystem()
-{}
+{
+
+  freeProducedString();
+}
+
+void LSystem::freeProducedString()
+{
+  while(!producedString->empty())
+  {
+    removeSymbol(--producedString->end());
+  }
+  delete producedString;
+}
+
+void LSystem::removeSymbol(SymbolString::iterator symbolPosition)
+{
+  Symbol *removedSymbol = *symbolPosition;
+  producedString->erase(symbolPosition);
+  delete removedSymbol;
+}
 
 void LSystem::setAlphabet(std::string alphabetCharacters)
 {
-  alphabet.clear();
-  axiom = "";
-  rules.clear();
-  producedString.clear();
+  initialize();
 
   for (std::string::iterator position = alphabetCharacters.begin();
        position != alphabetCharacters.end();
        position++)
   {
     alphabet.insert(*position);
+  }
+}
+
+void LSystem::addToAlphabet(std::string alphabetCharacters)
+{
+  for (std::string::iterator position = alphabetCharacters.begin();
+       position != alphabetCharacters.end();
+       position++)
+  {
+    alphabet.insert(*position);
+  }
+}
+
+void LSystem::initialize()
+{
+  alphabet.clear();
+  axiom = "";
+  rules.clear();
+  producedString->clear();
+}
+
+void LSystem::reset()
+{
+  producedString->clear();
+
+  for (std::string::iterator position = axiom.begin();
+       position != axiom.end();
+       position++)
+  {
+    producedString->push_back(new Symbol(*position));
   }
 }
 
@@ -44,14 +92,7 @@ void LSystem::setAxiom(std::string startingSequence)
   }
 
   axiom = startingSequence;
-  producedString.clear();
-
-  for (std::string::iterator position = axiom.begin();
-       position != axiom.end();
-       position++)
-  {
-    producedString.push_back(Symbol(*position));
-  }
+  reset();
 }
 
 bool LSystem::isInAlphabet(char checkedCharacter) const
@@ -73,6 +114,11 @@ bool LSystem::isInAlphabet(std::string checkedString) const
   }
 
   return true;
+}
+
+bool LSystem::isTerminal(char character) const
+{
+  return rules.find(character) == rules.end();
 }
 
 void LSystem::addRule(char predecessor, std::string successor)
@@ -97,10 +143,10 @@ void LSystem::addRule(char predecessor, std::string successor)
 
 void LSystem::doIteration()
 {
-  std::list<Symbol>::iterator position = producedString.begin();
-  std::list<Symbol>::iterator nextPosition;
+  SymbolString::iterator position = producedString->begin();
+  SymbolString::iterator nextPosition;
 
-  while (position != producedString.end())
+  while (position != producedString->end())
   {
     /* Save the iterator for the next character, because
        the list can change and we don't want to expand
@@ -122,9 +168,9 @@ void LSystem::doIterations(int howManyIterations)
   }
 }
 
-void LSystem::rewrite(std::list<Symbol>::iterator position)
+void LSystem::rewrite(SymbolString::iterator position)
 {
-  Symbol predecessor = *position;
+  Symbol predecessor = **position;
   std::string successor;
 
   if (rules.find(predecessor) != rules.end())
@@ -133,28 +179,47 @@ void LSystem::rewrite(std::list<Symbol>::iterator position)
     successor = rules[predecessor].successor();
 
     /* Insert the successor before the character at position */
-    producedString.insert(position, successor.begin(), successor.end());
+    for (std::string::iterator character = successor.begin();
+         character != successor.end();
+         character++)
+    {
+      producedString->insert(position, new Symbol(*character));
+    }
 
     /* And remove the rewrited character from the string */
-    producedString.erase(position);
+    removeSymbol(position);
   }
   else
   /* Constant symbol, do nothing. */
   {}
 }
 
-std::string LSystem::getProducedString() const
+std::string LSystem::getProducedString()
 {
-  std::string output;
-  for (std::list<Symbol>::const_iterator position = producedString.begin();
-       position != producedString.end();
+  std::string outputString;
+  outputString.clear();
+  for (SymbolString::const_iterator position = producedString->begin();
+       position != producedString->end();
        position++)
   {
-    output += *position;
+    outputString.push_back((*position)->getSymbol());
   }
-
-  return output;
+  return outputString;
 }
+
+void LSystem::debugDumpProducedStringAddresses()
+{
+  int counter = 0;
+  debug("SymbolString address dump:");
+  for (SymbolString::const_iterator position = producedString->begin();
+       position != producedString->end();
+       position++)
+  {
+    debug("  " << counter << ": " << *position);
+    counter++;
+  }
+}
+
 
 /* ********************************* */
 /* *** ProductionRule IMPLEMENTATION */
