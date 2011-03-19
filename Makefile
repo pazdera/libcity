@@ -12,7 +12,7 @@ UNITTESTCPP_INCLUDE_DIR=../UnitTest++/src/
 
 .PHONY: install uninstall static dynamic clean doc header test
 
-all: static dynamic header
+all: static dynamic
 
 # LIB Object files and sources ##########################
 
