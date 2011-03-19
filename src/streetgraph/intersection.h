@@ -34,9 +34,13 @@ class Intersection
     int  numberOfWays() const; /**< Number of ways of the intersection */
     void addRoad(Road* road) throw();
 
+    void* owner();
+    void  setOwner(void* ownerObject);
   private:
     std::list<Road*> *roads;     /**< Topological information */
     Point *geometrical_position; /**< Geometrical information */
+
+    void* belongsTo;
 };
 
 

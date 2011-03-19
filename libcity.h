@@ -116,9 +116,8 @@ class Point
     void setY(double coordinate);
     void setZ(double coordinate);
 
-    bool operator==(Point &second);
+    bool operator==(Point second);
 };
-
 
 inline double Point::x() const
 {
@@ -149,6 +148,63 @@ inline void Point::setZ(double coordinate)
 {
   zPosition = coordinate;
 }
+
+#endif/**
+ * This code is part of libcity library.
+ *
+ * @file geometry/polygon.h
+ * @date 19.03.2011
+ * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
+ *
+ * @brief 2D Polygon representation
+ *
+ */
+
+#ifndef _POLYGON_H_
+#define _POLYGON_H_
+
+#include <vector>
+
+class Point;
+
+class Polygon
+{
+  public:
+    Polygon(); /**< Empty polygon */
+    Polygon(Point one, Point two, Point three); /**< Triangle */
+    Polygon(Point one, Point two, Point three, Point four); /**< Rectangle */
+
+    ~Polygon();
+
+  private:
+    std::vector<Point*> *vertices;
+
+  public:
+    Point vertex(unsigned int number);
+
+    unsigned int numberOfVertices();
+
+    void addVertex(Point vertex);
+    void removeVertex(unsigned int number);
+
+    /** Works ONLY in 2D !!! */
+    double area();
+
+    /** Works ONLY in 2D !!! */
+    Point centroid();
+
+    bool isSubAreaOf(Polygon biggerPolygon);
+    bool operator==(Polygon &second);
+
+  private:
+    void initialize();
+    void freeVertices();
+
+    double signedArea();
+    
+};
+
+
 
 #endif/**
  * This code is part of libcity library.
@@ -322,6 +378,9 @@ class GraphicLSystem : public LSystem
 
         void setPosition(Point newPosition);
         void setDirection(Vector newDirection);
+
+        void move(double distance);
+        void turn(double angle);
       private:
         Point*  position;
         Vector* direction;
@@ -340,6 +399,7 @@ class GraphicLSystem : public LSystem
     Cursor cursor; /**< Drawing cursor */
   private:
     std::map<Symbol*, GraphicInformation*>* graphicInformationForSymbols;
+    void freeGraphicInformation();
 
     std::vector<Cursor> cursorStack; /**< Stack for pushing cursors */
 };
@@ -380,6 +440,11 @@ class LSystem
      * \WARNING: Will delete axiom and all rules
      */
     void setAlphabet(std::string alphabetCharacters);
+
+    /**
+     * Inserts new symbols into alphabet.
+     */
+    void addToAlphabet(std::string alphabetCharacters);
 
     /**
      * \WARNING: Will delete producedString
@@ -526,15 +591,22 @@ class RoadLSystem : public GraphicLSystem
     RoadLSystem();
     virtual ~RoadLSystem();
 
-    Road* getNextIdealRoadSegment();
+    virtual Road* getNextIdealRoadSegment();
 
   protected:
     virtual void interpretSymbol(char symbol);
 
-    void turnLeft90Degrees();
-    void turnRight90Degrees();
+    virtual void turnLeft();
+    virtual void turnRight();
+
+    virtual void drawLine();
+
+    virtual double getRoadSegmentLength() = 0;
+    virtual double getTurnAngle() = 0;
+
   private:
-    void defineAlphabet();
+    std::list<Road*> *generatedRoads;
+    void freeGeneratedRoads();
 };
 
 #endif
@@ -574,11 +646,48 @@ class Intersection
     int  numberOfWays() const; /**< Number of ways of the intersection */
     void addRoad(Road* road) throw();
 
+    void* owner();
+    void  setOwner(void* ownerObject);
   private:
     std::list<Road*> *roads;     /**< Topological information */
     Point *geometrical_position; /**< Geometrical information */
+
+    void* belongsTo;
 };
 
+
+#endif
+/**
+ * This code is part of libcity library.
+ *
+ * @file streetgraph/rasterroadpattern.h
+ * @date 17.03.2011
+ * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
+ *
+ * @brief LSystem for generating raster road patterns.
+ *
+ * Defines basic alphabet for road generation.
+ *
+ */
+
+#ifndef _RASTERROADPATTERN_H_
+#define _RASTERROADPATTERN_H_
+
+#include "../lsystem/roadlsystem.h"
+
+class RasterRoadPattern : public RoadLSystem
+{
+  public:
+    RasterRoadPattern();
+    virtual ~RasterRoadPattern();
+
+  protected:
+    double getTurnAngle();
+    double getRoadSegmentLength();
+
+  private:
+    
+};
 
 #endif
 /**
@@ -598,6 +707,8 @@ class Intersection
 class Line;
 class Intersection;
 
+typedef Line Path;
+
 class Road
 {
   private:
@@ -607,6 +718,11 @@ class Road
     /** Create road between two intersections.
         Path is determined automaticaly.*/
     Road(Intersection *first, Intersection *second);
+
+    /**
+     * Create just path of the road.
+     **/
+    Road(Line path);
     virtual ~Road();
 
     Intersection* begining() const;
@@ -615,10 +731,12 @@ class Road
     void setBegining(Intersection* intersection);
     void setEnd(Intersection* intersection);
 
-    Line* path() const;
+    Path* path() const;
 
     void setPath(Line& roadPath) throw();
 
+    void* owner();
+    void  setOwner(void* ownerObject);
   private:
     /* Topological information */
     Intersection* from; /**< Where the road starts. */
@@ -627,11 +745,12 @@ class Road
     /* Geometrical information */
     Line* geometrical_path; /**< Path that the road takes between the two topological points */
 
+    void* belongsTo;
+
     void estimatePath();
 };
 
 /* Inlines */
-
 inline Intersection* Road::begining() const
 {
   return from;
@@ -652,7 +771,7 @@ inline void Road::setEnd(Intersection* intersection)
   to = intersection;
 }
 
-inline Line* Road::path() const
+inline Path* Road::path() const
 {
   return geometrical_path;
 }
@@ -685,10 +804,13 @@ inline Line* Road::path() const
 #define _STREETGRAPH_H_
 
 #include <list>
+#include <vector>
 
 class Intersection;
 class Road;
 class Point;
+class Polygon;
+class RoadLSystem;
 
 class StreetGraph
 {
@@ -696,17 +818,36 @@ class StreetGraph
     StreetGraph();
     ~StreetGraph();
 
-    void addPrimaryRoad(Point from, Point to);
-    void addSecondaryRoad(Point from, Point to);
+    void setAreaConstraints(Polygon* polygon);
+
+    void setRoadNetworkGenerator(RoadLSystem* generator);
+
+    void populate();
+
+    void divideToZones();
+
+    int  numberOfZones();
+    StreetGraph* zone(int number);
 
   private:
     /** All intersections in the street graph. */
-    std::list<Intersection> *intersections;
+    std::list<Intersection*> *intersections;
 
     /** All roads in the street graph.
         This is not neccessary, but could be
         useful. */
-    std::list<Road> *roads;
+    std::list<Road*> *roads;
+
+    Polygon* areaConstraints;
+    RoadLSystem* roadNetworkGenerator;
+
+    std::vector<StreetGraph*> *zones;
+
+    void initialize();
+    void freeRoadNetworkGenerator();
+    void freeAreaConstraints();
+    void freeZones();
+    void freeGraph();
 };
 
 #endif/**

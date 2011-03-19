@@ -17,17 +17,17 @@
 /** No places (intersections), no path between them.
     There's no use for such object. */
 Road::Road()
-  : from(0), to(0), geometrical_path(0)
+  : from(0), to(0), geometrical_path(0), belongsTo(0)
 {}
 
 Road::Road(Intersection *first, Intersection *second)
-  : from(first), to(second), geometrical_path(0)
+  : from(first), to(second), geometrical_path(0), belongsTo(0)
 {
   geometrical_path = new Line(from->position(), to->position());
 }
 
-Road::Road(Line path)
-  : from(0), to(0), geometrical_path(0)
+Road::Road(Path path)
+  : from(0), to(0), geometrical_path(0), belongsTo(0)
 {
   geometrical_path = new Line(path);
 }
@@ -43,7 +43,7 @@ Road::~Road()
   }
 }
 
-void Road::setPath(Line& roadPath) throw()
+void Road::setPath(Path& roadPath) throw()
 {
   //TODO: check if the path start and end matches the intersections
   delete geometrical_path;
@@ -58,4 +58,14 @@ void Road::estimatePath()
   }
 
   geometrical_path = new Line(from->position(), to->position());
+}
+
+void* Road::owner()
+{
+  return belongsTo;
+}
+
+void Road::setOwner(void* ownerObject)
+{
+  belongsTo = ownerObject;
 }

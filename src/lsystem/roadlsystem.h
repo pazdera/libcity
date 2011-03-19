@@ -38,7 +38,7 @@ class RoadLSystem : public GraphicLSystem
     virtual void drawLine();
 
     virtual double getRoadSegmentLength() = 0;
-    virtual double getTurningAngle() = 0;
+    virtual double getTurnAngle() = 0;
 
   private:
     std::list<Road*> *generatedRoads;

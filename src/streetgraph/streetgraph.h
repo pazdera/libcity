@@ -24,10 +24,13 @@
 #define _STREETGRAPH_H_
 
 #include <list>
+#include <vector>
 
 class Intersection;
 class Road;
 class Point;
+class Polygon;
+class RoadLSystem;
 
 class StreetGraph
 {
@@ -35,17 +38,54 @@ class StreetGraph
     StreetGraph();
     ~StreetGraph();
 
-    void addPrimaryRoad(Point from, Point to);
-    void addSecondaryRoad(Point from, Point to);
+    /**
+     * Define area constraints for the graph.
+     * All roads will be generated inside these
+     * borders.
+     */
+    void setAreaConstraints(Polygon* polygon);
+
+    /**
+     * Assign a road generator object to the streetgraph
+     * that will be used to populate it with roads.
+     */
+    void setRoadNetworkGenerator(RoadLSystem* generator);
+
+    /**
+     * Generate roads using specified roadNetworkGenerator
+     */
+    void populate();
+
+    /**
+     * Find closed loops in the graph and form zones inside
+     * them.
+     */
+    void divideToZones();
+
+    int  numberOfZones();
+    StreetGraph* zone(int number);
+
+    void addRoad(Road* road);
 
   private:
     /** All intersections in the street graph. */
-    std::list<Intersection> *intersections;
+    std::list<Intersection*> *intersections;
 
     /** All roads in the street graph.
         This is not neccessary, but could be
         useful. */
-    std::list<Road> *roads;
+    std::list<Road*> *roads;
+
+    Polygon* areaConstraints;
+    RoadLSystem* roadNetworkGenerator;
+
+    std::vector<StreetGraph*> *zones;
+
+    void initialize();
+    void freeRoadNetworkGenerator();
+    void freeAreaConstraints();
+    void freeZones();
+    void freeGraph();
 };
 
 #endif

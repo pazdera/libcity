@@ -15,6 +15,8 @@
 class Line;
 class Intersection;
 
+typedef Line Path;
+
 class Road
 {
   private:
@@ -37,10 +39,12 @@ class Road
     void setBegining(Intersection* intersection);
     void setEnd(Intersection* intersection);
 
-    Line* path() const;
+    Path* path() const;
 
     void setPath(Line& roadPath) throw();
 
+    void* owner();
+    void  setOwner(void* ownerObject);
   private:
     /* Topological information */
     Intersection* from; /**< Where the road starts. */
@@ -49,11 +53,12 @@ class Road
     /* Geometrical information */
     Line* geometrical_path; /**< Path that the road takes between the two topological points */
 
+    void* belongsTo;
+
     void estimatePath();
 };
 
 /* Inlines */
-
 inline Intersection* Road::begining() const
 {
   return from;
@@ -74,7 +79,7 @@ inline void Road::setEnd(Intersection* intersection)
   to = intersection;
 }
 
-inline Line* Road::path() const
+inline Path* Road::path() const
 {
   return geometrical_path;
 }

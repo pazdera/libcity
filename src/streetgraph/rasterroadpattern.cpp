@@ -25,11 +25,11 @@ RasterRoadPattern::RasterRoadPattern()
 RasterRoadPattern::~RasterRoadPattern()
 {}
 
-double getTurnAngle()
+double RasterRoadPattern::getTurnAngle()
 {
   return 90;
 }
-double getRoadSegmentLength()
+double RasterRoadPattern::getRoadSegmentLength()
 {
   return 100;
 }

@@ -33,7 +33,13 @@ void Point::set(double xCoord, double yCoord, double zCoord)
   zPosition = zCoord;
 }
 
-bool Point::operator==(Point &second)
+bool Point::operator==(Point second)
 {
   return xPosition == second.x() && yPosition == second.y() && zPosition == second.z();
 }
+
+
+// Point::operator std::string()
+// {
+//   return "(" << xPosition << ", " << yPosition << ", " << zPosition << ")";
+// }

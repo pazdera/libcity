@@ -81,15 +81,12 @@ Road* RoadLSystem::getNextIdealRoadSegment()
 
 void RoadLSystem::turnLeft()
 {
-  Vector direction = cursor.getDirection();
-  direction.rotateAroundZ((-1) * getTurningAngle());
-
-  cursor.setDirection(direction);
+  cursor.turn(-1*getTurnAngle());
 }
 
 void RoadLSystem::turnRight()
 {
-  cursor.turn(getTurningAngle());
+  cursor.turn(getTurnAngle());
 }
 
 void RoadLSystem::drawLine()

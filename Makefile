@@ -20,7 +20,8 @@ all: static dynamic header
 GEOMETRY_PACKAGE=src/geometry/curve.o \
                  src/geometry/line.o \
                  src/geometry/point.o \
-                 src/geometry/vector.o
+                 src/geometry/vector.o \
+                 src/geometry/polygon.o
 
 # Streetgraph package
 STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
@@ -48,8 +49,10 @@ $(LIB_OBJECTS): %.o: %.cpp %.h
 # Unit tests
 TEST_UNITS=test/testPoint.o   \
            test/testVector.o  \
+           test/testPolygon.o \
            test/testLSystem.o \
-           test/testGraphicLSystem.o
+           test/testGraphicLSystem.o \
+           test/testStreetGraph.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

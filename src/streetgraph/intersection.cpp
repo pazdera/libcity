@@ -64,3 +64,13 @@ int Intersection::numberOfWays() const
 {
   return roads->size();
 }
+
+void* Intersection::owner()
+{
+  return belongsTo;
+}
+
+void Intersection::setOwner(void* ownerObject)
+{
+  belongsTo = ownerObject;
+}

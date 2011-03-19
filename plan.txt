@@ -34,10 +34,22 @@ Plan:
   - DONE destruct GraphicInformation in GraphicLSystem properly
   - DONE figure out how to return graphical representation
   - DONE implement low level road construction
-  - design streetgraph
+  - DONE create Path type in Road
+  - DONE start streetgraph unit test
+  - DONE create Polygon class
+  - DONE write tests for Polygon class
+  - DONE implement Polygon class
+  - DONE design streetgraph
+  - DONE implement streetgraph
+  - implement streetgraph.addRoad()
+  - implement streetgraph.populate()
+  - implement streetgraph.divideToZones()
   - implement 2d drawing
   - create LSystem class for each road pattern (checkquers, organic, radial)
   - design error handling and exceptions
+  - generating random numbers
+  
+  - FIX area and centroid computation in Polygon!!! will not work in 3D
 
   - !!! NAPAD: Cist retezec, dokud se neobjevi v zasobniku nejaka silnice pak ji vratit
   - !!! NAPAD: kazdy symbol ma pozici kurzoru od ktere se interpretuje a nebo na kterou je nastaven kurzor PO jeho interpretaci?
@@ -45,3 +57,4 @@ Plan:
   - NAPAD: GraphicInformation je jen base. V odvozenych tridach si muzeme pro kazdy symbol udelat decka. Pro ruzne typy symbolu
            a pak s nimi tak pracovat. To umozni udelat streetgraph primo v lsystemu.
   - NAPAD: Road lze zkonstruhovat jen s určenou low level reprezentací high level příjde potom
+  - NAPAD: Generator nahodnych čísel jako singleton
