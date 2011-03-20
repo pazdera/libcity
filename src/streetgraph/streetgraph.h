@@ -32,6 +32,9 @@ class Point;
 class Polygon;
 class RoadLSystem;
 
+class Line;
+typedef Line Path;
+
 class StreetGraph
 {
   public:
@@ -62,10 +65,11 @@ class StreetGraph
      */
     void divideToZones();
 
-    int  numberOfZones();
-    StreetGraph* zone(int number);
+    int  numberOfZones() const;
+    StreetGraph* zone(int number) const;
 
-    void addRoad(Road* road);
+    Road* addRoad(Path* roadPath);
+    Intersection* addIntersection(Point* position);
 
   private:
     /** All intersections in the street graph. */

@@ -52,7 +52,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testPolygon.o \
            test/testLSystem.o \
            test/testGraphicLSystem.o \
-           test/testStreetGraph.o
+           test/testStreetGraph.o \
+           test/testLine.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

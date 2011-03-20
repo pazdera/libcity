@@ -41,13 +41,21 @@ Plan:
   - DONE implement Polygon class
   - DONE design streetgraph
   - DONE implement streetgraph
+  - DONE implement 2D intersection of lines
+  - DONE make Line class unit test
+  - DONE comment and document Line class
+  - DONE comment and document Polygon class
+  - add constant references where possible
   - implement streetgraph.addRoad()
+  - implement streetgraph.addIntersection()
   - implement streetgraph.populate()
   - implement streetgraph.divideToZones()
   - implement 2d drawing
   - create LSystem class for each road pattern (checkquers, organic, radial)
-  - design error handling and exceptions
   - generating random numbers
+  - bug fixing
+  - design error handling and exceptions
+  - think about thesis chapters
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D
 

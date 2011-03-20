@@ -11,6 +11,8 @@
 
 #include "polygon.h"
 #include "point.h"
+#include "line.h"
+#include "../debug.h"
 
 #include <cmath>
 
@@ -24,7 +26,7 @@ Polygon::Polygon()
   initialize();
 }
 
-Polygon::Polygon(Point one, Point two, Point three)
+Polygon::Polygon(Point const& one, Point const& two, Point const& three)
 {
   initialize();
   addVertex(one);
@@ -32,7 +34,7 @@ Polygon::Polygon(Point one, Point two, Point three)
   addVertex(three);
 }
 
-Polygon::Polygon(Point one, Point two, Point three, Point four)
+Polygon::Polygon(Point const& one, Point const& two, Point const& three, Point const& four)
 {
   initialize();
   addVertex(one);
@@ -57,12 +59,12 @@ void Polygon::freeVertices()
   delete vertices;
 }
 
-unsigned int Polygon::numberOfVertices()
+unsigned int Polygon::numberOfVertices() const
 {
   return vertices->size();
 }
 
-void Polygon::addVertex(Point vertex)
+void Polygon::addVertex(Point const& vertex)
 {
   vertices->push_back(new Point(vertex));
 
@@ -81,17 +83,17 @@ void Polygon::removeVertex(unsigned int number)
   delete removedVertex;
 }
 
-Point Polygon::vertex(unsigned int number)
+Point Polygon::vertex(unsigned int number) const
 {
   return *vertices->at(number);
 }
 
-double Polygon::area()
+double Polygon::area() const
 {
   return std::abs(signedArea());
 }
 
-double Polygon::signedArea()
+double Polygon::signedArea() const
 {
   double area = 0;
 
@@ -111,7 +113,7 @@ double Polygon::signedArea()
   return area/2;
 }
 
-Point Polygon::centroid()
+Point Polygon::centroid() const
 {
   double area     = 0,
          areaStep = 0;
@@ -136,4 +138,41 @@ Point Polygon::centroid()
   }
 
   return Point(x/(3*area), (y/3*area));
+}
+
+bool Polygon::hasPoint2D(Point const& point) const
+{
+  unsigned int currentVertexPosition = 0,
+               count = numberOfVertices();
+  Point *currentVertex = 0,
+        *nextVertex = 0;
+  Line currentLine;
+
+  bool isInside = false;
+
+  for (currentVertexPosition = 0; currentVertexPosition < count; currentVertexPosition++)
+  {
+    currentVertex = vertices->at(currentVertexPosition);
+    nextVertex    = vertices->at((currentVertexPosition + 1) % count);
+
+    /* The algorithm is unreilable at the edges so
+     * we check them separately to make sure. */
+    currentLine.setBegining(*currentVertex);
+    currentLine.setEnd(*nextVertex);
+    if (currentLine.hasPoint2D(point))
+    {
+      return true;
+    }
+
+    if (((currentVertex->y() > point.y()) != (nextVertex->y() > point.y())) &&
+        (point.x() < (nextVertex->x() - currentVertex->x()) / (nextVertex->y() - currentVertex->y())
+                     * (point.y() - currentVertex->y()) + currentVertex->x())
+       )
+    {
+       isInside = !isInside;
+    }
+  }
+
+  return isInside;
+
 }

@@ -36,7 +36,9 @@ class Point
     void setY(double coordinate);
     void setZ(double coordinate);
 
-    bool operator==(Point second);
+    bool operator==(Point const& second);
+    bool operator<(Point const& second);
+    bool operator>(Point const& second);
 };
 
 inline double Point::x() const

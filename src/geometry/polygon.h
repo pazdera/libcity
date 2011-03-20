@@ -20,8 +20,8 @@ class Polygon
 {
   public:
     Polygon(); /**< Empty polygon */
-    Polygon(Point one, Point two, Point three); /**< Triangle */
-    Polygon(Point one, Point two, Point three, Point four); /**< Rectangle */
+    Polygon(Point const& one, Point const& two, Point const& three); /**< Triangle */
+    Polygon(Point const& one, Point const& two, Point const& three, Point const& four); /**< Rectangle */
 
     ~Polygon();
 
@@ -29,30 +29,29 @@ class Polygon
     std::vector<Point*> *vertices;
 
   public:
-    Point vertex(unsigned int number);
+    Point vertex(unsigned int number) const;
 
-    unsigned int numberOfVertices();
+    unsigned int numberOfVertices() const;
 
-    void addVertex(Point vertex);
+    void addVertex(Point const& vertex);
     void removeVertex(unsigned int number);
 
     /** Works ONLY in 2D !!! */
-    double area();
+    double area() const;
 
     /** Works ONLY in 2D !!! */
-    Point centroid();
+    Point centroid() const;
 
-    bool isSubAreaOf(Polygon biggerPolygon);
-    bool operator==(Polygon &second);
+    bool hasPoint2D(Point const& point) const;
+
+    bool isSubAreaOf(Polygon const& biggerPolygon);
+    bool operator==(Polygon const& second);
 
   private:
     void initialize();
     void freeVertices();
 
-    double signedArea();
-    
+    double signedArea() const;
 };
-
-
 
 #endif

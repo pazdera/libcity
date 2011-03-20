@@ -33,9 +33,37 @@ void Point::set(double xCoord, double yCoord, double zCoord)
   zPosition = zCoord;
 }
 
-bool Point::operator==(Point second)
+bool Point::operator==(Point const& second)
 {
   return xPosition == second.x() && yPosition == second.y() && zPosition == second.z();
+}
+
+bool Point::operator<(Point const& second)
+{
+  if (x() < second.x())
+  {
+    return true;
+  }
+  else if (x() == second.x())
+  {
+    return y() < second.y();
+  }
+
+  return false;
+}
+
+bool Point::operator>(Point const& second)
+{
+  if (x() > second.x())
+  {
+    return true;
+  }
+  else if (x() == second.x())
+  {
+    return y() > second.y();
+  }
+
+  return false;
 }
 
 
