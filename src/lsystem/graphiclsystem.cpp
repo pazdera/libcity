@@ -56,6 +56,7 @@ void GraphicLSystem::pushCursor()
 
 void GraphicLSystem::popCursor()
 {
+  // FIXME throw exception
   cursor = cursorStack.back();
   cursorStack.pop_back();
 }
@@ -78,13 +79,19 @@ void GraphicLSystem::loadCursorPositionForSymbol(Symbol *symbol)
 
 void GraphicLSystem::saveCursorPositionForSymbol(Symbol *symbol)
 {
-  (*graphicInformationForSymbols)[symbol] = new GraphicInformation;
+  if (graphicInformationForSymbols->find(symbol) == graphicInformationForSymbols->end())
+  {
+    (*graphicInformationForSymbols)[symbol] = new GraphicInformation();
+  }
+
   (*graphicInformationForSymbols)[symbol]->cursorAfterInterpretation = cursor;
 }
 
 void GraphicLSystem::removeSymbol(SymbolString::iterator position)
 {
+  delete (*graphicInformationForSymbols)[*position];
   graphicInformationForSymbols->erase(*position);
+
   LSystem::removeSymbol(position);
 }
 
@@ -121,8 +128,13 @@ char GraphicLSystem::readNextSymbol()
   }
   else
   {
+//     debug("Interpreting: " << currentSymbol->getSymbol());
+//     debug("  Position before: " << cursor.getPosition().toString());
+//     debug("  Direction before: " << cursor.getDirection().toString());
     interpretSymbol(currentSymbol->getSymbol());
     currentSymbol->markAsRead();
+//     debug("  Position after: " << cursor.getPosition().toString());
+//     debug("  Direction after: " << cursor.getDirection().toString());
     saveCursorPositionForSymbol(currentSymbol);
 
     return currentSymbol->getSymbol();
@@ -151,12 +163,12 @@ void GraphicLSystem::interpretSymbol(char symbol)
   }
 }
 
-void GraphicLSystem::setInitialPosition(Point position)
+void GraphicLSystem::setInitialPosition(Point const& position)
 {
   cursor.setPosition(position);
 }
 
-void GraphicLSystem::setInitialDirection(Vector direction)
+void GraphicLSystem::setInitialDirection(Vector const& direction)
 {
   cursor.setDirection(direction);
 }
@@ -170,21 +182,29 @@ GraphicLSystem::Cursor::Cursor()
   direction = new Vector(0,0,0);
 }
 
-GraphicLSystem::Cursor::Cursor(Point inputPosition, Vector inputDirection)
+GraphicLSystem::Cursor::Cursor(Point const& inputPosition, Vector const& inputDirection)
   : position(0), direction(0)
 {
   position  = new Point(inputPosition);
   direction = new Vector(inputDirection);
 }
 
-GraphicLSystem::Cursor::Cursor(const Cursor& anotherCursor)
-  : position(0), direction(0)
+GraphicLSystem::Cursor::Cursor(Cursor const& source)
 {
   position  = new Point(0,0,0);
   direction = new Vector(0,0,0);
 
-  *position  = anotherCursor.getPosition();
-  *direction = anotherCursor.getDirection();
+  *position  = source.getPosition();
+  *direction = source.getDirection();
+}
+
+
+GraphicLSystem::Cursor& GraphicLSystem::Cursor::operator=(Cursor const& source)
+{
+  *position  = source.getPosition();
+  *direction = source.getDirection();
+
+  return *this;
 }
 
 GraphicLSystem::Cursor::~Cursor()
@@ -203,15 +223,15 @@ Vector GraphicLSystem::Cursor::getDirection() const
   return *direction;
 }
 
-void GraphicLSystem::Cursor::setPosition(Point newPosition)
+void GraphicLSystem::Cursor::setPosition(Point const& newPosition)
 {
   *position = newPosition;
 }
 
-void GraphicLSystem::Cursor::setDirection(Vector newDirection)
+void GraphicLSystem::Cursor::setDirection(Vector const& newDirection)
 {
-  newDirection.normalize();
   *direction = newDirection;
+  direction->normalize();
 }
 
 void GraphicLSystem::Cursor::move(double distance)

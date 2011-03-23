@@ -36,8 +36,8 @@ class GraphicLSystem : public LSystem
     virtual ~GraphicLSystem();
 
     /* WARNING Will reset produced string to axiom  */
-    void setInitialPosition(Point position);
-    void setInitialDirection(Vector direction);
+    void setInitialPosition(Point const& position);
+    void setInitialDirection(Vector const& direction);
 
     virtual char readNextSymbol();
 
@@ -62,15 +62,18 @@ class GraphicLSystem : public LSystem
     {
       public:
         Cursor();
-        Cursor(Point inputPosition, Vector inputDirection);
-        Cursor(const Cursor& anotherCursor);
+        Cursor(Point const& inputPosition, Vector const& inputDirection);
+
+        Cursor(Cursor const& source);
+        Cursor& operator=(Cursor const& source);
+
         ~Cursor();
 
         Point  getPosition() const;
         Vector getDirection() const;
 
-        void setPosition(Point newPosition);
-        void setDirection(Vector newDirection);
+        void setPosition(Point const& newPosition);
+        void setDirection(Vector const& newDirection);
 
         void move(double distance);
         void turn(double angle);

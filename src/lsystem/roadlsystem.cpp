@@ -13,8 +13,9 @@
 #include "../geometry/vector.h"
 #include "../geometry/point.h"
 #include "../geometry/line.h"
-
 #include "../streetgraph/road.h"
+
+#include "../debug.h"
 
 RoadLSystem::RoadLSystem()
 {
@@ -26,7 +27,7 @@ RoadLSystem::RoadLSystem()
   addToAlphabet("-+E");
   setAxiom("E");
 
-  generatedRoads = new std::list<Road*>;
+  generatedRoads = new std::list<Path*>;
 }
 
 RoadLSystem::~RoadLSystem()
@@ -36,7 +37,7 @@ RoadLSystem::~RoadLSystem()
 
 void RoadLSystem::freeGeneratedRoads()
 {
-  for(std::list<Road*>::iterator position = generatedRoads->begin();
+  for(std::list<Path*>::iterator position = generatedRoads->begin();
       position != generatedRoads->end();
       position++)
   {
@@ -66,7 +67,7 @@ void RoadLSystem::interpretSymbol(char symbol)
   }
 }
 
-Road* RoadLSystem::getNextIdealRoadSegment()
+Path RoadLSystem::getNextIdealRoadSegment()
 {
   while (generatedRoads->empty())
   /* Keep generating until a road comes up */
@@ -74,9 +75,12 @@ Road* RoadLSystem::getNextIdealRoadSegment()
     readNextSymbol();
   }
 
-  Road* road = generatedRoads->front();
+  Path roadPath(*generatedRoads->front());
+
+  delete generatedRoads->front();
   generatedRoads->erase(generatedRoads->begin());
-  return road;
+
+  return roadPath;
 }
 
 void RoadLSystem::turnLeft()
@@ -95,5 +99,5 @@ void RoadLSystem::drawLine()
   cursor.move(getRoadSegmentLength());
   Point currentPosition = cursor.getPosition();
 
-  generatedRoads->push_back(new Road(Line(previousPosition, currentPosition)));
+  generatedRoads->push_back(new Path(previousPosition, currentPosition));
 }

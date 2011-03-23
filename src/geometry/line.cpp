@@ -11,23 +11,35 @@
 
 #include "line.h"
 #include "point.h"
+#include "polygon.h"
 #include "units.h"
 #include "../debug.h"
 
 #include <cmath>
 
 Line::Line()
-  : first(0), second(0)
 {
-  first = new Point(0,0,0);
-  second      = new Point(0,0,0);
+  first  = new Point(0,0,0);
+  second = new Point(0,0,0);
 }
 
 Line::Line(Point const& firstPoint, Point const& secondPoint)
-  : first(0), second(0)
 {
-  first = new Point(firstPoint);
-  second      = new Point(secondPoint);
+  first  = new Point(firstPoint);
+  second = new Point(secondPoint);
+}
+
+Line::Line(Line const& source)
+{
+  first  = new Point(source.begining());
+  second = new Point(source.end());
+}
+
+Line& Line::operator=(Line const& source)
+{
+  *first  = source.begining();
+  *second = source.end();
+  return *this;
 }
 
 Line::~Line()
@@ -95,7 +107,7 @@ Line::Intersection Line::intersection2D(Line const& another, Point* intersection
          secondNumerator = ((end().x() - begining().x())*(begining().y() - another.begining().y())) -
                            ((end().y() - begining().y())*(begining().x() - another.begining().x()));
 
-  if (denominator == 0.0)
+  if (std::abs(denominator) < libcity::EPSILON)
   /* If the denominator is 0, both lines have same direction vector */
   {
     if  (std::abs(firstNumerator) < libcity::EPSILON &&
@@ -172,8 +184,39 @@ Line::Intersection Line::intersection2D(Line const& another, Point* intersection
   return NONINTERSECTING;
 }
 
+void Line::trimOverlapingPart(Polygon const& boundaries)
+{
+  Point intersection;
+  Line  edge;
+  int vertices = boundaries.numberOfVertices();
+
+  for (int number = 0; number < vertices; number++)
+  {
+    edge.setBegining(boundaries.vertex(number));
+    edge.setEnd(boundaries.vertex((number + 1) % vertices));
+
+    if (intersection2D(edge, &intersection) == INTERSECTING)
+    {
+      if (!boundaries.encloses2D(begining()))
+      {
+        setBegining(intersection);
+      }
+      else
+      {
+        setEnd(intersection);
+      }
+      break;
+    }
+  }
+}
+
 bool Line::operator==(Line const& another) const
 {
   return (begining() == another.begining() && end() == another.end()) ||
          (begining() == another.end() && begining() == another.end());
+}
+
+std::string Line::toString()
+{
+  return "Line(" + first->toString() + ", " + second->toString() + ")";
 }

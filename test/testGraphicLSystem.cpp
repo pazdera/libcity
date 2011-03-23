@@ -46,5 +46,38 @@ SUITE(GraphicLSystemClass)
     // Third iteration
     CHECK_EQUAL('-', gls->readNextSymbol());
     CHECK_EQUAL('.', gls->readNextSymbol());
+
+    delete gls;
+  }
+
+  TEST(Stack)
+  {
+    GraphicLSystem *gls = new GraphicLSystem;
+
+    gls->setAxiom(".");
+    gls->addRule('.', "[[-].]");
+
+    CHECK_EQUAL(gls->getProducedString(), ".");
+
+    // No iterations done yet
+    CHECK_EQUAL('.', gls->readNextSymbol());
+
+    // First
+    CHECK_EQUAL('[', gls->readNextSymbol());
+    CHECK_EQUAL('[', gls->readNextSymbol());
+    CHECK_EQUAL('-', gls->readNextSymbol());
+    CHECK_EQUAL(']', gls->readNextSymbol());
+    CHECK_EQUAL('.', gls->readNextSymbol());
+    CHECK_EQUAL(']', gls->readNextSymbol());
+
+    // Second
+    CHECK_EQUAL('[', gls->readNextSymbol());
+    CHECK_EQUAL('[', gls->readNextSymbol());
+    CHECK_EQUAL('-', gls->readNextSymbol());
+    CHECK_EQUAL(']', gls->readNextSymbol());
+    CHECK_EQUAL('.', gls->readNextSymbol());
+    CHECK_EQUAL(']', gls->readNextSymbol());
+
+    delete gls;
   }
 }

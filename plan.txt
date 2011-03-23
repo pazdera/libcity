@@ -45,12 +45,22 @@ Plan:
   - DONE make Line class unit test
   - DONE comment and document Line class
   - DONE comment and document Polygon class
-  - add constant references where possible
-  - implement streetgraph.addRoad()
-  - implement streetgraph.addIntersection()
-  - implement streetgraph.populate()
+  - DONE add constant references where possible
+  - DONE implement trimming line by polygon
+  - DONE segfault: poping from stack while empty in GraphicLSystem
+  - DONE write test of graphicLsystem stack
+  - DONE implement streetgraph.addRoad()
+  - DONE implement streetgraph.addIntersection()
+  - PROTOTYPE implement streetgraph.populate()
+  - DONE write debug dump() outputs
+  - DONE fix all memory leaks
+  - design Random class
+  - implement random generator class
+  - refactor streetgraph modifying algorithm
+  - figure how to iterate through roads in streetgraph
+    - StreetGraph::iterator
+  - DONE implement 2d drawing
   - implement streetgraph.divideToZones()
-  - implement 2d drawing
   - create LSystem class for each road pattern (checkquers, organic, radial)
   - generating random numbers
   - bug fixing
@@ -66,3 +76,4 @@ Plan:
            a pak s nimi tak pracovat. To umozni udelat streetgraph primo v lsystemu.
   - NAPAD: Road lze zkonstruhovat jen s určenou low level reprezentací high level příjde potom
   - NAPAD: Generator nahodnych čísel jako singleton
+  - NAPAD: podobnost dvou úseček zjistit vzdálenost počátku a konce jedné úsečky a druhé. Pokud jsou tyto vzdálenosti pod SNAP_DISTANCE, zdar.

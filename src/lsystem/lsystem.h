@@ -32,17 +32,17 @@ class LSystem
     /**
      * \WARNING: Will delete axiom and all rules
      */
-    void setAlphabet(std::string alphabetCharacters);
+    void setAlphabet(std::string const& alphabetCharacters);
 
     /**
      * Inserts new symbols into alphabet.
      */
-    void addToAlphabet(std::string alphabetCharacters);
+    void addToAlphabet(std::string const& alphabetCharacters);
 
     /**
      * \WARNING: Will delete producedString
      */
-    void setAxiom(std::string startingSequence);
+    void setAxiom(std::string const& startingSequence);
 
     /**
      * Does one rewriting iteration through the productionString.
@@ -59,7 +59,7 @@ class LSystem
      * Adds a new rule to the LSystem. All the symbols in
      * the rule must be in the LSystem's alphabet.
      */
-    void addRule(char predecessor, std::string successor);
+    void addRule(char predecessor, std::string const& successor);
 
     std::string getProducedString(); /**< Returns the whole produced string */
 
@@ -72,11 +72,11 @@ class LSystem
     {
       public:
         ProductionRule();
-        ProductionRule(char leftSide, std::string rightSide);
+        ProductionRule(char leftSide, std::string const& rightSide);
 
         char predecessor() const;
         std::string successor() const;
-        void addSuccessor(std::string rightSideString);
+        void addSuccessor(std::string const& rightSideString);
 
       private:
         char leftSide;
@@ -101,7 +101,7 @@ class LSystem
 
         operator char() const;
         bool operator==(char character) const;
-        bool operator==(Symbol another) const;
+        bool operator==(Symbol const& another) const;
 
       protected:
         char symbol;
@@ -139,7 +139,7 @@ class LSystem
 
   private:
     bool isInAlphabet(char checkedCharacter) const; /**< Check if character is in this LSystem's alphabet */
-    bool isInAlphabet(std::string checkedString) const; /**< Checks the whole string */
+    bool isInAlphabet(std::string const& checkedString) const; /**< Checks the whole string */
 
     void freeProducedString();
 

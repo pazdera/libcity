@@ -42,7 +42,7 @@ class Polygon
     /** Works ONLY in 2D !!! */
     Point centroid() const;
 
-    bool hasPoint2D(Point const& point) const;
+    bool encloses2D(Point const& point) const;
 
     bool isSubAreaOf(Polygon const& biggerPolygon);
     bool operator==(Polygon const& second);

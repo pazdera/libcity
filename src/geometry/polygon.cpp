@@ -140,7 +140,7 @@ Point Polygon::centroid() const
   return Point(x/(3*area), (y/3*area));
 }
 
-bool Polygon::hasPoint2D(Point const& point) const
+bool Polygon::encloses2D(Point const& point) const
 {
   unsigned int currentVertexPosition = 0,
                count = numberOfVertices();

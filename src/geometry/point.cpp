@@ -10,23 +10,35 @@
  */
 
 #include "point.h"
+#include "units.h"
+
+#include <sstream>
+#include <string>
+#include <cmath>
 
 Point::Point()
   : xPosition(0), yPosition(0), zPosition(0)
 {}
 
-Point::Point(double x, double y)
+Point::Point(double const& x, double const& y)
   : xPosition(x), yPosition(y), zPosition(0)
 {}
 
-Point::Point(double x, double y, double z)
+Point::Point(double const& x, double const& y, double const& z)
   : xPosition(x), yPosition(y), zPosition(z)
 {}
+
+Point::Point(Point const& source)
+{
+  xPosition = source.x();
+  yPosition = source.y();
+  zPosition = source.z();
+}
 
 Point::~Point()
 {}
 
-void Point::set(double xCoord, double yCoord, double zCoord)
+void Point::set(double const& xCoord, double const& yCoord, double const& zCoord)
 {
   xPosition = xCoord;
   yPosition = yCoord;
@@ -35,7 +47,9 @@ void Point::set(double xCoord, double yCoord, double zCoord)
 
 bool Point::operator==(Point const& second)
 {
-  return xPosition == second.x() && yPosition == second.y() && zPosition == second.z();
+  return std::abs(xPosition - second.x()) < libcity::EPSILON &&
+         std::abs(yPosition - second.y()) < libcity::EPSILON &&
+         std::abs(zPosition - second.z()) < libcity::EPSILON;
 }
 
 bool Point::operator<(Point const& second)
@@ -66,8 +80,9 @@ bool Point::operator>(Point const& second)
   return false;
 }
 
-
-// Point::operator std::string()
-// {
-//   return "(" << xPosition << ", " << yPosition << ", " << zPosition << ")";
-// }
+std::string Point::toString()
+{
+  std::stringstream convertor;
+  convertor << "Point(" << xPosition << ", " << yPosition << ", " << zPosition << ")";
+  return convertor.str();
+}

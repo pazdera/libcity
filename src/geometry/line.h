@@ -14,7 +14,10 @@
 #ifndef _LINE_H_
 #define _LINE_H_
 
+#include <string>
+
 class Point;
+class Polygon;
 
 class Line
 {
@@ -33,6 +36,9 @@ class Line
     Line();
     Line(Point const& firstPoint, Point const& secondPoint);
 
+    Line(Line const& source); /**< Own copy constructor is neccessary */
+    Line& operator=(Line const& source); /**< Own assignment operator is neccessary */
+
     void setBegining(Point const& point);
     void setEnd(Point const& point);
 
@@ -45,6 +51,9 @@ class Line
 
     bool hasPoint2D(Point const& point) const;
     Intersection intersection2D(Line const& another, Point* intersection) const;
+    void trimOverlapingPart(Polygon const& boundaries);
+
+    std::string toString();
 
     bool operator==(Line const& another) const;
 

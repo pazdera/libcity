@@ -68,6 +68,8 @@ SUITE(LSystemClass)
 
     lsystem->doIterations(7);
     CHECK_EQUAL(lsystem->getProducedString(), "BABABBABABBABBABABBAB");
+
+    delete lsystem;
   }
 
   TEST(Misc)
@@ -90,5 +92,7 @@ SUITE(LSystemClass)
     lsystem->setAxiom("AB");
     lsystem->doIterations(10);
     CHECK_EQUAL(lsystem->getProducedString(), "AB");
+
+    delete lsystem;
   }
 }

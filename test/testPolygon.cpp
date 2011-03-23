@@ -44,11 +44,11 @@ SUITE(PolygonClass)
     CHECK_EQUAL(4, p->area());
     CHECK(p->centroid() == Point(0, 0));
 
-    CHECK(p->hasPoint2D(Point(0,0)));
-    CHECK(p->hasPoint2D(Point(-1,0)));
-    CHECK(p->hasPoint2D(Point(-0.5,0)));
-    CHECK(p->hasPoint2D(Point(-0.5,1)));
-    CHECK(p->hasPoint2D(Point(-0.5,0.5)));
+    CHECK(p->encloses2D(Point(0,0)));
+    CHECK(p->encloses2D(Point(-1,0)));
+    CHECK(p->encloses2D(Point(-0.5,0)));
+    CHECK(p->encloses2D(Point(-0.5,1)));
+    CHECK(p->encloses2D(Point(-0.5,0.5)));
 
     p->removeVertex(2);
     CHECK(p->vertex(2) == Point(1,-1));

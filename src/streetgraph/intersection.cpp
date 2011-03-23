@@ -55,7 +55,7 @@ Point Intersection::position() const
   return *geometrical_position;
 }
 
-void Intersection::setPosition(Point coordinates)
+void Intersection::setPosition(Point const& coordinates)
 {
   *geometrical_position = coordinates;
 }

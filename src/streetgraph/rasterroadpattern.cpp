@@ -14,12 +14,17 @@
 #include "../geometry/point.h"
 #include "../geometry/vector.h"
 
+#include <cstdlib>
+
 RasterRoadPattern::RasterRoadPattern()
 {
   setAxiom("E");
 
   // Rules
   addRule('E', "[[-_E]+_E]_E");
+
+  setInitialPosition(Point(0,0));
+  setInitialDirection(Vector(0,1));
 }
 
 RasterRoadPattern::~RasterRoadPattern()
@@ -27,9 +32,9 @@ RasterRoadPattern::~RasterRoadPattern()
 
 double RasterRoadPattern::getTurnAngle()
 {
-  return 90;
+  return (rand() % 80 + 10);
 }
 double RasterRoadPattern::getRoadSegmentLength()
 {
-  return 100;
+  return (rand() % 100 + 50);
 }

@@ -29,7 +29,7 @@ class Intersection
     ~Intersection();
 
     Point position() const;
-    void  setPosition(Point coordinates);
+    void  setPosition(Point const& coordinates);
 
     int  numberOfWays() const; /**< Number of ways of the intersection */
     void addRoad(Road* road) throw();

@@ -37,7 +37,10 @@ LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
                 src/lsystem/graphiclsystem.o \
                 src/lsystem/roadlsystem.o
 
-LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE)
+# LSystem package
+MISC=src/random.o
+
+LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(MISC)
 
 $(LIB_OBJECTS): %.o: %.cpp %.h
 	$(COMPILER) $(COMPILER_FLAGS) -c $< -o $@
@@ -53,7 +56,9 @@ TEST_UNITS=test/testPoint.o   \
            test/testLSystem.o \
            test/testGraphicLSystem.o \
            test/testStreetGraph.o \
-           test/testLine.o
+           test/testLine.o \
+           test/testRasterRoadPattern.o \
+           test/testRandom.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

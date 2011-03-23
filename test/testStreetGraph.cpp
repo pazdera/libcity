@@ -45,5 +45,7 @@ SUITE(StreetGraphClass)
       zone->setRoadNetworkGenerator(new RasterRoadPattern());
       zone->populate();
     }
+
+    delete sg;
   }
 }

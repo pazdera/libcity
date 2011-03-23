@@ -12,14 +12,19 @@
 #ifndef _POINT_H_
 #define _POINT_H_
 
+#include <string>
+
 class Point
 {
   public:
     Point(); /**< [0,0,0] */
-    Point(double x, double y); /**< 2D */
-    Point(double x, double y, double z); /**< 3D */
+    Point(double const& x, double const& y); /**< 2D */
+    Point(double const& x, double const& y, double const& z); /**< 3D */
+    Point(Point const& source);
 
     ~Point();
+
+    std::string toString();
 
   private:
     double xPosition;
@@ -31,10 +36,10 @@ class Point
     double y() const;
     double z() const; /**< Undefined in 2D. */
 
-    void set(double xCoord, double yCoord, double zCoord = 0);
-    void setX(double coordinate);
-    void setY(double coordinate);
-    void setZ(double coordinate);
+    void set(double const& xCoord, double const& yCoord, double const& zCoord = 0);
+    void setX(double const& coordinate);
+    void setY(double const& coordinate);
+    void setZ(double const& coordinate);
 
     bool operator==(Point const& second);
     bool operator<(Point const& second);
@@ -56,17 +61,17 @@ inline double Point::z() const
   return zPosition;
 }
 
-inline void Point::setX(double coordinate)
+inline void Point::setX(double const& coordinate)
 {
   xPosition = coordinate;
 }
 
-inline void Point::setY(double coordinate)
+inline void Point::setY(double const& coordinate)
 {
   yPosition = coordinate;
 }
 
-inline void Point::setZ(double coordinate)
+inline void Point::setZ(double const& coordinate)
 {
   zPosition = coordinate;
 }

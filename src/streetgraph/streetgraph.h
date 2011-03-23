@@ -68,18 +68,20 @@ class StreetGraph
     int  numberOfZones() const;
     StreetGraph* zone(int number) const;
 
-    Road* addRoad(Path* roadPath);
-    Intersection* addIntersection(Point* position);
+    bool addRoad(Path const& path);
+    Intersection* addIntersection(Point const& position);
 
   private:
     /** All intersections in the street graph. */
     std::list<Intersection*> *intersections;
 
+  public: // FIXME
     /** All roads in the street graph.
         This is not neccessary, but could be
         useful. */
     std::list<Road*> *roads;
 
+  private:
     Polygon* areaConstraints;
     RoadLSystem* roadNetworkGenerator;
 

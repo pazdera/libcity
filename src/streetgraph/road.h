@@ -30,7 +30,7 @@ class Road
     /**
      * Create just path of the road.
      **/
-    Road(Line path);
+    Road(Line const& path);
     virtual ~Road();
 
     Intersection* begining() const;

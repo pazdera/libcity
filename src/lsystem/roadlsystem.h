@@ -20,6 +20,8 @@
 class Point;
 class Vector;
 class Road;
+class Line;
+typedef Line Path;
 
 class RoadLSystem : public GraphicLSystem
 {
@@ -27,7 +29,7 @@ class RoadLSystem : public GraphicLSystem
     RoadLSystem();
     virtual ~RoadLSystem();
 
-    virtual Road* getNextIdealRoadSegment();
+    virtual Path getNextIdealRoadSegment();
 
   protected:
     virtual void interpretSymbol(char symbol);
@@ -41,7 +43,7 @@ class RoadLSystem : public GraphicLSystem
     virtual double getTurnAngle() = 0;
 
   private:
-    std::list<Road*> *generatedRoads;
+    std::list<Path*> *generatedRoads;
     void freeGeneratedRoads();
 };
 

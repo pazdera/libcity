@@ -22,6 +22,9 @@
 // Tested modules
 #include "../src/geometry/line.h"
 #include "../src/geometry/point.h"
+#include "../src/geometry/polygon.h"
+
+#include "../src/debug.h"
 
 SUITE(LineClass)
 {
@@ -31,6 +34,8 @@ SUITE(LineClass)
 
     line->setBegining(Point(0,0,0));
     line->setEnd(Point(0,0,0));
+
+    delete line;
   }
 
   TEST(HasPoint)
@@ -44,6 +49,8 @@ SUITE(LineClass)
 
     *line = Line(Point(1,1), Point(-1,1));
     CHECK(line->hasPoint2D(Point(-0.5,1)));
+
+    delete line;
   }
 
   TEST(Intersecting)
@@ -54,6 +61,9 @@ SUITE(LineClass)
 
     CHECK_EQUAL(Line::INTERSECTING, l1->intersection2D(*l2, &result));
     CHECK(Point(0.5, 0.5) == result);
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Intersecting2)
@@ -64,6 +74,9 @@ SUITE(LineClass)
 
     CHECK_EQUAL(Line::INTERSECTING, l1->intersection2D(*l2, &result));
     CHECK(Point(1, 1) == result);
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Intersecting3)
@@ -74,6 +87,9 @@ SUITE(LineClass)
 
     CHECK_EQUAL(Line::INTERSECTING, l1->intersection2D(*l2, &result));
     CHECK(Point(1, 1) == result);
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Nonintersecting)
@@ -83,6 +99,9 @@ SUITE(LineClass)
     Point result;
 
     CHECK_EQUAL(Line::NONINTERSECTING, l1->intersection2D(*l2, &result));
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Parallel)
@@ -92,6 +111,9 @@ SUITE(LineClass)
     Point result;
 
     CHECK_EQUAL(Line::NONINTERSECTING, l1->intersection2D(*l2, &result));
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Coincident1)
@@ -101,6 +123,9 @@ SUITE(LineClass)
     Point result;
 
     CHECK_EQUAL(Line::CONTAINING, l1->intersection2D(*l2, &result));
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Coincident2)
@@ -110,6 +135,9 @@ SUITE(LineClass)
     Point result;
 
     CHECK_EQUAL(Line::CONTAINED, l1->intersection2D(*l2, &result));
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Coincident3)
@@ -119,6 +147,9 @@ SUITE(LineClass)
     Point result;
 
     CHECK_EQUAL(Line::IDENTICAL, l1->intersection2D(*l2, &result));
+
+    delete l1;
+    delete l2;
   }
 
   TEST(Coincident4)
@@ -128,5 +159,47 @@ SUITE(LineClass)
     Point result;
 
     CHECK_EQUAL(Line::OVERLAPING, l1->intersection2D(*l2, &result));
+
+    delete l1;
+    delete l2;
+  }
+
+  TEST(TrimByPolygon)
+  {
+    Line *line = new Line;
+    Polygon *polygon = new Polygon();
+
+    polygon->addVertex(Point(1,1));
+    polygon->addVertex(Point(-1,1));
+    polygon->addVertex(Point(-1,-1));
+    polygon->addVertex(Point(1,-1));
+
+    *line = Line(Point(0,0), Point(10,10));
+    line->trimOverlapingPart(*polygon);
+    CHECK(*line == Line(Point(0,0), Point(1,1)));
+
+    *line = Line(Point(0,0), Point(0,10));
+    line->trimOverlapingPart(*polygon);
+    CHECK(*line == Line(Point(0,0), Point(0,1)));
+
+    *line = Line(Point(0,1), Point(10,1));
+    line->trimOverlapingPart(*polygon);
+    CHECK(*line == Line(Point(0,1), Point(1,1)));
+
+    delete line;
+    delete polygon;
+  }
+
+  TEST(WeirdCase)
+  {
+    Line *l1 = new Line(Point(57.8629, 218.793, 0), Point(77.2648, 197.245, 0)),
+         *l2 = new Line(Point(57.8629, 218.793, 0), Point(77.2648, 197.245, 0));
+
+    Point intersection;
+
+    CHECK_EQUAL(Line::IDENTICAL, l1->intersection2D(*l2, &intersection));
+
+    delete l1;
+    delete l2;
   }
 }

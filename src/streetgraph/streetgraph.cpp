@@ -16,6 +16,9 @@
 #include "../geometry/polygon.h"
 #include "../geometry/line.h"
 #include "../geometry/point.h"
+#include "../geometry/vector.h"
+#include "../geometry/units.h"
+#include "../debug.h"
 
 StreetGraph::StreetGraph()
 {
@@ -64,6 +67,7 @@ void StreetGraph::freeGraph()
     }
     intersections->pop_back();
   }
+  delete intersections;
 
   while (!roads->empty())
   {
@@ -74,6 +78,7 @@ void StreetGraph::freeGraph()
     }
     roads->pop_back();
   }
+  delete roads;
 }
 
 void StreetGraph::setAreaConstraints(Polygon *polygon)
@@ -120,6 +125,14 @@ void StreetGraph::populate()
    * addRoad()
    * accept/decline
    */
+  // FIXME
+  Path newRoadSegment;
+  for (int roads = 0; roads<100; roads++)
+  {
+    newRoadSegment = roadNetworkGenerator->getNextIdealRoadSegment();
+//     debug(newRoadSegment.toString());
+    debug(addRoad(newRoadSegment));
+  }
 }
 
 void StreetGraph::divideToZones()
@@ -133,7 +146,7 @@ void StreetGraph::divideToZones()
    */
 }
 
-Road* StreetGraph::addRoad(Path* roadPath)
+bool StreetGraph::addRoad(Path const& path)
 {
   /* check for areaConstraints
    * if begining or end are out of the areaConstraints
@@ -154,31 +167,79 @@ Road* StreetGraph::addRoad(Path* roadPath)
    *   create new intersections
    *   connect road to the intersections
    */
-  bool beginingIsInside = areaConstraints->hasPoint2D(roadPath->begining()),
-       endIsInside = areaConstraints->hasPoint2D(roadPath->end());
+  Path roadPath(path);
+  bool beginingIsInside = areaConstraints->encloses2D(roadPath.begining()),
+       endIsInside = areaConstraints->encloses2D(roadPath.end());
 
   if (!beginingIsInside && !endIsInside)
   /* Out of the constraints completely */
   {
-    return 0;
+    return false;
   }
 
-  if (!beginingIsInside)
+  if (!beginingIsInside || !endIsInside)
   {
-    // cut it
-    // Projit hrany polygonu, najit tu, se ktrou se protina
-    // prusecik = novy bod
+    roadPath.trimOverlapingPart(*areaConstraints);
   }
 
-  if (!endIsInside)
+  Point intersection;
+  for (std::list<Road*>::iterator currentRoad = roads->begin();
+       currentRoad != roads->end();
+       currentRoad++)
   {
-    // cut it
+
+    if (roadPath.intersection2D(*(*currentRoad)->path(), &intersection) == Line::INTERSECTING)
+    {
+      addIntersection(intersection);
+
+      if (intersection == roadPath.begining() ||
+          intersection == roadPath.end())
+      /* New road is just touching some other one */
+      {
+        continue;
+        //return addRoad(roadPath);
+      }
+      else
+      {
+        debug("Cykl:");
+        debug((*currentRoad)->path()->toString());
+        debug(roadPath.toString());
+        debug(intersection.toString());
+        Path firstPart(roadPath.begining(), intersection),
+             secondPart(intersection, roadPath.end());
+        debug(firstPart.toString());
+        debug(secondPart.toString());
+        return addRoad(firstPart) && addRoad(secondPart);
+      }
+    }
   }
 
-  return 0;
+  // The snap
+  for (std::list<Road*>::iterator currentRoad = roads->begin();
+       currentRoad != roads->end();
+       currentRoad++)
+  {
+    if (Vector(roadPath.end(), (*currentRoad)->path()->begining()).length() < libcity::SNAP_DISTANCE)
+    {
+      roadPath.setEnd((*currentRoad)->path()->begining());
+      break;
+    }
+
+    if (Vector(roadPath.end(), (*currentRoad)->path()->end()).length() < libcity::SNAP_DISTANCE)
+    {
+      roadPath.setEnd((*currentRoad)->path()->end());
+      break;
+    }
+  }
+
+  Intersection *begining = addIntersection(roadPath.begining());
+  Intersection *end = addIntersection(roadPath.end());
+
+  roads->push_back(new Road(begining, end));
+  return true;
 }
 
-Intersection* StreetGraph::addIntersection(Point* position)
+Intersection* StreetGraph::addIntersection(Point const& position)
 {
   /* Check for any existing intersections/roads
    * if (road exists in the place)
@@ -192,6 +253,30 @@ Intersection* StreetGraph::addIntersection(Point* position)
    *   place intersection
    *   return it
    */
+  for (std::list<Intersection*>::iterator currentIntersection = intersections->begin();
+       currentIntersection != intersections->end();
+       currentIntersection++)
+  {
+    if ((*currentIntersection)->position() == position)
+    {
+      return *currentIntersection;
+    }
+  }
 
-  return 0;
+  Intersection *middle = new Intersection(position);
+  intersections->push_back(middle);
+  for (std::list<Road*>::iterator currentRoad = roads->begin();
+       currentRoad != roads->end();
+       currentRoad++)
+  {
+    if ((*currentRoad)->path()->hasPoint2D(position))
+    {
+      Intersection *end = (*currentRoad)->end();
+      (*currentRoad)->setEnd(middle);
+      roads->push_back(new Road(middle, end));
+      break;
+    }
+  }
+
+  return middle;
 }

@@ -21,6 +21,8 @@
 // Tested modules
 #include "../src/geometry/vector.h"
 
+#include "../src/debug.h"
+
 SUITE(VectorClass)
 {
   TEST(AccessFunctions)
@@ -89,5 +91,12 @@ SUITE(VectorClass)
     /* Multiplication/division by constant */
     CHECK(v3 == v1*2.0);
     CHECK(v3/2.0 == v2);
+  }
+
+  TEST(Rotations)
+  {
+    Vector v(1,0,0);
+    v.rotateAroundZ(-90);
+    CHECK(v == Vector(0,-1,0));
   }
 }

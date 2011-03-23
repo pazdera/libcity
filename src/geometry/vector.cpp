@@ -12,6 +12,10 @@
 #include "vector.h"
 #include "units.h"
 
+#include "point.h"
+#include "../debug.h"
+
+#include <sstream>
 #include <cmath>
 
 Vector::Vector()
@@ -65,10 +69,10 @@ void Vector::setZ(double coordinate)
 
 void Vector::rotateAroundX(double degrees)
 {
-  double radians = degrees * (libcity::PI/180);
+  double radians = degrees * (libcity::PI/180.0);
   double newX, newY, newZ;
 
-  newX = xDirection;
+  newX = 1.0*xDirection;
   newY = yDirection*cos(radians) - zDirection*sin(radians);
   newZ = yDirection*sin(radians) + zDirection*cos(radians);
 
@@ -79,11 +83,11 @@ void Vector::rotateAroundX(double degrees)
 
 void Vector::rotateAroundY(double degrees)
 {
-  double radians = degrees * (libcity::PI/180);
+  double radians = degrees * (libcity::PI/180.0);
   double newX, newY, newZ;
 
   newX = zDirection*sin(radians) + xDirection*cos(radians);
-  newY = yDirection;
+  newY = 1.0*yDirection;
   newZ = zDirection*cos(radians) - xDirection*sin(radians);
 
   xDirection = newX;
@@ -93,12 +97,14 @@ void Vector::rotateAroundY(double degrees)
 
 void Vector::rotateAroundZ(double degrees)
 {
-  double radians = degrees * (libcity::PI/180);
-  double newX, newY, newZ;
+  double radians = degrees * (libcity::PI/180.0);
+  double newX = 0.0,
+         newY = 0.0,
+         newZ = 0.0;
 
   newX = xDirection*cos(radians) - yDirection*sin(radians);
   newY = xDirection*sin(radians) + yDirection*cos(radians);
-  newZ = zDirection;
+  newZ = 1.0*zDirection;
 
   xDirection = newX;
   yDirection = newY;
@@ -126,11 +132,18 @@ void Vector::set(double xCoord, double yCoord, double zCoord)
   zDirection = zCoord;
 }
 
+std::string Vector::toString()
+{
+  std::stringstream convertor;
+  convertor << "Vector(" << xDirection << ", " << yDirection << ", " << zDirection << ")";
+  return convertor.str();
+}
+
 bool   Vector::operator==(Vector second)
 {
-  return xDirection == second.x() &&
-         yDirection == second.y() &&
-         zDirection == second.z();
+  return (xDirection - second.x()) < libcity::EPSILON &&
+         (yDirection - second.y()) < libcity::EPSILON &&
+         (zDirection - second.z()) < libcity::EPSILON;
 }
 
 Vector Vector::operator*(double constant)
@@ -148,3 +161,9 @@ Vector Vector::operator+(Vector vector)
   return Vector(xDirection + vector.x(), yDirection + vector.y(), zDirection + vector.z());
 }
 
+Vector::Vector(Point const& first, Point const& second)
+{
+  xDirection = second.x() - first.x();
+  yDirection = second.y() - first.y();
+  zDirection = second.z() - first.z();
+}

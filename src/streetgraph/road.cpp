@@ -26,7 +26,7 @@ Road::Road(Intersection *first, Intersection *second)
   geometrical_path = new Line(from->position(), to->position());
 }
 
-Road::Road(Path path)
+Road::Road(Path const& path)
   : from(0), to(0), geometrical_path(0), belongsTo(0)
 {
   geometrical_path = new Line(path);

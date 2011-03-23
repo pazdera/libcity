@@ -16,7 +16,6 @@
 /* *** LSystem IMPLEMENTATION */
 LSystem::LSystem()
 {
-  producedString = new SymbolString;
   initialize();
 }
 
@@ -42,11 +41,12 @@ void LSystem::removeSymbol(SymbolString::iterator symbolPosition)
   delete removedSymbol;
 }
 
-void LSystem::setAlphabet(std::string alphabetCharacters)
+void LSystem::setAlphabet(std::string const& alphabetCharacters)
 {
+  freeProducedString();
   initialize();
 
-  for (std::string::iterator position = alphabetCharacters.begin();
+  for (std::string::const_iterator position = alphabetCharacters.begin();
        position != alphabetCharacters.end();
        position++)
   {
@@ -54,9 +54,9 @@ void LSystem::setAlphabet(std::string alphabetCharacters)
   }
 }
 
-void LSystem::addToAlphabet(std::string alphabetCharacters)
+void LSystem::addToAlphabet(std::string const& alphabetCharacters)
 {
-  for (std::string::iterator position = alphabetCharacters.begin();
+  for (std::string::const_iterator position = alphabetCharacters.begin();
        position != alphabetCharacters.end();
        position++)
   {
@@ -69,12 +69,13 @@ void LSystem::initialize()
   alphabet.clear();
   axiom = "";
   rules.clear();
-  producedString->clear();
+  producedString = new SymbolString;
 }
 
 void LSystem::reset()
 {
-  producedString->clear();
+  freeProducedString();
+  producedString = new SymbolString;
 
   for (std::string::iterator position = axiom.begin();
        position != axiom.end();
@@ -84,7 +85,7 @@ void LSystem::reset()
   }
 }
 
-void LSystem::setAxiom(std::string startingSequence)
+void LSystem::setAxiom(std::string const& startingSequence)
 {
   if (startingSequence == "" || !isInAlphabet(startingSequence))
   {
@@ -100,9 +101,9 @@ bool LSystem::isInAlphabet(char checkedCharacter) const
   return alphabet.find(checkedCharacter) != alphabet.end();
 }
 
-bool LSystem::isInAlphabet(std::string checkedString) const
+bool LSystem::isInAlphabet(std::string const& checkedString) const
 {
-  std::string::iterator position = checkedString.begin();
+  std::string::const_iterator position = checkedString.begin();
   while (position != checkedString.end())
   /* Iterate through the whole string and check all the characters */
   {
@@ -121,7 +122,7 @@ bool LSystem::isTerminal(char character) const
   return rules.find(character) == rules.end();
 }
 
-void LSystem::addRule(char predecessor, std::string successor)
+void LSystem::addRule(char predecessor, std::string const& successor)
 {
   if (!isInAlphabet(predecessor) || !isInAlphabet(successor))
   {
@@ -227,13 +228,13 @@ LSystem::ProductionRule::ProductionRule()
   : leftSide(0), rightSide()
 {}
 
-LSystem::ProductionRule::ProductionRule(char leftSideSymbol, std::string rightSideString)
+LSystem::ProductionRule::ProductionRule(char leftSideSymbol, std::string const& rightSideString)
 {
   leftSide = leftSideSymbol;
   rightSide.push_back(rightSideString);
 }
 
-void LSystem::ProductionRule::addSuccessor(std::string rightSideString)
+void LSystem::ProductionRule::addSuccessor(std::string const& rightSideString)
 {
   rightSide.push_back(rightSideString);
 }
@@ -252,7 +253,7 @@ std::string LSystem::ProductionRule::successor() const
 /* ********************* */
 /* Symbol IMPLEMENTATION */
 LSystem::Symbol::Symbol(char character)
-  : symbol(character)
+  : symbol(character), alreadyRead(false)
 {}
 
 LSystem::Symbol::~Symbol()
@@ -273,7 +274,7 @@ bool LSystem::Symbol::operator==(char character) const
   return symbol == character;
 }
 
-bool LSystem::Symbol::operator==(Symbol another) const
+bool LSystem::Symbol::operator==(Symbol const& another) const
 {
   return (char)another == symbol;
 }

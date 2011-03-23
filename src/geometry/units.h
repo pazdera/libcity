@@ -15,7 +15,9 @@ namespace libcity
   const int METER  = 100;
   const int METERS = METER;
 
-  const int PI = 3.14159265;
+  const double PI = 3.14159265;
 
   const double EPSILON = 0.000001;
+
+  const double SNAP_DISTANCE = 5;
 }

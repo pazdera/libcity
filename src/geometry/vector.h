@@ -12,6 +12,10 @@
 #ifndef _VECTOR_H_
 #define _VECTOR_H_
 
+#include <string>
+
+class Point;
+
 class Vector
 {
   public:
@@ -19,6 +23,13 @@ class Vector
     Vector(double x); /**< 1D */
     Vector(double x, double y); /**< 2D */
     Vector(double x, double y, double z); /**< 3D */
+
+    /* Init from points */
+    Vector(Point const& first, Point const& second);
+
+       /* Not neccessary */
+//     Vector(Vector const& source);
+//     Vector& operator=(Vector const& source);
 
     ~Vector();
 
@@ -45,7 +56,9 @@ class Vector
 
     void normalize();
 
-    bool operator==(Vector second);
+    std::string toString();
+
+    bool   operator==(Vector second);
     Vector operator*(double constant);
     Vector operator/(double constant);
     Vector operator+(Vector vector);
