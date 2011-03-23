@@ -54,8 +54,10 @@ Plan:
   - PROTOTYPE implement streetgraph.populate()
   - DONE write debug dump() outputs
   - DONE fix all memory leaks
-  - design Random class
-  - implement random generator class
+  - DONE design Random class
+  - DONE implement random generator class
+  - DONE Random class unit test
+  - design and write Path class
   - refactor streetgraph modifying algorithm
   - figure how to iterate through roads in streetgraph
     - StreetGraph::iterator

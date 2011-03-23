@@ -11,6 +11,8 @@
 
 #include "random.h"
 
+#include "debug.h"
+
 #include <cstdlib>
 #include <limits.h>
 
@@ -49,7 +51,7 @@ bool Random::flag(double probability)
   return generate(0, 1) < probability;
 }
 
-int Random::base()
+double Random::base()
 {
   state = 1103515245*state + 12345;
 

@@ -19,5 +19,5 @@ namespace libcity
 
   const double EPSILON = 0.000001;
 
-  const double SNAP_DISTANCE = 5;
+  const double SNAP_DISTANCE = 20;
 }

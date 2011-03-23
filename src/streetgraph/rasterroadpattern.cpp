@@ -14,7 +14,7 @@
 #include "../geometry/point.h"
 #include "../geometry/vector.h"
 
-#include <cstdlib>
+#include "../random.h"
 
 RasterRoadPattern::RasterRoadPattern()
 {
@@ -32,9 +32,15 @@ RasterRoadPattern::~RasterRoadPattern()
 
 double RasterRoadPattern::getTurnAngle()
 {
-  return (rand() % 80 + 10);
+  return 90; //(rand() % 80 + 10);
 }
 double RasterRoadPattern::getRoadSegmentLength()
 {
-  return (rand() % 100 + 50);
+  Random generator;
+  if (generator.flag(0.3))
+  {
+    return 50;
+  }
+
+  return 70;
 }

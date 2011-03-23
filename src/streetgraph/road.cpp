@@ -10,6 +10,7 @@
  */
 
 #include "road.h"
+#include "path.h"
 #include "intersection.h"
 #include "../geometry/line.h"
 #include "../geometry/point.h"

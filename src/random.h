@@ -32,7 +32,7 @@ class Random
     bool flag(double probability);
 
   private:
-    int base();
+    double base();
 
     bool   useOwnSeed;
     unsigned int state;

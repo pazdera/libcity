@@ -14,8 +14,7 @@
 
 class Line;
 class Intersection;
-
-typedef Line Path;
+class Path;
 
 class Road
 {

@@ -127,7 +127,7 @@ void StreetGraph::populate()
    */
   // FIXME
   Path newRoadSegment;
-  for (int roads = 0; roads<100; roads++)
+  for (int roads = 0; roads<1000; roads++)
   {
     newRoadSegment = roadNetworkGenerator->getNextIdealRoadSegment();
 //     debug(newRoadSegment.toString());
