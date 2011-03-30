@@ -34,6 +34,7 @@ RasterRoadPattern::~RasterRoadPattern()
 double RasterRoadPattern::getTurnAngle()
 {
   Random generator;
+  return 90;
   if (generator.flag(0.7))
     return 90;
   else
@@ -48,5 +49,5 @@ double RasterRoadPattern::getRoadSegmentLength()
 //   }
 // 
 //   return 70;
-  return generator.doubleValue(100,150);
+  return generator.doubleValue(50,70);
 }
