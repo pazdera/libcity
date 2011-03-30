@@ -51,7 +51,8 @@ class Line
 
     bool hasPoint2D(Point const& point) const;
     Intersection intersection2D(Line const& another, Point* intersection) const;
-    void trimOverlapingPart(Polygon const& boundaries);
+    double distance(Point const& point) const;
+    Point nearestPoint(Point const& point) const;
 
     std::string toString();
 

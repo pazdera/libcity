@@ -30,10 +30,8 @@ class Intersection;
 class Road;
 class Point;
 class Polygon;
-class RoadLSystem;
-
+class Path;
 class Line;
-typedef Line Path;
 
 class StreetGraph
 {
@@ -49,17 +47,6 @@ class StreetGraph
     void setAreaConstraints(Polygon* polygon);
 
     /**
-     * Assign a road generator object to the streetgraph
-     * that will be used to populate it with roads.
-     */
-    void setRoadNetworkGenerator(RoadLSystem* generator);
-
-    /**
-     * Generate roads using specified roadNetworkGenerator
-     */
-    void populate();
-
-    /**
      * Find closed loops in the graph and form zones inside
      * them.
      */
@@ -68,7 +55,7 @@ class StreetGraph
     int  numberOfZones() const;
     StreetGraph* zone(int number) const;
 
-    bool addRoad(Path const& path);
+    bool addRoad(Path const& path, Point* modifiedEndPoint);
     Intersection* addIntersection(Point const& position);
 
   private:
@@ -83,12 +70,12 @@ class StreetGraph
 
   private:
     Polygon* areaConstraints;
-    RoadLSystem* roadNetworkGenerator;
 
     std::vector<StreetGraph*> *zones;
 
+    bool isPathInsideAreaConstraints(Path const& proposedPath);
+
     void initialize();
-    void freeRoadNetworkGenerator();
     void freeAreaConstraints();
     void freeZones();
     void freeGraph();

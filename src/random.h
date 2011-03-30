@@ -23,11 +23,14 @@ class Random
     static unsigned int seed;
 
   public:
+    static void setSeed(int newSeed);
+
     Random();
     Random(double ownSeed);
     ~Random();
 
-    double generate(double lowerBound, double higherBound);
+    double doubleValue(double lowerBound, double higherBound);
+    int integerValue(int lowerBound, int higherBound);
 
     bool flag(double probability);
 

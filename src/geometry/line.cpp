@@ -12,6 +12,7 @@
 #include "line.h"
 #include "point.h"
 #include "polygon.h"
+#include "vector.h"
 #include "units.h"
 #include "../debug.h"
 
@@ -184,30 +185,53 @@ Line::Intersection Line::intersection2D(Line const& another, Point* intersection
   return NONINTERSECTING;
 }
 
-void Line::trimOverlapingPart(Polygon const& boundaries)
+
+Point Line::nearestPoint(Point const& point) const
 {
-  Point intersection;
-  Line  edge;
-  int vertices = boundaries.numberOfVertices();
+  double parameter;
+  Point orthogonalProjection;
 
-  for (int number = 0; number < vertices; number++)
+  parameter = (second->x() - first->x())*(point.x() - first->x()) +
+              (second->y() - first->y())*(point.y() - first->y()) +
+              (second->z() - first->z())*(point.z() - first->z());
+
+  parameter /= length()*length();
+
+  if (parameter >= 0 && parameter <=1)
   {
-    edge.setBegining(boundaries.vertex(number));
-    edge.setEnd(boundaries.vertex((number + 1) % vertices));
+    orthogonalProjection.setX((1 - parameter)*first->x() + second->x()*parameter);
+    orthogonalProjection.setY((1 - parameter)*first->y() + second->y()*parameter);
+    orthogonalProjection.setZ((1 - parameter)*first->z() + second->z()*parameter);
 
-    if (intersection2D(edge, &intersection) == INTERSECTING)
+    return orthogonalProjection;
+  }
+  else
+  {
+    double distanceToFirst  = Vector(point, *first).length();
+    double distanceToSecond = Vector(point, *second).length();
+
+    if (distanceToFirst < distanceToSecond)
     {
-      if (!boundaries.encloses2D(begining()))
-      {
-        setBegining(intersection);
-      }
-      else
-      {
-        setEnd(intersection);
-      }
-      break;
+      return *first;
+    }
+    else
+    {
+      return *second;
     }
   }
+}
+
+double Line::distance(Point const& point) const
+{
+  Point closestPoint = nearestPoint(point);
+
+  return Vector(closestPoint, point).length();
+}
+
+double Line::length() const
+{
+  Vector directionVector(*first, *second);
+  return directionVector.length();
 }
 
 bool Line::operator==(Line const& another) const

@@ -22,6 +22,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <vector>
 
 class LSystem
 {
@@ -48,12 +49,12 @@ class LSystem
      * Does one rewriting iteration through the productionString.
      * NOTICE: Might return number of rewrites done
      */
-    void doIteration();
+    int doIteration();
 
     /**
      * Does specified number of iterations
      */
-    void doIterations(int howManyIterations);
+    int doIterations(int howManyIterations);
 
     /**
      * Adds a new rule to the LSystem. All the symbols in
@@ -80,7 +81,7 @@ class LSystem
 
       private:
         char leftSide;
-        std::list<std::string> rightSide;
+        std::vector<std::string> rightSide;
     };
 
     /** 

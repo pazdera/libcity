@@ -29,7 +29,7 @@ class Road
     /**
      * Create just path of the road.
      **/
-    Road(Line const& path);
+    Road(Path const& path);
     virtual ~Road();
 
     Intersection* begining() const;
@@ -40,7 +40,7 @@ class Road
 
     Path* path() const;
 
-    void setPath(Line& roadPath) throw();
+    void setPath(Path const& roadPath) throw();
 
     void* owner();
     void  setOwner(void* ownerObject);
@@ -50,7 +50,7 @@ class Road
     Intersection* to;   /**< Where it leads to. */
 
     /* Geometrical information */
-    Line* geometrical_path; /**< Path that the road takes between the two topological points */
+    Path* geometrical_path; /**< Path that the road takes between the two topological points */
 
     void* belongsTo;
 

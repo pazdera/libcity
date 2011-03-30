@@ -17,14 +17,15 @@
 #include "../random.h"
 
 RasterRoadPattern::RasterRoadPattern()
+  : RoadLSystem()
 {
   setAxiom("E");
 
   // Rules
-  addRule('E', "[[-_E]+_E]_E");
+  addRule('E', "[[-_E]+_E]__E");
 
   setInitialPosition(Point(0,0));
-  setInitialDirection(Vector(0,1));
+  setInitialDirection(Vector(1,0));
 }
 
 RasterRoadPattern::~RasterRoadPattern()
@@ -32,15 +33,17 @@ RasterRoadPattern::~RasterRoadPattern()
 
 double RasterRoadPattern::getTurnAngle()
 {
-  return 90; //(rand() % 80 + 10);
+  Random generator;
+  return (generator.doubleValue(60,90));
 }
 double RasterRoadPattern::getRoadSegmentLength()
 {
   Random generator;
-  if (generator.flag(0.3))
-  {
-    return 50;
-  }
-
-  return 70;
+//   if (generator.flag(0.3))
+//   {
+//     return 50;
+//   }
+// 
+//   return 70;
+  return generator.doubleValue(50,70);
 }

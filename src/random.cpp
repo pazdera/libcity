@@ -18,6 +18,11 @@
 
 unsigned int Random::seed = libcity::RANDOM_SEED;
 
+void Random::setSeed(int newSeed)
+{
+  Random::seed = newSeed;
+}
+
 Random::Random()
   : useOwnSeed(false)
 {
@@ -33,7 +38,7 @@ Random::Random(double ownSeed)
 Random::~Random()
 {}
 
-double Random::generate(double lowerBound, double higherBound)
+double Random::doubleValue(double lowerBound, double higherBound)
 {
   double temporary;
   if (lowerBound > higherBound)
@@ -46,9 +51,22 @@ double Random::generate(double lowerBound, double higherBound)
   return base() * (higherBound - lowerBound) + lowerBound;
 }
 
+int Random::integerValue(int lowerBound, int higherBound)
+{
+  int temporary;
+  if (lowerBound > higherBound)
+  {
+    temporary   = lowerBound;
+    lowerBound  = higherBound;
+    higherBound = temporary;
+  }
+
+  return base() * (higherBound + 1 - lowerBound) + lowerBound;
+}
+
 bool Random::flag(double probability)
 {
-  return generate(0, 1) < probability;
+  return doubleValue(0, 1) < probability;
 }
 
 double Random::base()

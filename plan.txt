@@ -57,23 +57,25 @@ Plan:
   - DONE design Random class
   - DONE implement random generator class
   - DONE Random class unit test
-  - design and write Path class
+  - DONE generating random numbers
+  - DONE start implementing 2d drawing
+  - DONE implement distance of point from line segment
+  - remake relationship between street graph and street generators
+  - DONE remove "trimOverlapingPart" from line and place it somewhere nicer
+  - DONE design and write Path class
+  - set owner of intersection/road
+  - implement remove intersection/road
   - refactor streetgraph modifying algorithm
   - figure how to iterate through roads in streetgraph
     - StreetGraph::iterator
-  - DONE implement 2d drawing
   - implement streetgraph.divideToZones()
   - create LSystem class for each road pattern (checkquers, organic, radial)
-  - generating random numbers
   - bug fixing
   - design error handling and exceptions
   - think about thesis chapters
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D
 
-  - !!! NAPAD: Cist retezec, dokud se neobjevi v zasobniku nejaka silnice pak ji vratit
-  - !!! NAPAD: kazdy symbol ma pozici kurzoru od ktere se interpretuje a nebo na kterou je nastaven kurzor PO jeho interpretaci?
-  - !!! ZASEK: Nutnost přidat pozici k symbolu
   - NAPAD: GraphicInformation je jen base. V odvozenych tridach si muzeme pro kazdy symbol udelat decka. Pro ruzne typy symbolu
            a pak s nimi tak pracovat. To umozni udelat streetgraph primo v lsystemu.
   - NAPAD: Road lze zkonstruhovat jen s určenou low level reprezentací high level příjde potom

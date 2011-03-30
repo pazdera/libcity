@@ -11,6 +11,7 @@
 
 #include "lsystem.h"
 #include "../debug.h"
+#include "../random.h"
 
 /* ************************** */
 /* *** LSystem IMPLEMENTATION */
@@ -142,10 +143,12 @@ void LSystem::addRule(char predecessor, std::string const& successor)
   }
 }
 
-void LSystem::doIteration()
+int LSystem::doIteration()
 {
   SymbolString::iterator position = producedString->begin();
   SymbolString::iterator nextPosition;
+
+  int rewritesMade = 0;
 
   while (position != producedString->end())
   {
@@ -155,18 +158,27 @@ void LSystem::doIteration()
     nextPosition = position;
     nextPosition++;
 
-    rewrite(position);
+    if (!isTerminal((*position)->getSymbol()))
+    {
+      rewritesMade++;
+      rewrite(position);
+    }
 
     position = nextPosition;
   }
+
+  return rewritesMade;
 }
 
-void LSystem::doIterations(int howManyIterations)
+int LSystem::doIterations(int howManyIterations)
 {
+  int rewritesMade = 0;
   for (int iteration = 0; iteration < howManyIterations; iteration++)
   {
-    doIteration();
+    rewritesMade += doIteration();
   }
+
+  return rewritesMade;
 }
 
 void LSystem::rewrite(SymbolString::iterator position)
@@ -246,8 +258,8 @@ char LSystem::ProductionRule::predecessor() const
 
 std::string LSystem::ProductionRule::successor() const
 {
-  // FIXME: Must return RANDOM successor not the FIRST one!
-  return rightSide.front();
+  Random generator;
+  return rightSide[generator.integerValue(0, rightSide.size() - 1)];
 }
 
 /* ********************* */

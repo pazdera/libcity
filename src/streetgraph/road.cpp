@@ -24,13 +24,13 @@ Road::Road()
 Road::Road(Intersection *first, Intersection *second)
   : from(first), to(second), geometrical_path(0), belongsTo(0)
 {
-  geometrical_path = new Line(from->position(), to->position());
+  geometrical_path = new Path(Line(from->position(), to->position()));
 }
 
 Road::Road(Path const& path)
   : from(0), to(0), geometrical_path(0), belongsTo(0)
 {
-  geometrical_path = new Line(path);
+  geometrical_path = new Path(path);
 }
 
 Road::~Road()
@@ -44,11 +44,11 @@ Road::~Road()
   }
 }
 
-void Road::setPath(Path& roadPath) throw()
+void Road::setPath(Path const& roadPath) throw()
 {
   //TODO: check if the path start and end matches the intersections
   delete geometrical_path;
-  geometrical_path = new Line(roadPath);
+  geometrical_path = new Path(roadPath);
 }
 
 void Road::estimatePath()
@@ -58,7 +58,7 @@ void Road::estimatePath()
     delete geometrical_path;
   }
 
-  geometrical_path = new Line(from->position(), to->position());
+  geometrical_path = new Path(Line(from->position(), to->position()));
 }
 
 void* Road::owner()

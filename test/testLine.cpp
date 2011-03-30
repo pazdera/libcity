@@ -18,9 +18,11 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <cmath>
 
 // Tested modules
 #include "../src/geometry/line.h"
+#include "../src/geometry/units.h"
 #include "../src/geometry/point.h"
 #include "../src/geometry/polygon.h"
 
@@ -164,31 +166,31 @@ SUITE(LineClass)
     delete l2;
   }
 
-  TEST(TrimByPolygon)
-  {
-    Line *line = new Line;
-    Polygon *polygon = new Polygon();
-
-    polygon->addVertex(Point(1,1));
-    polygon->addVertex(Point(-1,1));
-    polygon->addVertex(Point(-1,-1));
-    polygon->addVertex(Point(1,-1));
-
-    *line = Line(Point(0,0), Point(10,10));
-    line->trimOverlapingPart(*polygon);
-    CHECK(*line == Line(Point(0,0), Point(1,1)));
-
-    *line = Line(Point(0,0), Point(0,10));
-    line->trimOverlapingPart(*polygon);
-    CHECK(*line == Line(Point(0,0), Point(0,1)));
-
-    *line = Line(Point(0,1), Point(10,1));
-    line->trimOverlapingPart(*polygon);
-    CHECK(*line == Line(Point(0,1), Point(1,1)));
-
-    delete line;
-    delete polygon;
-  }
+//   TEST(TrimByPolygon)
+//   {
+//     Line *line = new Line;
+//     Polygon *polygon = new Polygon();
+// 
+//     polygon->addVertex(Point(1,1));
+//     polygon->addVertex(Point(-1,1));
+//     polygon->addVertex(Point(-1,-1));
+//     polygon->addVertex(Point(1,-1));
+// 
+//     *line = Line(Point(0,0), Point(10,10));
+//     line->trimOverlapingPart(*polygon);
+//     CHECK(*line == Line(Point(0,0), Point(1,1)));
+// 
+//     *line = Line(Point(0,0), Point(0,10));
+//     line->trimOverlapingPart(*polygon);
+//     CHECK(*line == Line(Point(0,0), Point(0,1)));
+// 
+//     *line = Line(Point(0,1), Point(10,1));
+//     line->trimOverlapingPart(*polygon);
+//     CHECK(*line == Line(Point(0,1), Point(1,1)));
+// 
+//     delete line;
+//     delete polygon;
+//   }
 
   TEST(WeirdCase)
   {
@@ -201,5 +203,15 @@ SUITE(LineClass)
 
     delete l1;
     delete l2;
+  }
+
+  TEST(PointDistance)
+  {
+    Line l(Point(0,0), Point(10,10));
+
+    CHECK_CLOSE(sqrt(2), l.distance(Point(-1,-1)), libcity::EPSILON);
+    CHECK_CLOSE(sqrt(2), l.distance(Point(11,11)), libcity::EPSILON);
+    CHECK_CLOSE(sqrt(2)/2, l.distance(Point(3,4)), libcity::EPSILON);
+    CHECK_CLOSE(sqrt(2)/2, l.distance(Point(4,3)), libcity::EPSILON);
   }
 }

@@ -14,11 +14,16 @@
 #include "../geometry/point.h"
 #include "../geometry/line.h"
 #include "../streetgraph/road.h"
+#include "../streetgraph/path.h"
+#include "../streetgraph/streetgraph.h"
 
 #include "../debug.h"
 
 RoadLSystem::RoadLSystem()
 {
+  generatedRoads    = 0;
+  targetStreetGraph = 0;
+
   /* Symbols:
    *  - - turn left
    *  + - turn right
@@ -26,26 +31,10 @@ RoadLSystem::RoadLSystem()
    */
   addToAlphabet("-+E");
   setAxiom("E");
-
-  generatedRoads = new std::list<Path*>;
 }
 
 RoadLSystem::~RoadLSystem()
-{
-  freeGeneratedRoads();
-}
-
-void RoadLSystem::freeGeneratedRoads()
-{
-  for(std::list<Path*>::iterator position = generatedRoads->begin();
-      position != generatedRoads->end();
-      position++)
-  {
-    delete *position;
-  }
-
-  delete generatedRoads;
-}
+{}
 
 void RoadLSystem::interpretSymbol(char symbol)
 {
@@ -67,20 +56,11 @@ void RoadLSystem::interpretSymbol(char symbol)
   }
 }
 
-Path RoadLSystem::getNextIdealRoadSegment()
+void RoadLSystem::generateRoads(int number)
 {
-  while (generatedRoads->empty())
-  /* Keep generating until a road comes up */
-  {
-    readNextSymbol();
-  }
-
-  Path roadPath(*generatedRoads->front());
-
-  delete generatedRoads->front();
-  generatedRoads->erase(generatedRoads->begin());
-
-  return roadPath;
+  double targetNumberOfRoads = generatedRoads + number;
+  while (generatedRoads < targetNumberOfRoads && readNextSymbol() != 0)
+  {}
 }
 
 void RoadLSystem::turnLeft()
@@ -99,5 +79,27 @@ void RoadLSystem::drawLine()
   cursor.move(getRoadSegmentLength());
   Point currentPosition = cursor.getPosition();
 
-  generatedRoads->push_back(new Path(previousPosition, currentPosition));
+  // Add path to the streetgraph
+  if (targetStreetGraph->addRoad(Path(Line(previousPosition, currentPosition)), &currentPosition))
+  {
+    generatedRoads++;
+    cursor.setPosition(currentPosition);
+  }
+  else
+  {
+    // Remove everything drawn from this position
+    SymbolString::iterator position = currentlyInterpretedSymbol;
+    SymbolString::iterator removed;
+    while (position != producedString->end() && (*position)->getSymbol() != ']')
+    {
+      removed = position;
+      position++;
+      producedString->erase(removed);
+    }
+  }
+}
+
+void RoadLSystem::setTarget(StreetGraph* target)
+{
+  targetStreetGraph = target;
 }

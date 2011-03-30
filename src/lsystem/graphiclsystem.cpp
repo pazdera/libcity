@@ -123,14 +123,21 @@ char GraphicLSystem::readNextSymbol()
   if (position == producedString->end())
   /* If all symbols have been already read, generate some more. */
   {
-    doIterations(1);
-    return readNextSymbol();
+    int rewritesMade = doIterations(1);
+
+    if (rewritesMade > 0)
+    {
+      return readNextSymbol();
+    }
+
+    return '\0';
   }
   else
   {
 //     debug("Interpreting: " << currentSymbol->getSymbol());
 //     debug("  Position before: " << cursor.getPosition().toString());
 //     debug("  Direction before: " << cursor.getDirection().toString());
+    currentlyInterpretedSymbol = position;
     interpretSymbol(currentSymbol->getSymbol());
     currentSymbol->markAsRead();
 //     debug("  Position after: " << cursor.getPosition().toString());

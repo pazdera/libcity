@@ -707,7 +707,6 @@ class RasterRoadPattern : public RoadLSystem
 class Line;
 class Intersection;
 
-typedef Line Path;
 
 class Road
 {

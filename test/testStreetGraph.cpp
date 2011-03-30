@@ -33,19 +33,6 @@ SUITE(StreetGraphClass)
     Polygon *constraints = new Polygon;
     sg->setAreaConstraints(constraints);
 
-    sg->setRoadNetworkGenerator(new RasterRoadPattern());
 
-    sg->populate();
-    sg->divideToZones();
-
-    StreetGraph *zone = 0;
-    for(int zoneNumber = 0; zoneNumber < sg->numberOfZones(); zoneNumber++)
-    {
-      zone = sg->zone(zoneNumber);
-      zone->setRoadNetworkGenerator(new RasterRoadPattern());
-      zone->populate();
-    }
-
-    delete sg;
   }
 }

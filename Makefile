@@ -30,7 +30,8 @@ STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
                     src/streetgraph/primaryroad.o \
                     src/streetgraph/secondaryroad.o \
                     src/streetgraph/streetgraph.o \
-                    src/streetgraph/rasterroadpattern.o
+                    src/streetgraph/rasterroadpattern.o \
+                    src/streetgraph/path.o
 
 # LSystem package
 LSYSTEM_PACKAGE=src/lsystem/lsystem.o \

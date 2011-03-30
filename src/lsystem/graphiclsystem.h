@@ -43,6 +43,7 @@ class GraphicLSystem : public LSystem
 
   protected:
     virtual void interpretSymbol(char symbol);
+    SymbolString::iterator currentlyInterpretedSymbol;
 
     void pushCursor();
     void popCursor(); /**< Does nothing when the stack is empty */
