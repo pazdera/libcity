@@ -30,16 +30,19 @@ STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
                     src/streetgraph/primaryroad.o \
                     src/streetgraph/secondaryroad.o \
                     src/streetgraph/streetgraph.o \
+                    src/streetgraph/path.o \
                     src/streetgraph/rasterroadpattern.o \
-                    src/streetgraph/path.o
+                    src/streetgraph/organicroadpattern.o \
+                    src/streetgraph/minimalcyclebasis.o
 
 # LSystem package
 LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
                 src/lsystem/graphiclsystem.o \
                 src/lsystem/roadlsystem.o
 
-# LSystem package
-MISC=src/random.o
+# No package
+MISC=src/random.o \
+     src/city.o
 
 LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(MISC)
 
@@ -59,7 +62,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testStreetGraph.o \
            test/testLine.o \
            test/testRasterRoadPattern.o \
-           test/testRandom.o
+           test/testRandom.o \
+           test/testMCB.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

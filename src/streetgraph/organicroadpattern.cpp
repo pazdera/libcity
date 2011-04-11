@@ -1,22 +1,22 @@
 /**
  * This code is part of libcity library.
  *
- * @file streetgraph/rasterroadpattern.cpp
- * @date 17.03.2011
+ * @file streetgraph/organicroadpattern.cpp
+ * @date 11.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
  * @see rasterroadpattern.h
  *
  */
 
-#include "rasterroadpattern.h"
+#include "organicroadpattern.h"
 
 #include "../geometry/point.h"
 #include "../geometry/vector.h"
 
 #include "../random.h"
 
-RasterRoadPattern::RasterRoadPattern()
+OrganicRoadPattern::OrganicRoadPattern()
   : RoadLSystem()
 {
   setAxiom("E");
@@ -30,26 +30,18 @@ RasterRoadPattern::RasterRoadPattern()
   setInitialDirection(Vector(1,0));
 }
 
-RasterRoadPattern::~RasterRoadPattern()
+OrganicRoadPattern::~OrganicRoadPattern()
 {}
 
-double RasterRoadPattern::getTurnAngle()
+double OrganicRoadPattern::getTurnAngle()
 {
   Random generator;
-  return 90;
-  if (generator.flag(0.7))
-    return 90;
-  else
-   return (generator.doubleValue(60,90));
+
+  return (generator.doubleValue(60,90));
 }
-double RasterRoadPattern::getRoadSegmentLength()
+double OrganicRoadPattern::getRoadSegmentLength()
 {
   Random generator;
-//   if (generator.flag(0.3))
-//   {
-//     return 50;
-//   }
-// 
-//   return 70;
+
   return generator.doubleValue(50,70);
 }

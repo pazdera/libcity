@@ -23,6 +23,7 @@ class Road;
 class Line;
 class Path;
 class StreetGraph;
+class Polygon;
 
 class RoadLSystem : public GraphicLSystem
 {
@@ -34,6 +35,8 @@ class RoadLSystem : public GraphicLSystem
 
     void setTarget(StreetGraph* target);
 
+    void setAreaConstraints(Polygon *polygon);
+
   protected:
     virtual void interpretSymbol(char symbol);
 
@@ -41,13 +44,20 @@ class RoadLSystem : public GraphicLSystem
     virtual void turnRight();
 
     virtual void drawLine();
+    virtual bool localConstraints(Path* proposedPath);
+    virtual void cancelBranch();
 
     virtual double getRoadSegmentLength() = 0;
     virtual double getTurnAngle() = 0;
 
+    bool isPathInsideAreaConstraints(Path const& proposedPath);
+
   private:
     int generatedRoads;
     StreetGraph* targetStreetGraph;
+    Polygon* areaConstraints;
+
+    void freeAreaConstraints();
 };
 
 #endif

@@ -24,10 +24,13 @@
 #define _STREETGRAPH_H_
 
 #include <list>
+#include <map>
 #include <vector>
+#include <set>
 
 class Intersection;
 class Road;
+class Zone;
 class Point;
 class Polygon;
 class Path;
@@ -40,44 +43,35 @@ class StreetGraph
     ~StreetGraph();
 
     /**
-     * Define area constraints for the graph.
-     * All roads will be generated inside these
-     * borders.
+     * For iterating through the roads of StreetGraph.
      */
-    void setAreaConstraints(Polygon* polygon);
+    typedef std::list<Road*>::iterator iterator;
+    iterator begin();
+    iterator end();
 
     /**
      * Find closed loops in the graph and form zones inside
      * them.
      */
-    void divideToZones();
+    std::list<Zone*> findZones();
 
-    int  numberOfZones() const;
-    StreetGraph* zone(int number) const;
+    void addRoad(Path const& path);
+    void removeRoad(Road* road);
 
-    bool addRoad(Path const& path, Point* modifiedEndPoint);
-    Intersection* addIntersection(Point const& position);
+    bool isIntersectionAtPosition(Point const& position);
 
   private:
+    Intersection* addIntersection(Point const& position);
+
     /** All intersections in the street graph. */
     std::list<Intersection*> *intersections;
 
-  public: // FIXME
     /** All roads in the street graph.
         This is not neccessary, but could be
         useful. */
     std::list<Road*> *roads;
 
-  private:
-    Polygon* areaConstraints;
-
-    std::vector<StreetGraph*> *zones;
-
-    bool isPathInsideAreaConstraints(Path const& proposedPath);
-
     void initialize();
-    void freeAreaConstraints();
-    void freeZones();
     void freeGraph();
 };
 

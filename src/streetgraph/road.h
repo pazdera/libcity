@@ -39,11 +39,17 @@ class Road
     void setEnd(Intersection* intersection);
 
     Path* path() const;
-
     void setPath(Path const& roadPath) throw();
 
-    void* owner();
-    void  setOwner(void* ownerObject);
+    enum types
+    {
+      PRIMARY_ROAD,
+      SECONDARY_ROAD
+    };
+
+    virtual types type();
+    void setType(types type);
+
   private:
     /* Topological information */
     Intersection* from; /**< Where the road starts. */
@@ -52,7 +58,7 @@ class Road
     /* Geometrical information */
     Path* geometrical_path; /**< Path that the road takes between the two topological points */
 
-    void* belongsTo;
+    types roadType;
 
     void estimatePath();
 };

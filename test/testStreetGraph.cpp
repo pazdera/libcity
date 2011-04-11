@@ -33,6 +33,14 @@ SUITE(StreetGraphClass)
     Polygon *constraints = new Polygon;
     sg->setAreaConstraints(constraints);
 
+    RasterRoadPattern *gen = new RasterRoadPattern;
 
+    gen->setTarget(sg);
+
+    gen->generate(10);
+
+    sg->divideToZones();
+
+//     StreetGraph::shallow_iterator
   }
 }

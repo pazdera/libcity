@@ -11,11 +11,13 @@
 
 #include "intersection.h"
 #include "road.h"
+#include "../debug.h"
 #include "../geometry/point.h"
 
 Intersection::Intersection()
   : roads(0), geometrical_position(0)
-{}
+{
+}
 
 Intersection::Intersection(Point coordinates)
   : roads(0), geometrical_position(0)
@@ -37,6 +39,30 @@ Intersection::~Intersection()
   }
 }
 
+std::vector<Intersection*> Intersection::adjacentIntersections()
+{
+  std::vector<Intersection*> adjacent;
+  adjacent.clear();
+
+  for (std::list<Road*>::iterator adjacentRoadIterator = roads->begin();
+       adjacentRoadIterator != roads->end();
+       adjacentRoadIterator++)
+  {
+    if ((*adjacentRoadIterator)->begining() != this)
+    {
+      adjacent.push_back((*adjacentRoadIterator)->begining());
+    }
+    else
+    {
+      adjacent.push_back((*adjacentRoadIterator)->end());
+    }
+  }
+
+//   debug("Intersection::adjacentIntersections(): has " << numberOfWays() << " ways.");
+//   debug("Intersection::adjacentIntersections(): returns " << adjacent.size() << " adjacent intersections.");
+  return adjacent;
+}
+
 void Intersection::addRoad(Road* road) throw()
 {
   if (road->begining()->position() == *geometrical_position ||
@@ -48,6 +74,12 @@ void Intersection::addRoad(Road* road) throw()
   {
     // TODO: error
   }
+}
+
+
+void Intersection::removeRoad(Road* road)
+{
+  roads->remove(road);
 }
 
 Point Intersection::position() const

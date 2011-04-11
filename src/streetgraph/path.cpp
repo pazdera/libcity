@@ -12,6 +12,7 @@
 #include "path.h"
 
 #include "intersection.h"
+#include "../debug.h"
 #include "../geometry/line.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"

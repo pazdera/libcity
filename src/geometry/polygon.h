@@ -23,6 +23,9 @@ class Polygon
     Polygon(Point const& one, Point const& two, Point const& three); /**< Triangle */
     Polygon(Point const& one, Point const& two, Point const& three, Point const& four); /**< Rectangle */
 
+    Polygon(Polygon const& source);
+    Polygon& operator=(Polygon const& source);
+
     ~Polygon();
 
   private:

@@ -132,6 +132,13 @@ void Vector::set(double xCoord, double yCoord, double zCoord)
   zDirection = zCoord;
 }
 
+void Vector::set(Point const& first, Point const& second)
+{
+  xDirection = second.x() - first.x();
+  yDirection = second.y() - first.y();
+  zDirection = second.z() - first.z();
+}
+
 std::string Vector::toString()
 {
   std::stringstream convertor;
@@ -139,7 +146,12 @@ std::string Vector::toString()
   return convertor.str();
 }
 
-bool   Vector::operator==(Vector second)
+double Vector::dotProduct(Vector const& vector)
+{
+  return x()*vector.y() - vector.x()*y();
+}
+
+bool   Vector::operator==(Vector const& second)
 {
   return (xDirection - second.x()) < libcity::EPSILON &&
          (yDirection - second.y()) < libcity::EPSILON &&
@@ -156,14 +168,12 @@ Vector Vector::operator/(double constant)
   return Vector(xDirection/constant, yDirection/constant, zDirection/constant);
 }
 
-Vector Vector::operator+(Vector vector)
+Vector Vector::operator+(Vector const& vector)
 {
   return Vector(xDirection + vector.x(), yDirection + vector.y(), zDirection + vector.z());
 }
 
 Vector::Vector(Point const& first, Point const& second)
 {
-  xDirection = second.x() - first.x();
-  yDirection = second.y() - first.y();
-  zDirection = second.z() - first.z();
+  set(first, second);
 }

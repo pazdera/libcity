@@ -46,6 +46,7 @@ class Vector
     double length();
 
     void set(double xCoord, double yCoord, double zCoord = 0);
+    void set(Point const& first, Point const& second);
     void setX(double coordinate);
     void setY(double coordinate);
     void setZ(double coordinate);
@@ -58,10 +59,12 @@ class Vector
 
     std::string toString();
 
-    bool   operator==(Vector second);
+    double dotProduct(Vector const& vector);
+
+    bool   operator==(Vector const& second);
     Vector operator*(double constant);
     Vector operator/(double constant);
-    Vector operator+(Vector vector);
+    Vector operator+(Vector const& vector);
 
 };
 #endif

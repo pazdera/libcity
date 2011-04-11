@@ -43,6 +43,33 @@ Polygon::Polygon(Point const& one, Point const& two, Point const& three, Point c
   addVertex(four);
 }
 
+Polygon::Polygon(Polygon const& source)
+{
+  initialize();
+
+  for (std::vector<Point*>::iterator vertex = source.vertices->begin();
+       vertex != source.vertices->end();
+       vertex++)
+  {
+    addVertex(**vertex);
+  }
+}
+
+Polygon& Polygon::operator=(Polygon const& source)
+{
+  freeVertices();
+  initialize();
+
+  for (std::vector<Point*>::iterator vertex = source.vertices->begin();
+       vertex != source.vertices->end();
+       vertex++)
+  {
+    addVertex(**vertex);
+  }
+
+  return *this;
+}
+
 Polygon::~Polygon()
 {
   freeVertices();

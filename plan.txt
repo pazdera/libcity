@@ -1,56 +1,4 @@
 Plan:
-  - DONE implement LSystem::addRule()
-  - DONE implement LSystem::Symbol
-  - DONE reimplement LSystem using LSystem::Symbol instead of char
-  - DONE clean up and comment lsystem.cpp ans lsystem.h files, divide it into sections
-  - DONE implement cursor stack in GraphicLSystem
-  - DONE consider implementing cursor class
-  - DONE implement GraphicLSystem::Cursor class
-  - DONE reimplement GraphicLSystem using Cursor class
-  - DONE implement symbol interpretation and reading
-  - DONE implement continuous iterating through the LSystem with continuous expanding
-  - DONE implement some interface for LSystem and GraphicLSystem so they can be used without creating a child class
-  - DONE implement Vector normalization and rotations
-  - DONE write graphic representation of line, point and turn symbols to RoadLSystem
-  - DONE clean up unit testing system a little
-  - DONE migrate to UnitTest++ testing framework
-  - DONE unit test for Vector class
-  - DONE unit test for Point class
-  - DONE unit test for LSystem
-  - DONE figure out how store position of symbols (possibly new string of graphical information tight to the previous string)
-  - DONE rewrite symbol list using pointers
-  - DONE add additional graphical information to symbols in GraphicLSystem
-  - DONE add isTerminal() method to LSystem
-  - DONE virtual method for dealocating Symbols in LSystem
-  - DONE don't forget destructing graphicInformation
-  - DONE clean up LSystem code a little (add some functions)
-  - DONE clean up GraphicLSystem code a little (add some functions)
-  - DONE figure out stringPosition issues in GraphicLSystem stringPosition removed for now
-  - DONE fix the fu*king segfault GraphicLSystem in readNextSymbol
-  - DONE unit test for GraphicLSystem
-  - DONE appending new characters to alphabet
-  - DONE expand RoadLSystem implementation
-  - DONE create raster road pattern class
-  - DONE destruct GraphicInformation in GraphicLSystem properly
-  - DONE figure out how to return graphical representation
-  - DONE implement low level road construction
-  - DONE create Path type in Road
-  - DONE start streetgraph unit test
-  - DONE create Polygon class
-  - DONE write tests for Polygon class
-  - DONE implement Polygon class
-  - DONE design streetgraph
-  - DONE implement streetgraph
-  - DONE implement 2D intersection of lines
-  - DONE make Line class unit test
-  - DONE comment and document Line class
-  - DONE comment and document Polygon class
-  - DONE add constant references where possible
-  - DONE implement trimming line by polygon
-  - DONE segfault: poping from stack while empty in GraphicLSystem
-  - DONE write test of graphicLsystem stack
-  - DONE implement streetgraph.addRoad()
-  - DONE implement streetgraph.addIntersection()
   - PROTOTYPE implement streetgraph.populate()
   - DONE write debug dump() outputs
   - DONE fix all memory leaks
@@ -60,14 +8,24 @@ Plan:
   - DONE generating random numbers
   - DONE start implementing 2d drawing
   - DONE implement distance of point from line segment
-  - remake relationship between street graph and street generators
+  - DONE remake relationship between street graph and street generators
   - DONE remove "trimOverlapingPart" from line and place it somewhere nicer
   - DONE design and write Path class
-  - set owner of intersection/road
-  - implement remove intersection/road
-  - refactor streetgraph modifying algorithm
-  - figure how to iterate through roads in streetgraph
-    - StreetGraph::iterator
+  - DONE implement dot product of vector
+  - DONE implement GetClockwiseMost
+  - DONE implement GetCounterclockwiseMost
+  - DONE implement removeFilament()
+  - DONE implement MCB
+  - DONE refactor MCB
+  - DONE refactor StreetGraph generating
+  - DONE implement remove intersection/road
+  - DONE move road adapting and snapping algorithm to roadgenerator from streetgraph
+  - DONE move area constraints to roadgenerator too
+  - NOT NECCESSARYset owner of intersection/road
+  - DONE implement division into zones
+  - DONE implement iterating through street graph
+  - PARTIALY DONE refactor streetgraph modifying algorithm
+  - DONE figure how to iterate through roads in streetgraph
   - implement streetgraph.divideToZones()
   - create LSystem class for each road pattern (checkquers, organic, radial)
   - bug fixing

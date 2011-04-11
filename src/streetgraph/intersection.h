@@ -14,6 +14,7 @@
 #define _INTERSECTION_H_
 
 #include <list>
+#include <vector>
 
 class Point; //!< From geometry package
 class Road;
@@ -31,8 +32,11 @@ class Intersection
     Point position() const;
     void  setPosition(Point const& coordinates);
 
+    std::vector<Intersection*> adjacentIntersections();
     int  numberOfWays() const; /**< Number of ways of the intersection */
+
     void addRoad(Road* road) throw();
+    void removeRoad(Road* road);
 
     void* owner();
     void  setOwner(void* ownerObject);

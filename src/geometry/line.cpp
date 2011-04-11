@@ -74,9 +74,9 @@ Point Line::end() const
 
 bool Line::hasPoint2D(Point const& point) const
 {
-  if ((point.x() - first->x()) * (second->y() - first->y()) -
-      (point.y() - first->y()) * (second->x() - first->x()) == 0
-     )
+  double lineTest = (point.x() - first->x()) * (second->y() - first->y()) -
+                    (point.y() - first->y()) * (second->x() - first->x());
+  if (std::abs(lineTest) < libcity::EPSILON)
   /* Point is on the line */
   {
     double t = 0.0;
