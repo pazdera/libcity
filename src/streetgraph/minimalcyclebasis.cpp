@@ -73,61 +73,6 @@ MinimalCycleBasis& MinimalCycleBasis::operator=(MinimalCycleBasis const& source)
   return *this;
 }
 
-Intersection* MinimalCycleBasis::getClockwiseMost(Intersection *previous, Intersection* current)
-{
-  std::vector<Intersection*> adjacentNodes = adjacent(current);
-
-  Vector vCurrent = previous ? Vector(current->position(), previous->position()) : Vector(0, -1);
-  Vector vNext;
-  Intersection* next = 0;
-  double vCurrentIsConvex = false;
-
-  Intersection* adjacent = 0;
-  Vector vAdjacent(0,0,0);
-  for (std::vector<Intersection*>::iterator adjacentNode = adjacentNodes.begin();
-       adjacentNode != adjacentNodes.end();
-       adjacentNode++)
-  {
-    adjacent = *adjacentNode;
-
-    if (adjacent == previous)
-    {
-      continue;
-    }
-
-    vAdjacent.set(adjacent->position(), current->position());
-
-    if (!next)
-    {
-        next = adjacent;
-        vNext = vAdjacent;
-        vCurrentIsConvex = (vNext.dotProduct(vCurrent) <= 0);
-        continue;
-    }
-
-    if (vCurrentIsConvex)
-    {
-      if (vCurrent.dotProduct(vAdjacent) < 0 || vNext.dotProduct(vAdjacent) < 0)
-      {
-          next = adjacent;
-          vNext = vAdjacent;
-          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
-      }
-    }
-    else
-    {
-      if (vCurrent.dotProduct(vAdjacent) < 0 && vNext.dotProduct(vAdjacent) < 0)
-      {
-          next = adjacent;
-          vNext = vAdjacent;
-          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
-      }
-    }
-  }
-
-  return next;
-}
-
 void MinimalCycleBasis::extractIsolatedVertex(Intersection* vertex)
 {
   removeVertex(vertex);
@@ -209,6 +154,7 @@ void MinimalCycleBasis::extractMinimalCycle(Intersection* current, Intersection*
          (currentVertex != current) &&
          (visited.find(currentVertex) == visited.end()))
   {
+    debug("MinimalCycleBasis::extractMinimalCycle(): Next point in sequence is " << currentVertex->position().toString());
     sequence.push_back(currentVertex);
     visited.insert(currentVertex);
     nextVertex = getCounterclockwiseMost(previousVertex, currentVertex);
@@ -241,6 +187,7 @@ void MinimalCycleBasis::extractMinimalCycle(Intersection* current, Intersection*
       markCycleEdge(*nodeInCycle, *nextNodeInCycle);
     }
 
+    debug("MinimalCycleBasis::extractMinimalCycle(): Storing minimal cycle.");
     cycles->push_back(minimalCycle);
 
     removeEdge(current, next);
@@ -286,33 +233,96 @@ std::list<Polygon> MinimalCycleBasis::getMinimalCycles()
   Intersection* current;
   Intersection* next;
 
+//   debug("MinimalCycleBasis::getMinimalCycles(): Adjacency list dump");
+//   dumpAdjacencyLists();
+//   debug("MinimalCycleBasis::getMinimalCycles(): Adjacencies from intersections");
+//   dumpAdjacenciesFromVertices();
+
   while (!empty())
   {
     current = first();
-    debug(current->position().toString());
+    //debug(current->position().toString());
 
     adjacentNodes = adjacent(current);
 
     if (adjacentNodes.size() == 0)
     /* Isolated, no cycle possible. */
     {
+      debug("MinimalCycleBasis::getMinimalCycles(): Extracting isolated vertex.");
       extractIsolatedVertex(current);
     }
     else if (adjacentNodes.size() == 1)
     /* Remove filaments */
     {
+      debug("MinimalCycleBasis::getMinimalCycles(): Extracting filament.");
       next = adjacentNodes[0];
       extractFilament(current, next);
     }
     else
     /* Extract cycles. */
     {
+      debug("MinimalCycleBasis::getMinimalCycles(): Extracting minimal cycle.");
       next = adjacentNodes[0];
       extractMinimalCycle(current, next);
     }
   }
 
   return *cycles;
+}
+
+Intersection* MinimalCycleBasis::getClockwiseMost(Intersection *previous, Intersection* current)
+{
+  std::vector<Intersection*> adjacentNodes = adjacent(current);
+
+  Vector vCurrent = previous != 0 ? Vector(current->position(), previous->position()) : Vector(0, -1);
+  Vector vNext;
+  Intersection* next = 0;
+  double vCurrentIsConvex = false;
+
+  Intersection* adjacent = 0;
+  Vector vAdjacent(0,0,0);
+  for (std::vector<Intersection*>::iterator adjacentNode = adjacentNodes.begin();
+       adjacentNode != adjacentNodes.end();
+       adjacentNode++)
+  {
+    adjacent = *adjacentNode;
+
+    if (adjacent == previous)
+    {
+      continue;
+    }
+
+    vAdjacent.set(adjacent->position(), current->position());
+
+    if (!next)
+    {
+        next = adjacent;
+        vNext = vAdjacent;
+        vCurrentIsConvex = (vNext.dotProduct(vCurrent) <= 0);
+        continue;
+    }
+
+    if (vCurrentIsConvex)
+    {
+      if (vCurrent.dotProduct(vAdjacent) < 0 || vNext.dotProduct(vAdjacent) < 0)
+      {
+          next = adjacent;
+          vNext = vAdjacent;
+          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
+      }
+    }
+    else
+    {
+      if (vCurrent.dotProduct(vAdjacent) < 0 && vNext.dotProduct(vAdjacent) < 0)
+      {
+          next = adjacent;
+          vNext = vAdjacent;
+          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
+      }
+    }
+  }
+
+  return next;
 }
 
 Intersection* MinimalCycleBasis::getCounterclockwiseMost(Intersection *previous, Intersection* current)
@@ -505,4 +515,37 @@ bool MinimalCycleBasis::isCycleEdge(Intersection* begining, Intersection* end)
 void MinimalCycleBasis::markCycleEdge(Intersection* begining, Intersection* end)
 {
   cycleEdges->insert(std::make_pair(begining, end));
+}
+
+void MinimalCycleBasis::dumpAdjacencyLists()
+{
+  for (std::map< Intersection*, std::vector<Intersection*> >::iterator nodeIterator = adjacentNodes->begin();
+       nodeIterator != adjacentNodes->end();
+       nodeIterator++)
+  {
+    debug((*nodeIterator).first->position().toString() << " Has this adjacent nodes :");
+    for (std::vector<Intersection*>::iterator adjacentNodeIterator = (*nodeIterator).second.begin();
+         adjacentNodeIterator != (*nodeIterator).second.end();
+         adjacentNodeIterator++)
+    {
+      debug("  " << (*adjacentNodeIterator)->position().toString());
+    }
+  }
+}
+
+void MinimalCycleBasis::dumpAdjacenciesFromVertices()
+{
+  for (std::list<Intersection*>::iterator nodeIterator = vertices->begin();
+       nodeIterator != vertices->end();
+       nodeIterator++)
+  {
+    debug((*nodeIterator)->position().toString() << " Has this adjacent nodes :");
+    std::vector<Intersection*> adjacent = (*nodeIterator)->adjacentIntersections();
+    for (std::vector<Intersection*>::iterator adjacentNodeIterator = adjacent.begin();
+         adjacentNodeIterator != adjacent.end();
+         adjacentNodeIterator++)
+    {
+      debug("  " << (*adjacentNodeIterator)->position().toString());
+    }
+  }
 }

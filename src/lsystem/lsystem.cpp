@@ -259,7 +259,7 @@ char LSystem::ProductionRule::predecessor() const
 std::string LSystem::ProductionRule::successor() const
 {
   Random generator;
-  return rightSide[generator.integerValue(0, rightSide.size() - 1)];
+  return rightSide[generator.generateInteger(0, rightSide.size() - 1)];
 }
 
 /* ********************* */

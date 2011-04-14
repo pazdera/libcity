@@ -57,4 +57,31 @@ SUITE(PolygonClass)
 
     delete p;
   }
+
+  TEST(centroid)
+  {
+    Polygon *p = new Polygon();
+
+    p->addVertex(Point(0,0));
+    p->addVertex(Point(0,10));
+    p->addVertex(Point(10,10));
+    p->addVertex(Point(10,0));
+
+
+    CHECK(p->centroid() == Point(5, 5));
+    
+    delete p;
+
+    p = new Polygon();
+
+    p->addVertex(Point(-10,-10));
+    p->addVertex(Point(-10,10));
+    p->addVertex(Point(10,10));
+    p->addVertex(Point(10,-10));
+
+
+    CHECK(p->centroid() == Point(0, 0));
+
+    delete p;
+  }
 }

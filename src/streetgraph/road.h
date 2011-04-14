@@ -18,12 +18,10 @@ class Path;
 
 class Road
 {
-  private:
-    Road();
-
   public:
     /** Create road between two intersections.
         Path is determined automaticaly.*/
+    Road();
     Road(Intersection *first, Intersection *second);
 
     /**
@@ -72,21 +70,6 @@ inline Intersection* Road::begining() const
 inline Intersection* Road::end() const
 {
   return to;
-}
-
-inline void Road::setBegining(Intersection* intersection)
-{
-  from = intersection;
-}
-
-inline void Road::setEnd(Intersection* intersection)
-{
-  to = intersection;
-}
-
-inline Path* Road::path() const
-{
-  return geometrical_path;
 }
 
 

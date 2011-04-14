@@ -13,6 +13,7 @@
 
 #include "intersection.h"
 #include "../debug.h"
+#include "../geometry/units.h"
 #include "../geometry/line.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"
@@ -64,40 +65,15 @@ void Path::setEnd(Point const& end)
   representation->setEnd(end);
 }
 
-void Path::trimOverlapingPart(Polygon const& boundaries)
-{
-  Point intersection;
-  Line  edge;
-  int vertices = boundaries.numberOfVertices();
-
-  for (int number = 0; number < vertices; number++)
-  {
-    edge.setBegining(boundaries.vertex(number));
-    edge.setEnd(boundaries.vertex((number + 1) % vertices));
-
-    if (crosses(edge, &intersection))
-    {
-      if (!boundaries.encloses2D(begining()))
-      {
-        setBegining(intersection);
-      }
-      else
-      {
-        setEnd(intersection);
-      }
-      break;
-    }
-  }
-}
-
 bool Path::isInside(Polygon const& certainArea) const
 {
   return certainArea.encloses2D(begining()) ||
          certainArea.encloses2D(end());
 }
 
-bool Path::goesThrough(Point const& certainPoint)
+bool Path::goesThrough(Point const& certainPoint) const
 {
+  //debug(representation->distance(certainPoint) << " path " << representation->begining().toString() << " " <<  representation->end().toString());
   return representation->hasPoint2D(certainPoint);
 }
 

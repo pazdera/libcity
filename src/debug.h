@@ -13,17 +13,17 @@
 #define __DEBUG_H_
 
 #include <iostream>
-#include <assert.h>
 
 /* Debugging is ON */
 #define DEBUG
 
-
 #ifdef DEBUG
-#define debug(x) std::cerr << "DEBUG: " << x << std::endl
+  #define debug(x) std::cerr << "DEBUG: " << x << std::endl
 #else
-#define debug(x)
+  #define debug(x)
+  #define NDEBUG /* Turn off asserts */
 #endif
 
+#include <assert.h>
 
 #endif

@@ -13,6 +13,7 @@
 
 #include "streetgraph/streetgraph.h"
 #include "streetgraph/zone.h"
+#include "geometry/polygon.h"
 
 City::City()
 {
@@ -26,6 +27,7 @@ City::~City()
 
 void City::initialize()
 {
+  area = new Polygon;
   map = new StreetGraph;
   zones = new std::list<Zone*>;
 }
@@ -33,6 +35,7 @@ void City::freeMemory()
 {
   delete map;
   delete zones;
+  delete area;
 }
 
 void City::generate()

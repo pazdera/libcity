@@ -23,8 +23,8 @@ class RasterRoadPattern : public RoadLSystem
     virtual ~RasterRoadPattern();
 
   protected:
-    virtual double getTurnAngle();
-    virtual double getRoadSegmentLength();
+//     virtual double getTurnAngle();
+//     virtual double getRoadSegmentLength();
 
   private:
     

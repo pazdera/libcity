@@ -10,6 +10,7 @@
  */
 
 #include "point.h"
+#include "vector.h"
 #include "units.h"
 
 #include <sstream>
@@ -78,6 +79,15 @@ bool Point::operator>(Point const& second)
   }
 
   return false;
+}
+
+Point& Point::operator+=(Vector const& difference)
+{
+  xPosition += difference.x();
+  yPosition += difference.y();
+  zPosition += difference.z();
+
+  return *this;
 }
 
 std::string Point::toString()

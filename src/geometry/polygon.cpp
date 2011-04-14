@@ -157,14 +157,18 @@ Point Polygon::centroid() const
     currentVertex = vertices->at(currentVertexPosition);
     nextVertex    = vertices->at((currentVertexPosition + 1) % count);
 
-    areaStep = currentVertex->x() * nextVertex->y() - currentVertex->y() * nextVertex->x();
+    areaStep = currentVertex->x() * nextVertex->y() - nextVertex->x() * currentVertex->y();
     area += areaStep;
 
-    x += (currentVertex->x() * nextVertex->x()) / areaStep;
-    y += (currentVertex->y() * nextVertex->y()) / areaStep;
+    x += (currentVertex->x() + nextVertex->x()) * areaStep;
+    y += (currentVertex->y() + nextVertex->y()) * areaStep;
   }
 
-  return Point(x/(3*area), (y/3*area));
+  Point centroid(x/(6*(area/2)), y/(6*(area/2)));
+  debug(area/2);
+  debug(signedArea());
+  debug("Polygon::centroid() is " << centroid.toString());
+  return centroid;
 }
 
 bool Polygon::encloses2D(Point const& point) const

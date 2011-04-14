@@ -22,8 +22,8 @@ class OrganicRoadPattern : public RoadLSystem
     virtual ~OrganicRoadPattern();
 
   protected:
-    virtual double getTurnAngle();
-    virtual double getRoadSegmentLength();
+//     virtual double getTurnAngle();
+//     virtual double getRoadSegmentLength();
 
   private:
 

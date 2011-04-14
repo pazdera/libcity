@@ -37,10 +37,9 @@ class Path
     void setBegining(Point const& begining);
     void setEnd(Point const& end);
 
-    void trimOverlapingPart(Polygon const& boundaries);
     bool isInside(Polygon const& certainArea) const;
 
-    bool goesThrough(Point const& certainPoint);
+    bool goesThrough(Point const& certainPoint) const;
     bool crosses(Path const& anotherPath, Point* intersection);
 
     Point nearestPoint(Point const& point);

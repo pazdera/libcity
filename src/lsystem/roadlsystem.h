@@ -16,10 +16,10 @@
 #define _ROADLSYSTEM_H_
 
 #include "graphiclsystem.h"
+#include "../streetgraph/road.h"
 
 class Point;
 class Vector;
-class Road;
 class Line;
 class Path;
 class StreetGraph;
@@ -32,10 +32,16 @@ class RoadLSystem : public GraphicLSystem
     virtual ~RoadLSystem();
 
     virtual void generateRoads(int number);
+    virtual void generate();
 
     void setTarget(StreetGraph* target);
 
     void setAreaConstraints(Polygon *polygon);
+
+    void setRoadType(Road::types type);
+    void setRoadLength(double min, double max);
+    void setTurnAngle(double min, double max);
+    void setSnapDistance(double distance);
 
   protected:
     virtual void interpretSymbol(char symbol);
@@ -47,15 +53,23 @@ class RoadLSystem : public GraphicLSystem
     virtual bool localConstraints(Path* proposedPath);
     virtual void cancelBranch();
 
-    virtual double getRoadSegmentLength() = 0;
-    virtual double getTurnAngle() = 0;
+    virtual double getRoadSegmentLength();
+    virtual double getTurnAngle();
 
-    bool isPathInsideAreaConstraints(Path const& proposedPath);
+    bool isPathInsideAreaConstraints(Path* proposedPath);
 
   private:
     int generatedRoads;
     StreetGraph* targetStreetGraph;
     Polygon* areaConstraints;
+
+    double snapDistance;
+
+    Road::types generatedType;
+    double minRoadLength;
+    double maxRoadLength;
+    double minTurnAngle;
+    double maxTurnAngle;
 
     void freeAreaConstraints();
 };

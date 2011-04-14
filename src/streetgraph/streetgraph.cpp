@@ -38,10 +38,10 @@ void StreetGraph::initialize()
 
 StreetGraph::~StreetGraph()
 {
-  freeGraph();
+  freeMemory();
 }
 
-void StreetGraph::freeGraph()
+void StreetGraph::freeMemory()
 {
   Intersection *removedIntersection = 0;
   Road *removedRoad = 0;
@@ -68,10 +68,12 @@ void StreetGraph::freeGraph()
 
 std::list<Zone*> StreetGraph::findZones()
 {
+  debug("StreetGraph::findZones() passing " << intersections->size() << " intersections to MCB.");
   MinimalCycleBasis graph(intersections);
   std::list<Polygon> boundaries = graph.getMinimalCycles();
 
   std::list<Zone*> zones;
+  debug("StreetGraph::findZones() found " << boundaries.size() << " zones.");
 
   for (std::list<Polygon>::iterator foundZone = boundaries.begin();
        foundZone != boundaries.end();
@@ -118,7 +120,7 @@ void StreetGraph::addRoad(Path const& path)
   Intersection *end = addIntersection(roadPath.end());
 
   Road *newRoad = new Road(begining, end);
-  newRoad->setPath(roadPath);
+  //newRoad->setPath(roadPath);
 
   // Connect road to intersections
   begining->addRoad(newRoad);
@@ -166,6 +168,8 @@ Intersection* StreetGraph::addIntersection(Point const& position)
   Intersection *newIntersection = new Intersection(position);
   intersections->push_back(newIntersection);
 
+  //debug("StreetGraph::addIntersection(): Adding intersection Intersection " << newIntersection->position().toString());
+
   /* Check if the existing intersection crosses any existing road. */
   for (std::list<Road*>::iterator road = roads->begin();
        road != roads->end();
@@ -174,6 +178,7 @@ Intersection* StreetGraph::addIntersection(Point const& position)
     if ((*road)->path()->goesThrough(position))
     /* If so, split the road into two. */
     {
+      //debug("StreetGraph::addIntersection(): Splitting road for Intersection " << newIntersection->position().toString());
       Intersection *end = (*road)->end();
       end->removeRoad(*road);
 
@@ -216,4 +221,9 @@ bool StreetGraph::isIntersectionAtPosition(Point const& position)
   }
 
   return false;
+}
+
+int StreetGraph::numberOfRoads()
+{
+  return roads->size();
 }

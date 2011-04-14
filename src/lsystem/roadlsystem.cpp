@@ -10,6 +10,7 @@
  */
 
 #include "roadlsystem.h"
+#include "../random.h"
 #include "../geometry/vector.h"
 #include "../geometry/point.h"
 #include "../geometry/line.h"
@@ -35,6 +36,12 @@ RoadLSystem::RoadLSystem()
    */
   addToAlphabet("-+E");
   setAxiom("E");
+
+  generatedType = Road::PRIMARY_ROAD;
+  minRoadLength = 0;
+  maxRoadLength = 0;
+  minTurnAngle  = 0;
+  maxTurnAngle  = 0;
 }
 
 RoadLSystem::~RoadLSystem()
@@ -58,6 +65,12 @@ void RoadLSystem::interpretSymbol(char symbol)
       GraphicLSystem::interpretSymbol(symbol);
       break;
   }
+}
+
+void RoadLSystem::generate()
+{
+  while (readNextSymbol() != 0)
+  {}
 }
 
 void RoadLSystem::generateRoads(int number)
@@ -86,14 +99,12 @@ void RoadLSystem::drawLine()
   /* According to global goals */
   Path proposedPath = Path(Line(previousPosition, currentPosition));
 
-  if(!isPathInsideAreaConstraints(proposedPath))
+  if(!isPathInsideAreaConstraints(&proposedPath))
   /* Path is outside the area constraints */
   {
     cancelBranch();
     return;
   }
-
-  proposedPath.trimOverlapingPart(*areaConstraints);
 
   /* Modify path according to localConstraints of existing streets. */
   if (!localConstraints(&proposedPath))
@@ -131,10 +142,10 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
 {
   // FIXME
   Intersection* nearestIntersection = 0;
-  double distanceToNearestIntersection = libcity::SNAP_DISTANCE + 1;
+  double distanceToNearestIntersection = snapDistance + 1;
 
   Road* nearestRoad = 0;
-  double distanceToNearestRoad = libcity::SNAP_DISTANCE + 1;
+  double distanceToNearestRoad = snapDistance + 1;
 
   Point intersection;
   double distance;
@@ -161,34 +172,34 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     // Measure distance of ending point of the path
     //   - to intersection and to the whole path
     distance = Vector(proposedPath->end(), (*currentRoad)->begining()->position()).length();
-    if (distance < libcity::SNAP_DISTANCE && distance < distanceToNearestIntersection)
+    if (distance < snapDistance && distance < distanceToNearestIntersection)
     {
       nearestIntersection = (*currentRoad)->begining();
     }
 
     distance = Vector(proposedPath->end(), (*currentRoad)->end()->position()).length();
-    if (distance < libcity::SNAP_DISTANCE && distance < distanceToNearestIntersection)
+    if (distance < snapDistance && distance < distanceToNearestIntersection)
     {
       nearestIntersection = (*currentRoad)->end();
     }
 
     distance = Vector(proposedPath->end(), (*currentRoad)->path()->nearestPoint(proposedPath->end())).length();
-    if (distance < libcity::SNAP_DISTANCE && distance < distanceToNearestRoad)
+    if (distance < snapDistance && distance < distanceToNearestRoad)
     {
       nearestRoad = (*currentRoad);
     }
 
     // Measure similarity of the two paths
     // proposedPath is too close to some existing path
-    if (proposedPath->distance((*currentRoad)->end()->position()) < libcity::SNAP_DISTANCE &&
-        proposedPath->distance((*currentRoad)->begining()->position()) < libcity::SNAP_DISTANCE)
+    if (proposedPath->distance((*currentRoad)->end()->position()) < snapDistance &&
+        proposedPath->distance((*currentRoad)->begining()->position()) < snapDistance)
     {
       return false;
     }
 
     // Some existing road is too close
-    if ((*currentRoad)->path()->distance(proposedPath->begining()) < libcity::SNAP_DISTANCE &&
-        (*currentRoad)->path()->distance(proposedPath->end()) < libcity::SNAP_DISTANCE)
+    if ((*currentRoad)->path()->distance(proposedPath->begining()) < snapDistance &&
+        (*currentRoad)->path()->distance(proposedPath->end()) < snapDistance)
     {
       return false;
     }
@@ -214,12 +225,54 @@ void RoadLSystem::setTarget(StreetGraph* target)
   targetStreetGraph = target;
 }
 
-bool RoadLSystem::isPathInsideAreaConstraints(Path const& proposedPath)
+bool RoadLSystem::isPathInsideAreaConstraints(Path* proposedPath)
 {
-  bool beginingIsInside = areaConstraints->encloses2D(proposedPath.begining()),
-       endIsInside = areaConstraints->encloses2D(proposedPath.end());
+  bool beginingIsInside = areaConstraints->encloses2D(proposedPath->begining()),
+       endIsInside = areaConstraints->encloses2D(proposedPath->end());
 
-  return beginingIsInside || endIsInside;
+  if (!beginingIsInside && !endIsInside)
+  {
+    return false;
+  }
+
+  Point intersection;
+  Line  edge;
+  int vertices = areaConstraints->numberOfVertices();
+  bool touching = false;
+
+  for (int number = 0; number < vertices; number++)
+  {
+    edge.setBegining(areaConstraints->vertex(number));
+    edge.setEnd(areaConstraints->vertex((number + 1) % vertices));
+
+    if (edge.hasPoint2D(proposedPath->begining()) || edge.hasPoint2D(proposedPath->end()))
+    {
+      touching = true;
+      continue;
+    }
+
+    if (proposedPath->crosses(Path(edge), &intersection))
+    {
+
+      if (!areaConstraints->encloses2D(proposedPath->begining()))
+      {
+        proposedPath->setBegining(intersection);
+      }
+      else
+      {
+        proposedPath->setEnd(intersection);
+      }
+      break;
+    }
+  }
+
+  if (touching)
+  /* Line is touching, but not crossing any borders => it's all out */
+  {
+    return false;
+  }
+
+  return true;
 }
 
 void RoadLSystem::setAreaConstraints(Polygon *polygon)
@@ -234,4 +287,39 @@ void RoadLSystem::freeAreaConstraints()
   {
     delete areaConstraints;
   }
+}
+
+
+void RoadLSystem::setRoadType(Road::types type)
+{
+  generatedType = type;
+}
+
+void RoadLSystem::setRoadLength(double min, double max)
+{
+  minRoadLength = min;
+  maxRoadLength = max;
+}
+
+void RoadLSystem::setTurnAngle(double min, double max)
+{
+  minTurnAngle = min;
+  maxTurnAngle = max;
+}
+
+double RoadLSystem::getRoadSegmentLength()
+{
+  Random random;
+  return random.generateDouble(minRoadLength, maxRoadLength);
+}
+
+double RoadLSystem::getTurnAngle()
+{
+  Random random;
+  return random.generateDouble(minTurnAngle, maxTurnAngle);
+}
+
+void RoadLSystem::setSnapDistance(double distance)
+{
+  snapDistance = distance;
 }

@@ -25,20 +25,39 @@ class Random
   public:
     static void setSeed(int newSeed);
 
+    /* Static factories of different configurations */
+    static Random doubleValue(double lower, double higher);
+    static Random integerValue(int lower, int higher);
+    static Random boolValue(double chance);
+
     Random();
     Random(double ownSeed);
     ~Random();
 
-    double doubleValue(double lowerBound, double higherBound);
-    int integerValue(int lowerBound, int higherBound);
+    double generateDouble(double lower, double higher);
+    int generateInteger(int lower, int higher);
+    bool generateBool(double chance);
 
-    bool flag(double probability);
+    double generate();
 
   private:
     double base();
 
     bool   useOwnSeed;
     unsigned int state;
+
+    /* For value objects */
+    enum values
+    {
+      NONE,
+      DOUBLE_VALUE,
+      INTEGER_VALUE,
+      BOOL_VALUE
+    };
+    values configuration;
+    double lowerBound;
+    double higherBound;
+    double probability;
 };
 
 #endif

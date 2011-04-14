@@ -74,6 +74,9 @@ class MinimalCycleBasis
     void initialize();
     void freeMemory();
 
+    void dumpAdjacencyLists();
+    void dumpAdjacenciesFromVertices();
+
   private:
     /** Stores all vertices of the graph sorted by their x position. */
     std::list<Intersection*>* vertices;

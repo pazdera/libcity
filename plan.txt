@@ -26,16 +26,19 @@ Plan:
   - DONE implement iterating through street graph
   - PARTIALY DONE refactor streetgraph modifying algorithm
   - DONE figure how to iterate through roads in streetgraph
-  - implement streetgraph.divideToZones()
-  - create LSystem class for each road pattern (checkquers, organic, radial)
-  - bug fixing
+  - DONE implement streetgraph.divideToZones()
+  - DONE create LSystem class for each road pattern (checkquers, organic, radial)
+  - DONE bug fixing
+  - DONE remove trimOverlapingPart from line
+  - DONE create github project page
+  - Make Intersections available outside the StreetGraph
+  - Write basic skeleton of precomputeIntersections
+  - How to work with Rays?
+  - Create texture for 3 and 4 way intersections
+  - Eliminate 5 and more way intersections in roadGenerators
+  - Make drawing roads more configurable
+  - 
   - design error handling and exceptions
   - think about thesis chapters
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D
-
-  - NAPAD: GraphicInformation je jen base. V odvozenych tridach si muzeme pro kazdy symbol udelat decka. Pro ruzne typy symbolu
-           a pak s nimi tak pracovat. To umozni udelat streetgraph primo v lsystemu.
-  - NAPAD: Road lze zkonstruhovat jen s určenou low level reprezentací high level příjde potom
-  - NAPAD: Generator nahodnych čísel jako singleton
-  - NAPAD: podobnost dvou úseček zjistit vzdálenost počátku a konce jedné úsečky a druhé. Pokud jsou tyto vzdálenosti pod SNAP_DISTANCE, zdar.

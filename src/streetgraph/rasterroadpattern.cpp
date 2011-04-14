@@ -33,23 +33,11 @@ RasterRoadPattern::RasterRoadPattern()
 RasterRoadPattern::~RasterRoadPattern()
 {}
 
-double RasterRoadPattern::getTurnAngle()
-{
-  Random generator;
-  return 90;
-  if (generator.flag(0.7))
-    return 90;
-  else
-   return (generator.doubleValue(60,90));
-}
-double RasterRoadPattern::getRoadSegmentLength()
-{
-  Random generator;
-//   if (generator.flag(0.3))
-//   {
-//     return 50;
-//   }
-// 
-//   return 70;
-  return generator.doubleValue(50,70);
-}
+// double RasterRoadPattern::getTurnAngle()
+// {
+//   return 90;
+// }
+// double RasterRoadPattern::getRoadSegmentLength()
+// {
+//   return Random::doubleValue(50,70).generate();
+// }

@@ -16,12 +16,16 @@
 
 class StreetGraph;
 class Zone;
+class Polygon;
 
 class City
 {
   public:
     City();
     virtual ~City();
+
+    virtual void generate();
+    virtual void draw();
 
   private: /* Copying not allowed */
     City(City const& source);
@@ -33,19 +37,16 @@ class City
     virtual void createSecondaryRoadNetwork() = 0;
     virtual void createBlocks() = 0;
     virtual void createBuildings() = 0;
-  public:
-    virtual void generate();
 
-  protected:
     virtual void drawRoadNetwork() = 0;
     virtual void drawBuildings() = 0;
-  public:
-    virtual void draw();
 
-  private:
     StreetGraph* map;
     std::list<Zone*> *zones;
 
+    Polygon* area;
+
+  private:
     void initialize();
     void freeMemory();
 };

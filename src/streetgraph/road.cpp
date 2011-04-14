@@ -10,16 +10,17 @@
  */
 
 #include "road.h"
+#include "../debug.h"
 #include "path.h"
 #include "intersection.h"
 #include "../geometry/line.h"
 #include "../geometry/point.h"
 
-/** No places (intersections), no path between them.
-    There's no use for such object. */
 Road::Road()
   : from(0), to(0), geometrical_path(0)
-{}
+{
+  geometrical_path = new Path;
+}
 
 Road::Road(Intersection *first, Intersection *second)
   : from(first), to(second), geometrical_path(0)
@@ -69,4 +70,21 @@ Road::types Road::type()
 void Road::setType(Road::types type)
 {
   roadType = type;
+}
+
+void Road::setBegining(Intersection* intersection)
+{
+  from = intersection;
+  geometrical_path->setBegining(from->position());
+}
+
+void Road::setEnd(Intersection* intersection)
+{
+  to = intersection;
+  geometrical_path->setEnd(to->position());
+}
+
+Path* Road::path() const
+{
+  return geometrical_path;
 }

@@ -24,13 +24,13 @@ void Random::setSeed(int newSeed)
 }
 
 Random::Random()
-  : useOwnSeed(false)
+  : useOwnSeed(false), configuration(NONE)
 {
   state = seed;
 }
 
 Random::Random(double ownSeed)
-  : useOwnSeed(true)
+  : useOwnSeed(true), configuration(NONE)
 {
   state = ownSeed;
 }
@@ -38,35 +38,35 @@ Random::Random(double ownSeed)
 Random::~Random()
 {}
 
-double Random::doubleValue(double lowerBound, double higherBound)
+double Random::generateDouble(double lower, double higher)
 {
   double temporary;
-  if (lowerBound > higherBound)
+  if (lower > higher)
   {
-    temporary   = lowerBound;
-    lowerBound  = higherBound;
-    higherBound = temporary;
+    temporary   = lower;
+    lower  = higher;
+    higher = temporary;
   }
 
-  return base() * (higherBound - lowerBound) + lowerBound;
+  return base() * (higher - lower) + lower;
 }
 
-int Random::integerValue(int lowerBound, int higherBound)
+int Random::generateInteger(int lower, int higher)
 {
   int temporary;
-  if (lowerBound > higherBound)
+  if (lower > higher)
   {
-    temporary   = lowerBound;
-    lowerBound  = higherBound;
-    higherBound = temporary;
+    temporary   = lower;
+    lower  = higher;
+    higher = temporary;
   }
 
-  return base() * (higherBound + 1 - lowerBound) + lowerBound;
+  return base() * (higher + 1 - lower) + lower;
 }
 
-bool Random::flag(double probability)
+bool Random::generateBool(double chance)
 {
-  return doubleValue(0, 1) < probability;
+  return generateDouble(0, 1) < chance;
 }
 
 double Random::base()
@@ -79,4 +79,53 @@ double Random::base()
   }
 
   return state / (static_cast<double>(UINT_MAX) + 1.0);
+}
+
+double Random::generate()
+{
+  switch (configuration)
+  {
+    case NONE:
+      // FIXME exception
+      return 0;
+    case DOUBLE_VALUE:
+      return generateDouble(lowerBound, higherBound);
+    case INTEGER_VALUE:
+      return generateInteger(lowerBound, higherBound);
+    case BOOL_VALUE:
+      return generateBool(probability);
+  }
+}
+
+
+Random Random::doubleValue(double lower, double higher)
+{
+  Random generator;
+
+  generator.configuration = DOUBLE_VALUE;
+  generator.lowerBound = lower;
+  generator.higherBound = higher;
+
+  return generator;
+}
+
+Random Random::integerValue(int lower, int higher)
+{
+  Random generator;
+
+  generator.configuration = INTEGER_VALUE;
+  generator.lowerBound = lower;
+  generator.higherBound = higher;
+
+  return generator;
+}
+
+Random Random::boolValue(double chance)
+{
+  Random generator;
+
+  generator.configuration = BOOL_VALUE;
+  generator.probability = chance;
+
+  return generator;
 }

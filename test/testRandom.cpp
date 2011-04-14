@@ -29,70 +29,70 @@ SUITE(RandomClass)
   {
     Random g1(libcity::RANDOM_SEED), g2(libcity::RANDOM_SEED), generator;
 
-    generator.doubleValue(0,100);
-    CHECK_EQUAL(g1.doubleValue(0,100), g2.doubleValue(0,100));
-    CHECK_EQUAL(generator.doubleValue(0,100), g2.doubleValue(0,100));
-    CHECK_EQUAL(generator.doubleValue(0,100), g2.doubleValue(0,100));
+    generator.generateDouble(0,100);
+    CHECK_EQUAL(g1.generateDouble(0,100), g2.generateDouble(0,100));
+    CHECK_EQUAL(generator.generateDouble(0,100), g2.generateDouble(0,100));
+    CHECK_EQUAL(generator.generateDouble(0,100), g2.generateDouble(0,100));
 
-    g1.doubleValue(0,100);
-    g1.doubleValue(0,100);
-    CHECK_EQUAL(g1.doubleValue(0,100), g2.doubleValue(0,100));
+    g1.generateDouble(0,100);
+    g1.generateDouble(0,100);
+    CHECK_EQUAL(g1.generateDouble(0,100), g2.generateDouble(0,100));
   }
 
-  TEST(doubleValue)
+  TEST(generateDouble)
   {
     Random generator;
-    CHECK(generator.doubleValue(0, 1) >= 0);
-    CHECK(generator.doubleValue(0, 1) <= 1);
+    CHECK(generator.generateDouble(0, 1) >= 0);
+    CHECK(generator.generateDouble(0, 1) <= 1);
 
-    CHECK(generator.doubleValue(1, 0) >= 0);
-    CHECK(generator.doubleValue(1, 0) <= 1);
+    CHECK(generator.generateDouble(1, 0) >= 0);
+    CHECK(generator.generateDouble(1, 0) <= 1);
 
-    CHECK(generator.doubleValue(2,2) == 2);
+    CHECK(generator.generateDouble(2,2) == 2);
   }
 
-  TEST(Flag)
+  TEST(generateBool)
   {
     Random generator;
 
-    generator.flag(0.5);
+    generator.generateBool(0.5);
 
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
-    CHECK_EQUAL(1, generator.flag(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
+    CHECK_EQUAL(1, generator.generateBool(1));
 
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
-    CHECK_EQUAL(0, generator.flag(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
+    CHECK_EQUAL(0, generator.generateBool(0));
   }
 }

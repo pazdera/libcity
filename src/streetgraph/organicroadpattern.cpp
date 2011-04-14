@@ -33,15 +33,13 @@ OrganicRoadPattern::OrganicRoadPattern()
 OrganicRoadPattern::~OrganicRoadPattern()
 {}
 
-double OrganicRoadPattern::getTurnAngle()
-{
-  Random generator;
-
-  return (generator.doubleValue(60,90));
-}
-double OrganicRoadPattern::getRoadSegmentLength()
-{
-  Random generator;
-
-  return generator.doubleValue(50,70);
-}
+// double OrganicRoadPattern::getTurnAngle()
+// {
+//   return Random::doubleValue(60,90).generate();
+// }
+// double OrganicRoadPattern::getRoadSegmentLength()
+// {
+//   Random generator;
+// 
+//   return generator.doubleValue(500,700);
+// }

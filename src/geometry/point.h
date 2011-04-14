@@ -14,6 +14,8 @@
 
 #include <string>
 
+class Vector;
+
 class Point
 {
   public:
@@ -44,6 +46,8 @@ class Point
     bool operator==(Point const& second);
     bool operator<(Point const& second);
     bool operator>(Point const& second);
+
+    Point& operator+=(Vector const& difference);
 };
 
 inline double Point::x() const
