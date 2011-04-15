@@ -63,7 +63,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testLine.o \
            test/testRasterRoadPattern.o \
            test/testRandom.o \
-           test/testMCB.o
+           test/testMCB.o \
+           test/testPath.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

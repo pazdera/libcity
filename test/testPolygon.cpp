@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file test/testPolygon.h
+ * @file test/testPolygon.cpp
  * @date 19.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *

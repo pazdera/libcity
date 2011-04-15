@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file test/testStreetGraph.h
+ * @file test/testStreetGraph.cpp
  * @date 19.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *

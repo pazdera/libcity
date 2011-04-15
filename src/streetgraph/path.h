@@ -37,6 +37,31 @@ class Path
     void setBegining(Point const& begining);
     void setEnd(Point const& end);
 
+    /**
+      Extract vector that what direction would this
+      path take if it should be expanded beyond the
+      begining point.
+     @note
+       The direction is oposite to the direction of
+       the path. Path goes from begining to end, this
+       vector goes away from begining (or backwards).
+
+     @return Normalized direction Vector.
+     */
+    Vector beginingDirectionVector();
+
+    /**
+      Extract vector that what direction would this
+      path take if it should be expanded beyond the
+      end point.
+     @note
+       The direction is same to the direction of
+       the path. Path goes from begining to end.
+
+     @return Normalized direction Vector.
+     */
+    Vector endDirectionVector();
+
     bool isInside(Polygon const& certainArea) const;
 
     bool goesThrough(Point const& certainPoint) const;
@@ -47,7 +72,18 @@ class Path
 
     void shorten(Point const& newBegining, Point const& newEnd);
 
+    /**
+      NOT IMPLEMENTED
+     @todo
+       What should this do? Can it be removed?
+     */
     void snap(Point const& intersection);
+
+    /**
+      NOT IMPLEMENTED
+     @todo
+       What should this do? Can it be removed?
+     */
     void snap(Path const& road);
 
     std::string toString();

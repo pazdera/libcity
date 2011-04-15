@@ -11,7 +11,7 @@
  * finds all minimal cycles in the graph using
  * David Eberly's algorithm for planar graphs.
  *
- * \TODO Might use some refactoring to make the class
+ * @todo Might use some refactoring to make the class
  * more generic. Now it works with Intersection as a
  * node, which makes it unusable outside of a StreetGraph.
  * It could for example work with points as nodes.

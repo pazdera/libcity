@@ -33,6 +33,8 @@ Plan:
   - DONE create github project page
   - DONE Make Intersections available outside the StreetGraph
   - DONE Write basic skeleton of precomputeIntersections
+  - Tests for Path::beginingDirectionVector() and Path::endDirectionVector()
+  - Implement resolving path direction vectors
   - Implement sorting vectors clockwise (using perp dot product?)
   - How to work with Rays?
   - Create texture for 3 and 4 way intersections
@@ -40,6 +42,7 @@ Plan:
   - Make drawing roads more configurable
   - DONE Try github's bugtracker
   - Clean debug messages
+  - Create documentation in Ogre demo app
   - 
   - design error handling and exceptions
   - think about thesis chapters

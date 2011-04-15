@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file test/testlsystem->h
+ * @file test/testlsystem.cpp
  * @date 13.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *

@@ -17,6 +17,7 @@
 #include "../geometry/line.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"
+#include "../geometry/vector.h"
 
 Path::Path()
 {
@@ -73,7 +74,6 @@ bool Path::isInside(Polygon const& certainArea) const
 
 bool Path::goesThrough(Point const& certainPoint) const
 {
-  //debug(representation->distance(certainPoint) << " path " << representation->begining().toString() << " " <<  representation->end().toString());
   return representation->hasPoint2D(certainPoint);
 }
 
@@ -117,4 +117,15 @@ void Path::snap(Path const& road)
 std::string Path::toString()
 {
   return "Path(" + representation->toString() + ")";
+}
+
+
+Vector Path::beginingDirectionVector()
+{
+  
+}
+
+Vector Path::endDirectionVector()
+{
+  
 }
