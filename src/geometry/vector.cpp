@@ -165,6 +165,20 @@ double Vector::angleTo(Vector const& vector)
   return std::acos(first.dotProduct(second)/(first.length()*second.length()));
 }
 
+double Vector::angleToXAxis()
+{
+  /* This produces results in the range (−PI, PI], which can be
+  mapped to [0, 2PI) by adding 2PI to negative values. */
+  double angle = atan2(y(), x()); 
+
+  if (angle < 0)
+  {
+    angle += 2*libcity::PI;
+  }
+
+  return angle;
+}
+
 bool   Vector::operator==(Vector const& second)
 {
   return (xDirection - second.x()) < libcity::EPSILON &&

@@ -122,10 +122,16 @@ std::string Path::toString()
 
 Vector Path::beginingDirectionVector()
 {
-  
+  Vector beginingDirection(end(), begining());
+  beginingDirection.normalize();
+
+  return beginingDirection;
 }
 
 Vector Path::endDirectionVector()
 {
-  
+  Vector endDirection(begining(), end());
+  endDirection.normalize();
+
+  return endDirection;
 }

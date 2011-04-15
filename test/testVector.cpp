@@ -66,11 +66,11 @@ SUITE(VectorClass)
   {
     Vector vector(10, 11, 12);
     vector.normalize();
-    CHECK_CLOSE(vector.length(), 1, 0.001);
+    CHECK_CLOSE(vector.length(), 1, libcity::EPSILON);
 
     vector = Vector(1.123, 2.348, 12.35135);
     vector.normalize();
-    CHECK_CLOSE(vector.length(), 1, 0.001);
+    CHECK_CLOSE(vector.length(), 1, libcity::EPSILON);
   }
 
   TEST(Operators)
@@ -101,20 +101,40 @@ SUITE(VectorClass)
     CHECK(v == Vector(0,-1,0));
   }
 
-  TEST(Angle)
+  TEST(AngleBetweenTwoVectors)
   {
     Vector one(1,0,0), two(0,1,0);
 
-    CHECK_CLOSE(libcity::PI/2, two.angleTo(one), 0.001);
-    CHECK_CLOSE(libcity::PI/2, one.angleTo(two), 0.001);
+    CHECK_CLOSE(libcity::PI/2, two.angleTo(one), libcity::EPSILON);
+    CHECK_CLOSE(libcity::PI/2, one.angleTo(two), libcity::EPSILON);
 
     one.set(1,0,0);
     two.set(-1,0,0);
-    CHECK_CLOSE(libcity::PI, one.angleTo(two), 0.001);
+    CHECK_CLOSE(libcity::PI, one.angleTo(two), libcity::EPSILON);
 
 
     one.set(1,0,0);
     two.set(-1,-1,0);
-    CHECK_CLOSE(libcity::PI*0.75, one.angleTo(two), 0.001);
+    CHECK_CLOSE(libcity::PI*0.75, one.angleTo(two), libcity::EPSILON);
+  }
+
+  TEST(AngleToXAxis)
+  {
+    Vector v(0,0,0);
+
+    v.set(1,0,0);
+    CHECK_CLOSE(0, v.angleToXAxis(), libcity::EPSILON);
+
+    v.set(0,1,0);
+    CHECK_CLOSE(libcity::PI/2, v.angleToXAxis(), libcity::EPSILON);
+
+    v.set(-1,0,0);
+    CHECK_CLOSE(libcity::PI, v.angleToXAxis(), libcity::EPSILON);
+
+    v.set(0,-1,0);
+    CHECK_CLOSE(libcity::PI*(3.0/2.0), v.angleToXAxis(), libcity::EPSILON);
+
+    v.set(0,0,0);
+    CHECK_CLOSE(0, v.angleToXAxis(), libcity::EPSILON);
   }
 }

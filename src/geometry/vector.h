@@ -96,6 +96,17 @@ class Vector
      */
     double angleTo(Vector const& second);
 
+    /**
+      Compute angle between the Vector and X axis (Vector(1,0)).
+     @remarks
+       The result is in [0, 2PI) interval. Works correctly only in 2D.
+     @note
+       Method is explained at http://en.wikipedia.org/wiki/Atan2 .
+
+     @return Resulting angle in RADIANS.
+     */
+    double angleToXAxis();
+
     bool   operator==(Vector const& second);
     Vector operator*(double constant);
     Vector operator/(double constant);

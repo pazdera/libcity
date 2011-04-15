@@ -33,9 +33,13 @@ Plan:
   - DONE create github project page
   - DONE Make Intersections available outside the StreetGraph
   - DONE Write basic skeleton of precomputeIntersections
-  - Tests for Path::beginingDirectionVector() and Path::endDirectionVector()
-  - Implement resolving path direction vectors
-  - Implement sorting vectors clockwise (using perp dot product?)
+  - DONE Add Licensing information
+  - DONE Create main page of the documentation
+  - DONE Tests for Path::beginingDirectionVector() and Path::endDirectionVector()
+  - DONE Implement resolving path direction vectors
+  - DONE Tests for Vector::angleToXAxis()
+  - DONE Implement Vector::angleToXAxis()
+  - Implement sorting vectors clockwise (using atan2?)
   - How to work with Rays?
   - Create texture for 3 and 4 way intersections
   - Eliminate 5 and more way intersections in roadGenerators
