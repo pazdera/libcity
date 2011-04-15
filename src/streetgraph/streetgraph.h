@@ -53,8 +53,8 @@ class StreetGraph
     typedef std::list<Intersection*> Intersections;
     typedef std::list<Road*> Roads;
 
-    Intersections* getIntersections();
-    Roads* getRoads();
+    Intersections getIntersections();
+    Roads getRoads();
 
     /**
       Find closed loops in the graph and form zones inside them.

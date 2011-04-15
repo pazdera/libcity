@@ -97,12 +97,22 @@ int Intersection::numberOfWays() const
   return roads->size();
 }
 
-void* Intersection::owner()
+std::list<Road*> Intersection::getRoads()
 {
-  return belongsTo;
+  return *roads;
 }
 
-void Intersection::setOwner(void* ownerObject)
+bool Intersection::hasRoad(Road* road)
 {
-  belongsTo = ownerObject;
+  for (std::list<Road*>::iterator roadIterator = roads->begin();
+       roadIterator != roads->end();
+       roadIterator++)
+  {
+    if (*roadIterator == road)
+    {
+      return true;
+    }
+  }
+
+  return false;
 }

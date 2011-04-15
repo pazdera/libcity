@@ -88,6 +88,7 @@ class Vector
       Compute angle between two vectors.
      @remarks
        The resulting angle is always between 0 and PI.
+       If one of the vectors has zero length, returns nan.
      @note
        Formula is explained at http://mathworld.wolfram.com/DotProduct.html (9).
 

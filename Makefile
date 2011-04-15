@@ -21,7 +21,8 @@ GEOMETRY_PACKAGE=src/geometry/curve.o \
                  src/geometry/line.o \
                  src/geometry/point.o \
                  src/geometry/vector.o \
-                 src/geometry/polygon.o
+                 src/geometry/polygon.o \
+                 src/geometry/ray.o
 
 # Streetgraph package
 STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
@@ -64,7 +65,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testRasterRoadPattern.o \
            test/testRandom.o \
            test/testMCB.o \
-           test/testPath.o
+           test/testPath.o \
+           test/testRay.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

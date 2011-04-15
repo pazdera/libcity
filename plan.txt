@@ -39,8 +39,13 @@ Plan:
   - DONE Implement resolving path direction vectors
   - DONE Tests for Vector::angleToXAxis()
   - DONE Implement Vector::angleToXAxis()
-  - Implement sorting vectors clockwise (using atan2?)
-  - How to work with Rays?
+  - DONE Implement getExpansionDirection(Intersection*, Road*)
+  - DONE Implement sorting vectors clockwise (using atan2?)
+  - DONE Write tests for Ray class
+  - Implement RayToRay intersection
+  - Imlement Ray class
+  - DONE How to work with Rays?
+  - Remove owners from intersection/road
   - Create texture for 3 and 4 way intersections
   - Eliminate 5 and more way intersections in roadGenerators
   - Make drawing roads more configurable

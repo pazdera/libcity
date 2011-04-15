@@ -16,7 +16,7 @@
 #include <list>
 #include <vector>
 
-class Point; //!< From geometry package
+class Point;
 class Road;
 
 class Intersection
@@ -26,7 +26,6 @@ class Intersection
 
   public:
     Intersection(Point coordinates);
-
     ~Intersection();
 
     Point position() const;
@@ -38,13 +37,13 @@ class Intersection
     void addRoad(Road* road) throw();
     void removeRoad(Road* road);
 
-    void* owner();
-    void  setOwner(void* ownerObject);
-  private:
-    std::list<Road*> *roads;     /**< Topological information */
-    Point *geometrical_position; /**< Geometrical information */
+    bool hasRoad(Road* road);
 
-    void* belongsTo;
+    std::list<Road*> getRoads();
+
+  private:
+    std::list<Road*>* roads;     /**< Topological information */
+    Point* geometrical_position; /**< Geometrical information */
 };
 
 

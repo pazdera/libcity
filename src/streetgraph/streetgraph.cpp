@@ -227,3 +227,14 @@ int StreetGraph::numberOfRoads()
 {
   return roads->size();
 }
+
+
+StreetGraph::Intersections StreetGraph::getIntersections()
+{
+  return *intersections;
+}
+
+StreetGraph::Roads StreetGraph::getRoads()
+{
+  return *roads;
+}
