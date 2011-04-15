@@ -120,7 +120,7 @@ void Vector::normalize()
   zDirection /= vectorLength;
 }
 
-double Vector::length()
+double Vector::length() const
 {
   return sqrt(xDirection*xDirection + yDirection*yDirection + zDirection*zDirection);
 }
@@ -148,7 +148,21 @@ std::string Vector::toString()
 
 double Vector::dotProduct(Vector const& vector)
 {
+  return x()*vector.x() + y()*vector.y() + z()*vector.z();
+}
+
+double Vector::perpDotProduct(Vector const& vector)
+{
   return x()*vector.y() - vector.x()*y();
+}
+
+double Vector::angleTo(Vector const& vector)
+{
+  Vector first(*this), second(vector);
+  first.normalize();
+  second.normalize();
+
+  return std::acos(first.dotProduct(second)/(first.length()*second.length()));
 }
 
 bool   Vector::operator==(Vector const& second)

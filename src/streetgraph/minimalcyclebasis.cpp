@@ -298,26 +298,26 @@ Intersection* MinimalCycleBasis::getClockwiseMost(Intersection *previous, Inters
     {
         next = adjacent;
         vNext = vAdjacent;
-        vCurrentIsConvex = (vNext.dotProduct(vCurrent) <= 0);
+        vCurrentIsConvex = (vNext.perpDotProduct(vCurrent) <= 0);
         continue;
     }
 
     if (vCurrentIsConvex)
     {
-      if (vCurrent.dotProduct(vAdjacent) < 0 || vNext.dotProduct(vAdjacent) < 0)
+      if (vCurrent.perpDotProduct(vAdjacent) < 0 || vNext.perpDotProduct(vAdjacent) < 0)
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
       }
     }
     else
     {
-      if (vCurrent.dotProduct(vAdjacent) < 0 && vNext.dotProduct(vAdjacent) < 0)
+      if (vCurrent.perpDotProduct(vAdjacent) < 0 && vNext.perpDotProduct(vAdjacent) < 0)
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
       }
     }
   }
@@ -353,26 +353,26 @@ Intersection* MinimalCycleBasis::getCounterclockwiseMost(Intersection *previous,
     {
         next = adjacent;
         vNext = vAdjacent;
-        vCurrentIsConvex = (vNext.dotProduct(vCurrent) <= 0);
+        vCurrentIsConvex = (vNext.perpDotProduct(vCurrent) <= 0);
         continue;
     }
 
     if (vCurrentIsConvex)
     {
-      if (vCurrent.dotProduct(vAdjacent) > 0 && vNext.dotProduct(vAdjacent) > 0)
+      if (vCurrent.perpDotProduct(vAdjacent) > 0 && vNext.perpDotProduct(vAdjacent) > 0)
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
       }
     }
     else
     {
-      if (vCurrent.dotProduct(vAdjacent) > 0 || vNext.dotProduct(vAdjacent) > 0)
+      if (vCurrent.perpDotProduct(vAdjacent) > 0 || vNext.perpDotProduct(vAdjacent) > 0)
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.dotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
       }
     }
   }

@@ -50,6 +50,12 @@ class StreetGraph
     iterator end();
     /** @} */
 
+    typedef std::list<Intersection*> Intersections;
+    typedef std::list<Road*> Roads;
+
+    Intersections* getIntersections();
+    Roads* getRoads();
+
     /**
       Find closed loops in the graph and form zones inside them.
      @remarks
@@ -78,7 +84,7 @@ class StreetGraph
        synchronising both levels of the graph. Beware
        this is source of particularly horrible bugs.
 
-     @param path Path of the new road (low level part of the graph).
+     @param[in] path Path of the new road (low level part of the graph).
     */
     void addRoad(Path const& path);
 
@@ -89,7 +95,8 @@ class StreetGraph
        there is no use for them (they have no roads leading
        to them) they will be removed as well.
 
-     @param road Road to remove.
+     @param[in,out] road Road to remove. Variable will have
+                         undefined value after deleting the road.
     */
     void removeRoad(Road* road);
 
@@ -104,13 +111,24 @@ class StreetGraph
     bool isIntersectionAtPosition(Point const& position);
 
   private:
-    Intersection* addIntersection(Point const& position);
-
     /** All intersections in the street graph. */
-    std::list<Intersection*> *intersections;
+    Intersections* intersections;
 
     /** All roads in the street graph. */
-    std::list<Road*> *roads;
+    Roads* roads;
+
+    /**
+      Method for adding new intersections to the graph.
+     @remarks
+       If some intersection exists at the target position
+       no intersection is added (the existing one is returned).
+       Also if the new intersection resides on existing
+       road, the road will be split it in two and connected
+       through the new intersection.
+     @param[in] position Where to put the intersection.
+     @return Intersection at position specified by point (new or existing).
+     */
+    Intersection* addIntersection(Point const& position);
 
     void initialize();
     void freeMemory();

@@ -21,22 +21,25 @@ Plan:
   - DONE implement remove intersection/road
   - DONE move road adapting and snapping algorithm to roadgenerator from streetgraph
   - DONE move area constraints to roadgenerator too
-  - NOT NECCESSARYset owner of intersection/road
+  - NOT NECCESSARY set owner of intersection/road
   - DONE implement division into zones
   - DONE implement iterating through street graph
-  - PARTIALY DONE refactor streetgraph modifying algorithm
+  - DONE refactor streetgraph modifying algorithm
   - DONE figure how to iterate through roads in streetgraph
   - DONE implement streetgraph.divideToZones()
   - DONE create LSystem class for each road pattern (checkquers, organic, radial)
   - DONE bug fixing
   - DONE remove trimOverlapingPart from line
   - DONE create github project page
-  - Make Intersections available outside the StreetGraph
-  - Write basic skeleton of precomputeIntersections
+  - DONE Make Intersections available outside the StreetGraph
+  - DONE Write basic skeleton of precomputeIntersections
+  - Implement sorting vectors clockwise (using perp dot product?)
   - How to work with Rays?
   - Create texture for 3 and 4 way intersections
   - Eliminate 5 and more way intersections in roadGenerators
   - Make drawing roads more configurable
+  - DONE Try github's bugtracker
+  - Clean debug messages
   - 
   - design error handling and exceptions
   - think about thesis chapters

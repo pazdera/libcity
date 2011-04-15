@@ -20,6 +20,7 @@
 
 // Tested modules
 #include "../src/geometry/vector.h"
+#include "../src/geometry/units.h"
 
 #include "../src/debug.h"
 
@@ -98,5 +99,22 @@ SUITE(VectorClass)
     Vector v(1,0,0);
     v.rotateAroundZ(-90);
     CHECK(v == Vector(0,-1,0));
+  }
+
+  TEST(Angle)
+  {
+    Vector one(1,0,0), two(0,1,0);
+
+    CHECK_CLOSE(libcity::PI/2, two.angleTo(one), 0.001);
+    CHECK_CLOSE(libcity::PI/2, one.angleTo(two), 0.001);
+
+    one.set(1,0,0);
+    two.set(-1,0,0);
+    CHECK_CLOSE(libcity::PI, one.angleTo(two), 0.001);
+
+
+    one.set(1,0,0);
+    two.set(-1,-1,0);
+    CHECK_CLOSE(libcity::PI*0.75, one.angleTo(two), 0.001);
   }
 }

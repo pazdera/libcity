@@ -19,12 +19,12 @@ class Point;
 class Vector
 {
   public:
-    Vector(); /**< [0,0,0] */
-    Vector(double x); /**< 1D */
-    Vector(double x, double y); /**< 2D */
-    Vector(double x, double y, double z); /**< 3D */
+    Vector(); /**< Initialize zero length vector (0,0,0). */
+    Vector(double x); /**< One dimension only (1D). */
+    Vector(double x, double y); /**< Two dimensions (2D). */
+    Vector(double x, double y, double z); /**< Three dimensions (3D). */
 
-    /* Init from points */
+    /** Initialize Vector from two points. */
     Vector(Point const& first, Point const& second);
 
        /* Not neccessary */
@@ -43,13 +43,19 @@ class Vector
     double y() const;
     double z() const; /**< Undefined in 2D. */
 
-    double length();
+    /**
+      Compute vector length.
+     @note 3D space safe.
+      */
+    double length() const;
 
-    void set(double xCoord, double yCoord, double zCoord = 0);
-    void set(Point const& first, Point const& second);
+
     void setX(double coordinate);
     void setY(double coordinate);
     void setZ(double coordinate);
+
+    void set(double xCoord, double yCoord, double zCoord = 0);
+    void set(Point const& first, Point const& second);
 
     void rotateAroundX(double degrees);
     void rotateAroundY(double degrees);
@@ -57,14 +63,48 @@ class Vector
 
     void normalize();
 
-    std::string toString();
-
+    /**
+      Compute standard dot product of two vectors
+      in 3D space.
+     @param[in] vector Second vector for the dot product.
+     @return Dot product result.
+     */
     double dotProduct(Vector const& vector);
+
+    /**
+      Compute 'perp dot' product.
+     @remarks
+       Used primarily in MinimalCycleBasis.
+       2D only!
+     @note
+       Explained at http://mathworld.wolfram.com/PerpDotProduct.html
+
+     @param[in] vector Second vector for the dot product.
+     @return Resulting product.
+     */
+    double perpDotProduct(Vector const& vector);
+
+    /**
+      Compute angle between two vectors.
+     @remarks
+       The resulting angle is always between 0 and PI.
+     @note
+       Formula is explained at http://mathworld.wolfram.com/DotProduct.html (9).
+
+     @param[in] second Vector wich angle we want to determine from current vector.
+     @return Resulting angle in RADIANS.
+     */
+    double angleTo(Vector const& second);
 
     bool   operator==(Vector const& second);
     Vector operator*(double constant);
     Vector operator/(double constant);
     Vector operator+(Vector const& vector);
 
+    /**
+      Returns vector as a string for debugging purposes.
+     @return Format is like: Vector(x, y, z).
+     */
+    std::string toString();
 };
 #endif

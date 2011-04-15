@@ -165,9 +165,6 @@ Point Polygon::centroid() const
   }
 
   Point centroid(x/(6*(area/2)), y/(6*(area/2)));
-  debug(area/2);
-  debug(signedArea());
-  debug("Polygon::centroid() is " << centroid.toString());
   return centroid;
 }
 
