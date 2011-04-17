@@ -33,11 +33,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __LIBCITY_H_
 #define __LIBCITY_H_
 
-
 #include "../src/geometry/point.h"
 #include "../src/geometry/line.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/polygon.h"
+#include "../src/geometry/ray.h"
 
 #include "../src/streetgraph/road.h"
 #include "../src/streetgraph/path.h"

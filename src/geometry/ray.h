@@ -38,6 +38,7 @@ class Ray
 
     ~Ray();
 
+    void set(Point const& point, Vector const& vector);
     void setOrigin(Point const& point);
     void setDirection(Vector const& vector);
 

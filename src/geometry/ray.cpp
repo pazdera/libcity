@@ -62,6 +62,11 @@ void Ray::freeMemory()
   delete rayDirection;
 }
 
+void Ray::set(Point const& point, Vector const& vector)
+{
+  *rayOrigin = point;
+  *rayDirection = vector;
+}
 
 void Ray::setOrigin(Point const& point)
 {
@@ -86,89 +91,36 @@ Vector Ray::direction() const
 
 
 Ray::Intersection Ray::intersection2D(Ray const& another, Point* intersection) const
-// SOURCE: http://paulbourke.net/geometry/lineline2d/
+/* Algorithm adapted from http://pastebin.com/f22ec3cf1
+   http://www.gamedev.net/topic/518648-intersection-of-rays/ */
 {
-  double denominator     = ((another.end().y() - another.begining().y())*(end().x() - begining().x())) -
-                           ((another.end().x() - another.begining().x())*(end().y() - begining().y())),
-         firstNumerator  = ((another.end().x() - another.begining().x())*(begining().y() - another.begining().y())) -
-                           ((another.end().y() - another.begining().y())*(begining().x() - another.begining().x())),
-         secondNumerator = ((end().x() - begining().x())*(begining().y() - another.begining().y())) -
-                           ((end().y() - begining().y())*(begining().x() - another.begining().x()));
+  Intersection result = NONINTERSECTING;
+  double r, s, d;
 
-  if (std::abs(denominator) < libcity::EPSILON)
-  /* If the denominator is 0, both lines have same direction vector */
+  double x1 = origin().x(), y1 = origin().y(),
+         x2 = origin().x() + direction().x(), y2 = origin().y() + direction().y(),
+         x3 = another.origin().x(), y3 = another.origin().y(),
+         x4 = another.origin().x() + another.direction().x(), y4 = another.origin().y() + another.direction().y();
+
+  if ((y2 - y1) / (x2 - x1) != (y4 - y3) / (x4 - x3))
+  /* Make sure the lines aren't parallel */
   {
-    if  (std::abs(firstNumerator) < libcity::EPSILON &&
-        std::abs(secondNumerator) < libcity::EPSILON)
-    /* Lines are coincident. */
+    d = (((x2 - x1) * (y4 - y3)) - (y2 - y1) * (x4 - x3));
+    if (d != 0)
     {
-
-    /* WARNING
-     * Order of following checks is important
-     * for the right functionality. */
-
-      if (*this == another)
-      /* Line segments are identical */
+      r = (((y1 - y3) * (x4 - x3)) - (x1 - x3) * (y4 - y3)) / d;
+      s = (((y1 - y3) * (x2 - x1)) - (x1 - x3) * (y2 - y1)) / d;
+      if (r >= 0)
       {
-        return IDENTICAL;
+        if (s >= 0)
+        {
+          result = INTERSECTING;
+          intersection->set(x1 +  r * (x2 - x1), y1 + r * (y2 - y1));
+        }
       }
-
-      if (hasPoint2D(another.begining()) && hasPoint2D(another.end()))
-      /* This line is containing another. */
-      {
-        return CONTAINING;
-      }
-
-      if (another.hasPoint2D(begining()) && another.hasPoint2D(end()))
-      /* This line is contained in another. */
-      {
-        return CONTAINED;
-      }
-
-      if (!this->hasPoint2D(another.begining()) &&
-          !this->hasPoint2D(another.end()))
-      /* Line segments are subsequent. */
-      {
-        return NONINTERSECTING;
-      }
-
-      if (begining() == another.begining() ||
-          begining() == another.end())
-      /* Line segments touch just in one point. */
-      {
-        *intersection = begining();
-        return INTERSECTING;
-      }
-
-      if (end() == another.end() ||
-          end() == another.begining())
-      /* Line segments touch just in one point. */
-      {
-        *intersection = end();
-        return INTERSECTING;
-      }
-
-      /* Line segments overlap */
-      return OVERLAPING;
     }
-
-    // Lines are parallel thus nonintersecting
-    return NONINTERSECTING;
   }
-
-  double ua = firstNumerator  / denominator,
-         ub = secondNumerator / denominator;
-
-  if (ua >= 0 && ua <= 1 &&
-      ub >= 0 && ub <= 1)
-  {
-    intersection->setX(begining().x() + ua*(end().x() - begining().x()));
-    intersection->setY(begining().y() + ua*(end().y() - begining().y()));
-
-    return INTERSECTING;
-  }
-
-  return NONINTERSECTING;
+  return result;
 }
 
 

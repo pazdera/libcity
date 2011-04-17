@@ -85,6 +85,16 @@ class Vector
     double perpDotProduct(Vector const& vector);
 
     /**
+      Compute cross product of the two vectors.
+     @note
+       Explained at http://mathworld.wolfram.com/CrossProduct.html .
+
+     @param[in] vector Second vector for the cross product.
+     @return Resulting product.
+      */
+    Vector crossProduct(Vector const& vector);
+
+    /**
       Compute angle between two vectors.
      @remarks
        The resulting angle is always between 0 and PI.

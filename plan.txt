@@ -21,7 +21,7 @@ Plan:
   - DONE implement remove intersection/road
   - DONE move road adapting and snapping algorithm to roadgenerator from streetgraph
   - DONE move area constraints to roadgenerator too
-  - NOT NECCESSARY set owner of intersection/road
+  - DONE set owner of intersection/road
   - DONE implement division into zones
   - DONE implement iterating through street graph
   - DONE refactor streetgraph modifying algorithm
@@ -42,18 +42,29 @@ Plan:
   - DONE Implement getExpansionDirection(Intersection*, Road*)
   - DONE Implement sorting vectors clockwise (using atan2?)
   - DONE Write tests for Ray class
-  - Implement RayToRay intersection
-  - Imlement Ray class
+  - DONE Implement RayToRay intersection
+  - DONE Imlement Ray class
   - DONE How to work with Rays?
-  - Remove owners from intersection/road
+  - DONE Remove owners from intersection/road
+  - DONE Create class RoadParameters
+  - DONE configuration function in OgreCity
+  - DONE setup configuration
+  - DONE modify drawRoad algorithm to use new configuration
+  - DONE Make drawing roads more configurable
+  - search in drawRoad for precomputed information and use them to draw the road
+  - expand precomputeIntersections
+  - Implement 2 way intersection
   - Create texture for 3 and 4 way intersections
   - Eliminate 5 and more way intersections in roadGenerators
-  - Make drawing roads more configurable
   - DONE Try github's bugtracker
+  - Clean-up textures and material scripts
+  - Refactor OgreCity
+  - Split OgreCity into two classes
   - Clean debug messages
   - Create documentation in Ogre demo app
   - 
   - design error handling and exceptions
+  - BUILDINGS
   - think about thesis chapters
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D

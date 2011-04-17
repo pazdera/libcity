@@ -156,6 +156,15 @@ double Vector::perpDotProduct(Vector const& vector)
   return x()*vector.y() - vector.x()*y();
 }
 
+Vector Vector::crossProduct(Vector const& vector)
+{
+  double resultX = y()*vector.z() - z()*vector.y(),
+         resultY = z()*vector.x() - x()*vector.z(),
+         resultZ = x()*vector.y() - y()*vector.x();
+
+  return Vector(resultX, resultY, resultZ);
+}
+
 double Vector::angleTo(Vector const& vector)
 {
   Vector first(*this), second(vector);

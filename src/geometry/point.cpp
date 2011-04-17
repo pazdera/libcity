@@ -90,6 +90,11 @@ Point& Point::operator+=(Vector const& difference)
   return *this;
 }
 
+Point Point::operator+(Vector const& difference)
+{
+  return Point(x() + difference.x(), y()+difference.y());
+}
+
 std::string Point::toString()
 {
   std::stringstream convertor;

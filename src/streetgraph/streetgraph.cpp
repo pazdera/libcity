@@ -49,10 +49,7 @@ void StreetGraph::freeMemory()
   while (!intersections->empty())
   {
     removedIntersection = intersections->back();
-    if (removedIntersection->owner() == this)
-    {
-      delete removedIntersection;
-    }
+    delete removedIntersection;
     intersections->pop_back();
   }
   delete intersections;

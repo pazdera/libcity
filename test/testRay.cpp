@@ -20,7 +20,7 @@
 #include <stdexcept>
 
 // Tested modules
-#include "../src/streetgraph/ray.h"
+#include "../src/geometry/ray.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/point.h"
 #include "../src/geometry/line.h"
@@ -30,7 +30,7 @@ SUITE(RayClass)
 {
   TEST(Constructors)
   {
-    Ray r1();
+    Ray r1;
     CHECK(Point(0,0) == r1.origin());
     CHECK(Vector(1,0) == r1.direction());
 
@@ -61,21 +61,23 @@ SUITE(RayClass)
   TEST(IntersectionOfTwoRays)
   {
     Ray r1, r2;
+    Point intersection;
 
     // Intersecting
     r1.set(Point(0,0), Vector(1,0));
     r2.set(Point(1,1), Vector(0,-1));
-    //FIXME
+    CHECK(Ray::INTERSECTING == r1.intersection2D(r2, &intersection));
+    CHECK(Point(1,0) == intersection);
 
     // Non intersecting
     r1.set(Point(0,0), Vector(1,0));
     r2.set(Point(1,1), Vector(0,1));
-    //FIXME
+    CHECK(Ray::NONINTERSECTING == r1.intersection2D(r2, &intersection));
 
     // Paralel
     r1.set(Point(0,0), Vector(1,1));
     r2.set(Point(1,0), Vector(1,1));
-    //FIXME
+    CHECK(Ray::NONINTERSECTING == r1.intersection2D(r2, &intersection));
 
   }
 }
