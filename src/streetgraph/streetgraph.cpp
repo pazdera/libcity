@@ -17,13 +17,15 @@
 #include "minimalcyclebasis.h"
 #include "../lsystem/roadlsystem.h"
 #include "../geometry/polygon.h"
-#include "../geometry/line.h"
+#include "../geometry/linesegment.h"
 #include "../geometry/point.h"
 #include "../geometry/vector.h"
 #include "../geometry/units.h"
 #include "../debug.h"
 
 #include <set>
+#include <string>
+#include <sstream>
 
 StreetGraph::StreetGraph()
 {
@@ -105,10 +107,12 @@ void StreetGraph::addRoad(Path const& path)
       }
       else
       {
-        Path firstPart(Line(roadPath.begining(), intersection)),
-              secondPart(Line(intersection, roadPath.end()));
+        Path firstPart(LineSegment(roadPath.begining(), intersection)),
+              secondPart(LineSegment(intersection, roadPath.end()));
         addRoad(firstPart);
         addRoad(secondPart);
+
+        return;
       }
     }
   }
@@ -124,6 +128,8 @@ void StreetGraph::addRoad(Path const& path)
   end->addRoad(newRoad);
 
   roads->push_back(newRoad);
+
+  return;
 }
 
 void StreetGraph::removeRoad(Road* road)
@@ -234,4 +240,37 @@ StreetGraph::Intersections StreetGraph::getIntersections()
 StreetGraph::Roads StreetGraph::getRoads()
 {
   return *roads;
+}
+
+std::string StreetGraph::toString()
+{
+  std::stringstream output;
+  output << "Roads:\n";
+  for (Roads::iterator road = roads->begin();
+       road != roads->end();
+       road++)
+  {
+    output << "  " << (*road) << "\n";
+    output << "    from " << (*road)->begining() << " to " << (*road)->end() << "\n";
+    output << "    " + (*road)->path()->toString() + "\n";
+  }
+
+  output << "Intersections:\n";
+  for (Intersections::iterator intersection = intersections->begin();
+       intersection != intersections->end();
+       intersection++)
+  {
+    output << "  " << (*intersection) << "\n";
+    output << "    at " + (*intersection)->position().toString() + "\n";
+
+    Roads intersectionRoads = (*intersection)->getRoads();
+    for (Roads::iterator road = intersectionRoads.begin();
+      road != intersectionRoads.end();
+      road++)
+    {
+      output << "    " << (*road) << "\n";
+    }
+  }
+
+  return output.str();
 }

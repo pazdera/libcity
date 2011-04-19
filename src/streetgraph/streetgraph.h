@@ -27,6 +27,7 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <string>
 
 class Intersection;
 class Road;
@@ -34,7 +35,7 @@ class Zone;
 class Point;
 class Polygon;
 class Path;
-class Line;
+class LineSegment;
 
 class StreetGraph
 {
@@ -109,6 +110,8 @@ class StreetGraph
     int numberOfRoads();
 
     bool isIntersectionAtPosition(Point const& position);
+
+    std::string toString();
 
   private:
     /** All intersections in the street graph. */

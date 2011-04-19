@@ -23,7 +23,7 @@
 #include "../src/geometry/ray.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/point.h"
-#include "../src/geometry/line.h"
+#include "../src/geometry/linesegment.h"
 #include "../src/debug.h"
 
 SUITE(RayClass)
@@ -77,7 +77,11 @@ SUITE(RayClass)
     // Paralel
     r1.set(Point(0,0), Vector(1,1));
     r2.set(Point(1,0), Vector(1,1));
-    CHECK(Ray::NONINTERSECTING == r1.intersection2D(r2, &intersection));
+    CHECK(Ray::PARALLEL == r1.intersection2D(r2, &intersection));
 
+    // Touching
+    r1.set(Point(-16.3961, 20, 0), Vector(-7.84465, -39.2232, 0));
+    r2.set(Point(-100, 20, 0), Vector(1, 0, 0));
+    CHECK(Ray::INTERSECTING == r2.intersection2D(r1, &intersection));
   }
 }

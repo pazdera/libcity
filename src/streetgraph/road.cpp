@@ -9,12 +9,16 @@
  *
  */
 
+#include <string>
+#include <sstream>
+
 #include "road.h"
 #include "../debug.h"
 #include "path.h"
 #include "intersection.h"
-#include "../geometry/line.h"
+#include "../geometry/linesegment.h"
 #include "../geometry/point.h"
+
 
 Road::Road()
   : from(0), to(0), geometrical_path(0)
@@ -25,7 +29,7 @@ Road::Road()
 Road::Road(Intersection *first, Intersection *second)
   : from(first), to(second), geometrical_path(0)
 {
-  geometrical_path = new Path(Line(from->position(), to->position()));
+  geometrical_path = new Path(LineSegment(from->position(), to->position()));
 }
 
 Road::Road(Path const& path)
@@ -59,7 +63,7 @@ void Road::estimatePath()
     delete geometrical_path;
   }
 
-  geometrical_path = new Path(Line(from->position(), to->position()));
+  geometrical_path = new Path(LineSegment(from->position(), to->position()));
 }
 
 Road::types Road::type()
@@ -87,4 +91,13 @@ void Road::setEnd(Intersection* intersection)
 Path* Road::path() const
 {
   return geometrical_path;
+}
+
+
+std::string Road::toString()
+{
+  std::stringstream output;
+  output << "Road(" << (this) << ", " << path()->toString() << ")";
+
+  return output.str();
 }

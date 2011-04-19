@@ -12,7 +12,9 @@
 #ifndef _ROAD_H_
 #define _ROAD_H_
 
-class Line;
+#include <string>
+
+class LineSegment;
 class Intersection;
 class Path;
 
@@ -38,6 +40,8 @@ class Road
 
     Path* path() const;
     void setPath(Path const& roadPath) throw();
+
+    std::string toString();
 
     enum types
     {

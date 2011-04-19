@@ -14,24 +14,24 @@
 #include "intersection.h"
 #include "../debug.h"
 #include "../geometry/units.h"
-#include "../geometry/line.h"
+#include "../geometry/linesegment.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"
 #include "../geometry/vector.h"
 
 Path::Path()
 {
-  representation = new Line();
+  representation = new LineSegment();
 }
 
-Path::Path(Line const& line)
+Path::Path(LineSegment const& line)
 {
-  representation = new Line(line);
+  representation = new LineSegment(line);
 }
 
 Path::Path(Path const& source)
 {
-  representation = new Line(*(source.representation));
+  representation = new LineSegment(*(source.representation));
 }
 
 Path& Path::operator=(Path const& source)
@@ -79,7 +79,7 @@ bool Path::goesThrough(Point const& certainPoint) const
 
 bool Path::crosses(Path const& anotherPath, Point* intersection)
 {
-  return representation->intersection2D(*(anotherPath.representation), intersection) == Line::INTERSECTING;
+  return representation->intersection2D(*(anotherPath.representation), intersection) == LineSegment::INTERSECTING;
 }
 
 Point Path::nearestPoint(Point const& point)

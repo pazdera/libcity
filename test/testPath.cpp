@@ -23,14 +23,14 @@
 #include "../src/streetgraph/path.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/point.h"
-#include "../src/geometry/line.h"
+#include "../src/geometry/linesegment.h"
 #include "../src/debug.h"
 
 SUITE(PathClass)
 {
   TEST(DirectionVectors)
   {
-    Path path(Line(Point(0,0), Point(10,10)));
+    Path path(LineSegment(Point(0,0), Point(10,10)));
     Vector correct;
 
     correct = Vector(-1,-1);

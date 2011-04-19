@@ -13,7 +13,7 @@
 #include "../random.h"
 #include "../geometry/vector.h"
 #include "../geometry/point.h"
-#include "../geometry/line.h"
+#include "../geometry/linesegment.h"
 #include "../geometry/polygon.h"
 #include "../geometry/units.h"
 #include "../streetgraph/road.h"
@@ -97,7 +97,7 @@ void RoadLSystem::drawLine()
   Point currentPosition = cursor.getPosition();
 
   /* According to global goals */
-  Path proposedPath = Path(Line(previousPosition, currentPosition));
+  Path proposedPath = Path(LineSegment(previousPosition, currentPosition));
 
   if(!isPathInsideAreaConstraints(&proposedPath))
   /* Path is outside the area constraints */
@@ -236,7 +236,7 @@ bool RoadLSystem::isPathInsideAreaConstraints(Path* proposedPath)
   }
 
   Point intersection;
-  Line  edge;
+  LineSegment  edge;
   int vertices = areaConstraints->numberOfVertices();
   bool touching = false;
 

@@ -90,9 +90,9 @@ Point& Point::operator+=(Vector const& difference)
   return *this;
 }
 
-Point Point::operator+(Vector const& difference)
+Point Point::operator+(Vector const& difference) const
 {
-  return Point(x() + difference.x(), y()+difference.y());
+  return Point(x() + difference.x(), y()+difference.y(), z()+difference.z());
 }
 
 std::string Point::toString()

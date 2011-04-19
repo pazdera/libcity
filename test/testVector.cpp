@@ -115,6 +115,10 @@ SUITE(VectorClass)
     one.set(1,0,0);
     two.set(-1,-1,0);
     CHECK_CLOSE(libcity::PI*0.75, one.angleTo(two), libcity::EPSILON);
+
+    one.set(0.707107, 0.707107, -0);
+    two.set(-0.707107, -0.707107, -0);
+    CHECK_CLOSE(libcity::PI, one.angleTo(two), libcity::EPSILON);
   }
 
   TEST(AngleToXAxis)

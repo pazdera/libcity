@@ -1,15 +1,15 @@
 /**
  * This code is part of libcity library.
  *
- * @file geometry/line.cpp
+ * @file geometry/linesegment.cpp
  * @date 23.02.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @see geometry/line.h
+ * @see geometry/linesegment.h
  *
  */
 
-#include "line.h"
+#include "linesegment.h"
 #include "point.h"
 #include "polygon.h"
 #include "vector.h"
@@ -18,61 +18,67 @@
 
 #include <cmath>
 
-Line::Line()
+LineSegment::LineSegment()
 {
   first  = new Point(0,0,0);
   second = new Point(0,0,0);
 }
 
-Line::Line(Point const& firstPoint, Point const& secondPoint)
+LineSegment::LineSegment(Point const& firstPoint, Point const& secondPoint)
 {
   first  = new Point(firstPoint);
   second = new Point(secondPoint);
 }
 
-Line::Line(Line const& source)
+LineSegment::LineSegment(Point const& point, Vector const& vector)
+{
+  first  = new Point(point);
+  second = new Point(point + vector);
+}
+
+LineSegment::LineSegment(LineSegment const& source)
 {
   first  = new Point(source.begining());
   second = new Point(source.end());
 }
 
-Line& Line::operator=(Line const& source)
+LineSegment& LineSegment::operator=(LineSegment const& source)
 {
   *first  = source.begining();
   *second = source.end();
   return *this;
 }
 
-Line::~Line()
+LineSegment::~LineSegment()
 {
   delete first;
   delete second;
 }
 
-void Line::setBegining(Point const& point)
+void LineSegment::setBegining(Point const& point)
 {
   delete first;
   first = new Point(point);
 }
 
-void Line::setEnd(Point const& point)
+void LineSegment::setEnd(Point const& point)
 {
 
   delete second;
   second = new Point(point);
 }
 
-Point Line::begining() const
+Point LineSegment::begining() const
 {
   return *first;
 }
 
-Point Line::end() const
+Point LineSegment::end() const
 {
   return *second;
 }
 
-bool Line::hasPoint2D(Point const& point) const
+bool LineSegment::hasPoint2D(Point const& point) const
 {
   double lineTest = (point.x() - first->x()) * (second->y() - first->y()) -
                     (point.y() - first->y()) * (second->x() - first->x());
@@ -98,7 +104,7 @@ bool Line::hasPoint2D(Point const& point) const
   return false;
 }
 
-Line::Intersection Line::intersection2D(Line const& another, Point* intersection) const
+LineSegment::Intersection LineSegment::intersection2D(LineSegment const& another, Point* intersection) const
 // SOURCE: http://paulbourke.net/geometry/lineline2d/
 {
   double denominator     = ((another.end().y() - another.begining().y())*(end().x() - begining().x())) -
@@ -186,7 +192,7 @@ Line::Intersection Line::intersection2D(Line const& another, Point* intersection
 }
 
 
-Point Line::nearestPoint(Point const& point) const
+Point LineSegment::nearestPoint(Point const& point) const
 {
   double parameter;
   Point orthogonalProjection;
@@ -221,26 +227,26 @@ Point Line::nearestPoint(Point const& point) const
   }
 }
 
-double Line::distance(Point const& point) const
+double LineSegment::distance(Point const& point) const
 {
   Point closestPoint = nearestPoint(point);
 
   return Vector(closestPoint, point).length();
 }
 
-double Line::length() const
+double LineSegment::length() const
 {
   Vector directionVector(*first, *second);
   return directionVector.length();
 }
 
-bool Line::operator==(Line const& another) const
+bool LineSegment::operator==(LineSegment const& another) const
 {
   return (begining() == another.begining() && end() == another.end()) ||
          (begining() == another.end() && begining() == another.end());
 }
 
-std::string Line::toString()
+std::string LineSegment::toString()
 {
-  return "Line(" + first->toString() + ", " + second->toString() + ")";
+  return "LineSegment(" + first->toString() + ", " + second->toString() + ")";
 }

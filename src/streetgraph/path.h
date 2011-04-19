@@ -15,7 +15,7 @@
 
 #include <string>
 
-class Line;
+class LineSegment;
 class Point;
 class Vector;
 class Polygon;
@@ -24,7 +24,7 @@ class Path
 {
   public:
     Path();
-    Path(Line const& line);
+    Path(LineSegment const& line);
 
     Path(Path const& source);
     Path& operator=(Path const& source);
@@ -88,7 +88,7 @@ class Path
 
     std::string toString();
   private:
-   Line *representation;
+   LineSegment *representation;
 };
 
 

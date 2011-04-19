@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file geometry/line.h
+ * @file geometry/linesegment.h
  * @date 19.02.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -11,15 +11,16 @@
  * here.
  */
 
-#ifndef _LINE_H_
-#define _LINE_H_
+#ifndef _LINESEGMENT_H_
+#define _LINESEGMENT_H_
 
 #include <string>
 
 class Point;
+class Vector;
 class Polygon;
 
-class Line
+class LineSegment
 {
   public:
     enum Intersection
@@ -33,11 +34,12 @@ class Line
       OVERLAPING
     };
 
-    Line();
-    Line(Point const& firstPoint, Point const& secondPoint);
+    LineSegment();
+    LineSegment(Point const& firstPoint, Point const& secondPoint);
+    LineSegment(Point const& point, Vector const& vector);
 
-    Line(Line const& source); /**< Own copy constructor is neccessary */
-    Line& operator=(Line const& source); /**< Own assignment operator is neccessary */
+    LineSegment(LineSegment const& source); /**< Own copy constructor is neccessary */
+    LineSegment& operator=(LineSegment const& source); /**< Own assignment operator is neccessary */
 
     void setBegining(Point const& point);
     void setEnd(Point const& point);
@@ -45,18 +47,18 @@ class Line
     Point begining() const;
     Point end() const;
 
-    ~Line();
+    ~LineSegment();
 
     double length() const;
 
     bool hasPoint2D(Point const& point) const;
-    Intersection intersection2D(Line const& another, Point* intersection) const;
+    Intersection intersection2D(LineSegment const& another, Point* intersection) const;
     double distance(Point const& point) const;
     Point nearestPoint(Point const& point) const;
 
     std::string toString();
 
-    bool operator==(Line const& another) const;
+    bool operator==(LineSegment const& another) const;
 
   private:
     Point *first;

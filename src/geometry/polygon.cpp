@@ -11,7 +11,7 @@
 
 #include "polygon.h"
 #include "point.h"
-#include "line.h"
+#include "linesegment.h"
 #include "../debug.h"
 
 #include <cmath>
@@ -174,7 +174,7 @@ bool Polygon::encloses2D(Point const& point) const
                count = numberOfVertices();
   Point *currentVertex = 0,
         *nextVertex = 0;
-  Line currentLine;
+  LineSegment currentLine;
 
   bool isInside = false;
 

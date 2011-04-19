@@ -32,6 +32,7 @@ class Ray
 
     Ray();
     Ray(Point const& point, Vector const& vector);
+    Ray(Point const& firstPoint, Point const& secondPoint);
 
     Ray(Ray const& source);
     Ray& operator=(Ray const& source);

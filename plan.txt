@@ -51,12 +51,26 @@ Plan:
   - DONE setup configuration
   - DONE modify drawRoad algorithm to use new configuration
   - DONE Make drawing roads more configurable
-  - search in drawRoad for precomputed information and use them to draw the road
-  - expand precomputeIntersections
-  - Implement 2 way intersection
-  - Create texture for 3 and 4 way intersections
-  - Eliminate 5 and more way intersections in roadGenerators
+  - DONE search in drawRoad for precomputed information and use them to draw the road
+  - DONE expand precomputeIntersections
+  - DONE Implement 2 way intersection
+  - DONE Implement StreetGraph::toString()
+  - DONE Find the bug in the MCB
   - DONE Try github's bugtracker
+  - DONE Fix the issue when the angle between 2 roads in intersection is 180 degrees
+  - DONE Initialize Ray by two points
+  - DONE Road toString()
+  - DONE Refactor coordinates transformations libcity <-> ogre
+  - DONE Create libcityToOgre and ogreToLibcity methods
+  - Refactor Line -- rename to LineSegment
+  - Create Line class
+  - Maybe inherit LineSegment from line?
+  - Implement 3-way intersections
+  - Clean the precomputed intersecion's code a little (A LOT)
+  - Create 4 way intersections
+  - Create texture for 3 and 4 way intersections
+  - Think about sampling intersections too
+  - Eliminate 5 and more way intersections in roadGenerators
   - Clean-up textures and material scripts
   - Refactor OgreCity
   - Split OgreCity into two classes

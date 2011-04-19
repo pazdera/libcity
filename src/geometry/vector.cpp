@@ -171,7 +171,20 @@ double Vector::angleTo(Vector const& vector)
   first.normalize();
   second.normalize();
 
-  return std::acos(first.dotProduct(second)/(first.length()*second.length()));
+  double product = first.dotProduct(second);
+
+  // Check the borders with an EPSILON
+  if (std::abs(product - 1) <= libcity::EPSILON)
+  {
+    product = 1;
+  }
+
+  if (std::abs(product + 1) <= libcity::EPSILON)
+  {
+    product = -1;
+  }
+
+  return std::acos(product);
 }
 
 double Vector::angleToXAxis()
@@ -193,6 +206,11 @@ bool   Vector::operator==(Vector const& second)
   return (xDirection - second.x()) < libcity::EPSILON &&
          (yDirection - second.y()) < libcity::EPSILON &&
          (zDirection - second.z()) < libcity::EPSILON;
+}
+
+bool   Vector::operator!=(Vector const& second)
+{
+  return !(*this == second);
 }
 
 Vector Vector::operator*(double constant)

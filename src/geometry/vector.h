@@ -119,6 +119,7 @@ class Vector
     double angleToXAxis();
 
     bool   operator==(Vector const& second);
+    bool   operator!=(Vector const& second);
     Vector operator*(double constant);
     Vector operator/(double constant);
     Vector operator+(Vector const& vector);

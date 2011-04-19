@@ -48,7 +48,7 @@ class Point
     bool operator>(Point const& second);
 
     Point& operator+=(Vector const& difference);
-    Point  operator+(Vector const& difference);
+    Point  operator+(Vector const& difference) const;
 };
 
 inline double Point::x() const

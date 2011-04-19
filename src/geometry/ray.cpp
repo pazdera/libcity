@@ -31,6 +31,13 @@ Ray::Ray(Point const& point, Vector const& vector)
   *rayDirection = vector;
 }
 
+Ray::Ray(Point const& firstPoint, Point const& secondPoint)
+{
+  initialize();
+  *rayOrigin = firstPoint;
+  *rayDirection = Vector(firstPoint, secondPoint);
+}
+
 Ray::Ray(Ray const& source)
 {
   initialize();
@@ -94,7 +101,6 @@ Ray::Intersection Ray::intersection2D(Ray const& another, Point* intersection) c
 /* Algorithm adapted from http://pastebin.com/f22ec3cf1
    http://www.gamedev.net/topic/518648-intersection-of-rays/ */
 {
-  Intersection result = NONINTERSECTING;
   double r, s, d;
 
   double x1 = origin().x(), y1 = origin().y(),
@@ -110,17 +116,21 @@ Ray::Intersection Ray::intersection2D(Ray const& another, Point* intersection) c
     {
       r = (((y1 - y3) * (x4 - x3)) - (x1 - x3) * (y4 - y3)) / d;
       s = (((y1 - y3) * (x2 - x1)) - (x1 - x3) * (y2 - y1)) / d;
-      if (r >= 0)
+      if (r >= 0 || r >= -libcity::EPSILON) // Check with an EPSILON to count in double error
       {
-        if (s >= 0)
+        if (s >= 0 || s >= -libcity::EPSILON)
         {
-          result = INTERSECTING;
           intersection->set(x1 +  r * (x2 - x1), y1 + r * (y2 - y1));
+          return INTERSECTING;
         }
       }
     }
   }
-  return result;
+  else
+  {
+    return PARALLEL;
+  }
+  return NONINTERSECTING;
 }
 
 

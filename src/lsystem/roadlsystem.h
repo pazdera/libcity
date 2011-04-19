@@ -20,7 +20,7 @@
 
 class Point;
 class Vector;
-class Line;
+class LineSegment;
 class Path;
 class StreetGraph;
 class Polygon;
