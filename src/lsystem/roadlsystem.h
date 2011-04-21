@@ -38,7 +38,7 @@ class RoadLSystem : public GraphicLSystem
 
     void setAreaConstraints(Polygon *polygon);
 
-    void setRoadType(Road::types type);
+    void setRoadType(Road::Types type);
     void setRoadLength(double min, double max);
     void setTurnAngle(double min, double max);
     void setSnapDistance(double distance);
@@ -65,7 +65,7 @@ class RoadLSystem : public GraphicLSystem
 
     double snapDistance;
 
-    Road::types generatedType;
+    Road::Types generatedType;
     double minRoadLength;
     double maxRoadLength;
     double minTurnAngle;

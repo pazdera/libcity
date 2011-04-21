@@ -139,6 +139,12 @@ SUITE(VectorClass)
 
     v.set(0,0,0);
     CHECK_CLOSE(0, v.angleToXAxis(), libcity::EPSILON);
+
+    v.set(200,0,0);
+    CHECK_CLOSE(0, v.angleToXAxis(), libcity::EPSILON);
+
+    v.set(-200,0,0);
+    CHECK_CLOSE(libcity::PI, v.angleToXAxis(), libcity::EPSILON);
   }
 
   TEST(CrossProduct)

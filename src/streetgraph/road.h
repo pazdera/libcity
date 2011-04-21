@@ -43,14 +43,14 @@ class Road
 
     std::string toString();
 
-    enum types
+    enum Types
     {
       PRIMARY_ROAD,
       SECONDARY_ROAD
     };
 
-    virtual types type();
-    void setType(types type);
+    virtual Types type();
+    virtual void setType(Types type);
 
   private:
     /* Topological information */
@@ -60,7 +60,7 @@ class Road
     /* Geometrical information */
     Path* geometrical_path; /**< Path that the road takes between the two topological points */
 
-    types roadType;
+    Types roadType;
 
     void estimatePath();
 };

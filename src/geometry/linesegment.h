@@ -16,36 +16,20 @@
 
 #include <string>
 
+#include "line.h"
+
 class Point;
 class Vector;
-class Polygon;
 
-class LineSegment
+class LineSegment : public Line
 {
   public:
-    enum Intersection
-    {
-      INTERSECTING = 0,
-      NONINTERSECTING,
-      PARALLEL,
-      IDENTICAL,
-      CONTAINING,
-      CONTAINED,
-      OVERLAPING
-    };
-
     LineSegment();
     LineSegment(Point const& firstPoint, Point const& secondPoint);
     LineSegment(Point const& point, Vector const& vector);
 
     LineSegment(LineSegment const& source); /**< Own copy constructor is neccessary */
     LineSegment& operator=(LineSegment const& source); /**< Own assignment operator is neccessary */
-
-    void setBegining(Point const& point);
-    void setEnd(Point const& point);
-
-    Point begining() const;
-    Point end() const;
 
     ~LineSegment();
 
@@ -59,10 +43,6 @@ class LineSegment
     std::string toString();
 
     bool operator==(LineSegment const& another) const;
-
-  private:
-    Point *first;
-    Point *second;
 };
 
 #endif

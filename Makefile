@@ -18,6 +18,7 @@ all: static dynamic
 
 # Geometry package
 GEOMETRY_PACKAGE=src/geometry/curve.o \
+                 src/geometry/line.o \
                  src/geometry/linesegment.o \
                  src/geometry/point.o \
                  src/geometry/vector.o \
@@ -61,6 +62,7 @@ TEST_UNITS=test/testPoint.o   \
            test/testLSystem.o \
            test/testGraphicLSystem.o \
            test/testStreetGraph.o \
+           test/testLine.o \
            test/testLineSegment.o \
            test/testRasterRoadPattern.o \
            test/testRandom.o \

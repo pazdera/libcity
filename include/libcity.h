@@ -34,6 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __LIBCITY_H_
 
 #include "../src/geometry/point.h"
+#include "../src/geometry/line.h"
 #include "../src/geometry/linesegment.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/polygon.h"

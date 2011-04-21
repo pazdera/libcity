@@ -66,12 +66,12 @@ void Road::estimatePath()
   geometrical_path = new Path(LineSegment(from->position(), to->position()));
 }
 
-Road::types Road::type()
+Road::Types Road::type()
 {
   return roadType;
 }
 
-void Road::setType(Road::types type)
+void Road::setType(Road::Types type)
 {
   roadType = type;
 }

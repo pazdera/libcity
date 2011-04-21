@@ -30,12 +30,13 @@
 #include <string>
 
 class Intersection;
-class Road;
 class Zone;
 class Point;
 class Polygon;
 class Path;
 class LineSegment;
+
+#include "road.h"
 
 class StreetGraph
 {
@@ -87,7 +88,7 @@ class StreetGraph
 
      @param[in] path Path of the new road (low level part of the graph).
     */
-    void addRoad(Path const& path);
+    void addRoad(Path const& path, Road::Types roadTypes = Road::PRIMARY_ROAD);
 
     /**
       Erase road from the StreetGraph.

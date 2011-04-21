@@ -87,7 +87,7 @@ std::list<Zone*> StreetGraph::findZones()
 }
 
 
-void StreetGraph::addRoad(Path const& path)
+void StreetGraph::addRoad(Path const& path, Road::Types roadType)
 {
   Path roadPath(path);
 
@@ -109,8 +109,8 @@ void StreetGraph::addRoad(Path const& path)
       {
         Path firstPart(LineSegment(roadPath.begining(), intersection)),
               secondPart(LineSegment(intersection, roadPath.end()));
-        addRoad(firstPart);
-        addRoad(secondPart);
+        addRoad(firstPart, roadType);
+        addRoad(secondPart, roadType);
 
         return;
       }
@@ -121,6 +121,7 @@ void StreetGraph::addRoad(Path const& path)
   Intersection *end = addIntersection(roadPath.end());
 
   Road *newRoad = new Road(begining, end);
+  newRoad->setType(roadType);
   //newRoad->setPath(roadPath);
 
   // Connect road to intersections

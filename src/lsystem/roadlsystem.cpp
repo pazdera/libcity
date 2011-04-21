@@ -121,7 +121,7 @@ void RoadLSystem::drawLine()
 
   /* Add path to the streetgraph */
   cursor.setPosition(proposedPath.end()); /* Set cursor position at the end of generated road. */
-  targetStreetGraph->addRoad(proposedPath);
+  targetStreetGraph->addRoad(proposedPath, generatedType);
   generatedRoads++;
 }
 
@@ -290,7 +290,7 @@ void RoadLSystem::freeAreaConstraints()
 }
 
 
-void RoadLSystem::setRoadType(Road::types type)
+void RoadLSystem::setRoadType(Road::Types type)
 {
   generatedType = type;
 }

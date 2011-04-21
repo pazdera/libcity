@@ -1,4 +1,56 @@
 Plan:
+  - DONE implement LSystem::addRule()
+  - DONE implement LSystem::Symbol
+  - DONE reimplement LSystem using LSystem::Symbol instead of char
+  - DONE clean up and comment lsystem.cpp ans lsystem.h files, divide it into sections
+  - DONE implement cursor stack in GraphicLSystem
+  - DONE consider implementing cursor class
+  - DONE implement GraphicLSystem::Cursor class
+  - DONE reimplement GraphicLSystem using Cursor class
+  - DONE implement symbol interpretation and reading
+  - DONE implement continuous iterating through the LSystem with continuous expanding
+  - DONE implement some interface for LSystem and GraphicLSystem so they can be used without creating a child class
+  - DONE implement Vector normalization and rotations
+  - DONE write graphic representation of line, point and turn symbols to RoadLSystem
+  - DONE clean up unit testing system a little
+  - DONE migrate to UnitTest++ testing framework
+  - DONE unit test for Vector class
+  - DONE unit test for Point class
+  - DONE unit test for LSystem
+  - DONE figure out how store position of symbols (possibly new string of graphical information tight to the previous string)
+  - DONE rewrite symbol list using pointers
+  - DONE add additional graphical information to symbols in GraphicLSystem
+  - DONE add isTerminal() method to LSystem
+  - DONE virtual method for dealocating Symbols in LSystem
+  - DONE don't forget destructing graphicInformation
+  - DONE clean up LSystem code a little (add some functions)
+  - DONE clean up GraphicLSystem code a little (add some functions)
+  - DONE figure out stringPosition issues in GraphicLSystem stringPosition removed for now
+  - DONE fix the fu*king segfault GraphicLSystem in readNextSymbol
+  - DONE unit test for GraphicLSystem
+  - DONE appending new characters to alphabet
+  - DONE expand RoadLSystem implementation
+  - DONE create raster road pattern class
+  - DONE destruct GraphicInformation in GraphicLSystem properly
+  - DONE figure out how to return graphical representation
+  - DONE implement low level road construction
+  - DONE create Path type in Road
+  - DONE start streetgraph unit test
+  - DONE create Polygon class
+  - DONE write tests for Polygon class
+  - DONE implement Polygon class
+  - DONE design streetgraph
+  - DONE implement streetgraph
+  - DONE implement 2D intersection of lines
+  - DONE make Line class unit test
+  - DONE comment and document Line class
+  - DONE comment and document Polygon class
+  - DONE add constant references where possible
+  - DONE implement trimming line by polygon
+  - DONE segfault: poping from stack while empty in GraphicLSystem
+  - DONE write test of graphicLsystem stack
+  - DONE implement streetgraph.addRoad()
+  - DONE implement streetgraph.addIntersection()
   - PROTOTYPE implement streetgraph.populate()
   - DONE write debug dump() outputs
   - DONE fix all memory leaks
@@ -62,15 +114,24 @@ Plan:
   - DONE Road toString()
   - DONE Refactor coordinates transformations libcity <-> ogre
   - DONE Create libcityToOgre and ogreToLibcity methods
-  - Refactor Line -- rename to LineSegment
-  - Create Line class
-  - Maybe inherit LineSegment from line?
-  - Implement 3-way intersections
-  - Clean the precomputed intersecion's code a little (A LOT)
-  - Create 4 way intersections
+  - DONE Refactor Line -- rename to LineSegment
+  - DONE Create Line class
+  - DONE Maybe inherit LineSegment from line?
+  - DONE Implement geometric algorithms for Line (should be easy)
+  - DONE Write tests for Line.
+  - DONE Implement Ray to Line intersection
+  - DONE Implement 3-way intersections
+  - DONE Clean up code in 3 so it can be reused for 4 way
+  - DONE getRoadParameters(Road*)
+  - DONE Impelement secondary roads
+  - DONE Clean the precomputed intersecion's code a little (A LOT)
+  - DONE Create 4 way intersections
+  - Modify intersections algorithm to accept different road parameters
   - Create texture for 3 and 4 way intersections
   - Think about sampling intersections too
   - Eliminate 5 and more way intersections in roadGenerators
+  - Minimal distance between two intersections
+  - Think about separating intersections into a different module
   - Clean-up textures and material scripts
   - Refactor OgreCity
   - Split OgreCity into two classes

@@ -22,6 +22,7 @@
 // Tested modules
 #include "../src/geometry/ray.h"
 #include "../src/geometry/vector.h"
+#include "../src/geometry/line.h"
 #include "../src/geometry/point.h"
 #include "../src/geometry/linesegment.h"
 #include "../src/debug.h"
@@ -84,4 +85,50 @@ SUITE(RayClass)
     r2.set(Point(-100, 20, 0), Vector(1, 0, 0));
     CHECK(Ray::INTERSECTING == r2.intersection2D(r1, &intersection));
   }
+
+  TEST(LineRayIntersecting)
+  {
+    Ray r;
+    Line l;
+    Point intersection;
+
+    r.set(Point(0,0), Vector(1,0));
+    l.set(Point(1,1), Point(1,-1));
+    CHECK(Ray::INTERSECTING == r.intersection2D(l, &intersection));
+    CHECK(Point(1,0) == intersection);
+  }
+
+  TEST(LineRayNonintersecting)
+  {
+    Ray r;
+    Line l;
+    Point intersection;
+
+    r.set(Point(0,0), Vector(1,0));
+    l.set(Point(-1,1), Point(-1,-1));
+    CHECK(Ray::NONINTERSECTING == r.intersection2D(l, &intersection));
+  }
+
+  TEST(LineRayParallel)
+  {
+    Ray r;
+    Line l;
+    Point intersection;
+
+    r.set(Point(0,0), Vector(1,0));
+    l.set(Point(-1,1), Point(1,1));
+    CHECK(Ray::PARALLEL == r.intersection2D(l, &intersection));
+  }
+
+  TEST(LineRayCase)
+  {
+    Ray r;
+    Line l;
+    Point intersection;
+
+    r.set(Point(3020, 3000, 0), Vector(0, -1, 0));
+    l.set(Point(3020, 1876.1, 0), Point(3020, 1916.18, 0));
+    CHECK(Ray::PARALLEL == r.intersection2D(l, &intersection));
+  }
+
 }

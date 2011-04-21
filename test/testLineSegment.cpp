@@ -28,7 +28,7 @@
 
 #include "../src/debug.h"
 
-SUITE(LineClass)
+SUITE(LineSegmentClass)
 {
   TEST(Interface)
   {
@@ -58,7 +58,7 @@ SUITE(LineClass)
   TEST(Intersecting)
   {
     LineSegment *l1 = new LineSegment(Point(0,0), Point(1,1)),
-         *l2 = new LineSegment(Point(0,1), Point(1,0));
+                *l2 = new LineSegment(Point(0,1), Point(1,0));
     Point result;
 
     CHECK_EQUAL(LineSegment::INTERSECTING, l1->intersection2D(*l2, &result));
@@ -71,7 +71,7 @@ SUITE(LineClass)
   TEST(Intersecting2)
   {
     LineSegment *l1 = new LineSegment(Point(0,0), Point(1,1)),
-         *l2 = new LineSegment(Point(1,1), Point(2,2));
+                *l2 = new LineSegment(Point(1,1), Point(2,2));
     Point result;
 
     CHECK_EQUAL(LineSegment::INTERSECTING, l1->intersection2D(*l2, &result));

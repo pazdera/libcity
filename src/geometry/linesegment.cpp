@@ -19,28 +19,20 @@
 #include <cmath>
 
 LineSegment::LineSegment()
-{
-  first  = new Point(0,0,0);
-  second = new Point(0,0,0);
-}
+  : Line()
+{}
 
 LineSegment::LineSegment(Point const& firstPoint, Point const& secondPoint)
-{
-  first  = new Point(firstPoint);
-  second = new Point(secondPoint);
-}
+  : Line(firstPoint, secondPoint)
+{}
 
 LineSegment::LineSegment(Point const& point, Vector const& vector)
-{
-  first  = new Point(point);
-  second = new Point(point + vector);
-}
+  : Line(point, point + vector)
+{}
 
 LineSegment::LineSegment(LineSegment const& source)
-{
-  first  = new Point(source.begining());
-  second = new Point(source.end());
-}
+  : Line(source)
+{}
 
 LineSegment& LineSegment::operator=(LineSegment const& source)
 {
@@ -50,33 +42,7 @@ LineSegment& LineSegment::operator=(LineSegment const& source)
 }
 
 LineSegment::~LineSegment()
-{
-  delete first;
-  delete second;
-}
-
-void LineSegment::setBegining(Point const& point)
-{
-  delete first;
-  first = new Point(point);
-}
-
-void LineSegment::setEnd(Point const& point)
-{
-
-  delete second;
-  second = new Point(point);
-}
-
-Point LineSegment::begining() const
-{
-  return *first;
-}
-
-Point LineSegment::end() const
-{
-  return *second;
-}
+{}
 
 bool LineSegment::hasPoint2D(Point const& point) const
 {
