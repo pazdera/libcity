@@ -126,6 +126,17 @@ Plan:
   - DONE Impelement secondary roads
   - DONE Clean the precomputed intersecion's code a little (A LOT)
   - DONE Create 4 way intersections
+  - DONE Create git repo and doxygen config to 3D app
+  - DONE Create github page for OgreCity
+  - DONE Design OgreCity app
+  - DONE Write file header for OgreCity
+  - DONE Create .gitignore in OgreCity
+  - DONE Add LICENSE to OgreCity
+  - DONE Create all source files for classes
+  - DONE Link files inheritance
+  - DONE Add top comments
+  - DONE Refactor the current code accordnig to the design
+  - Move street graph rendering into StreetGraphRenderer
   - Modify intersections algorithm to accept different road parameters
   - Create texture for 3 and 4 way intersections
   - Think about sampling intersections too
@@ -136,7 +147,7 @@ Plan:
   - Refactor OgreCity
   - Split OgreCity into two classes
   - Clean debug messages
-  - Create documentation in Ogre demo app
+  - DONE Create documentation in Ogre demo app
   - 
   - design error handling and exceptions
   - BUILDINGS

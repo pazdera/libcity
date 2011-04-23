@@ -47,8 +47,3 @@ void City::generate()
   createBuildings();
 }
 
-void City::draw()
-{
-  drawRoadNetwork();
-  drawBuildings();
-}

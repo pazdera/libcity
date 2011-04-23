@@ -25,7 +25,6 @@ class City
     virtual ~City();
 
     virtual void generate();
-    virtual void draw();
 
   private: /* Copying not allowed */
     City(City const& source);
@@ -37,9 +36,6 @@ class City
     virtual void createSecondaryRoadNetwork() = 0;
     virtual void createBlocks() = 0;
     virtual void createBuildings() = 0;
-
-    virtual void drawRoadNetwork() = 0;
-    virtual void drawBuildings() = 0;
 
     StreetGraph* map;
     std::list<Zone*> *zones;
