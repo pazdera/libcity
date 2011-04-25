@@ -190,6 +190,7 @@ Intersection* StreetGraph::addIntersection(Point const& position)
       newIntersection->addRoad(*road);
 
       Road* secondPart = new Road(newIntersection, end);
+      secondPart->setType((*road)->type());
       roads->push_back(secondPart);
 
       newIntersection->addRoad(secondPart);
@@ -225,6 +226,22 @@ bool StreetGraph::isIntersectionAtPosition(Point const& position)
   }
 
   return false;
+}
+
+Intersection* StreetGraph::getIntersectionAtPosition(Point const& position)
+{
+  /* Search for existing intersection. */
+  for (std::list<Intersection*>::iterator intersection = intersections->begin();
+       intersection != intersections->end();
+       intersection++)
+  {
+    if ((*intersection)->position() == position)
+    {
+      return (*intersection);
+    }
+  }
+
+  return 0;
 }
 
 int StreetGraph::numberOfRoads()

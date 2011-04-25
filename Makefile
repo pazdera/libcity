@@ -42,11 +42,14 @@ LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
                 src/lsystem/graphiclsystem.o \
                 src/lsystem/roadlsystem.o
 
+# Buildings package
+BUILDINGS_PACKAGE=src/buildings/block.o
+
 # No package
 MISC=src/random.o \
      src/city.o
 
-LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(MISC)
+LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(BUILDINGS_PACKAGE) $(MISC)
 
 $(LIB_OBJECTS): %.o: %.cpp %.h
 	$(COMPILER) $(COMPILER_FLAGS) -c $< -o $@
@@ -68,7 +71,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testRandom.o \
            test/testMCB.o \
            test/testPath.o \
-           test/testRay.o
+           test/testRay.o \
+           test/testBlock.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

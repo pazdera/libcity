@@ -119,6 +119,10 @@ std::string Path::toString()
   return "Path(" + representation->toString() + ")";
 }
 
+double Path::length()
+{
+  return representation->length();
+}
 
 Vector Path::beginingDirectionVector()
 {

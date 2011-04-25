@@ -111,6 +111,7 @@ class StreetGraph
     int numberOfRoads();
 
     bool isIntersectionAtPosition(Point const& position);
+    Intersection* getIntersectionAtPosition(Point const& position);
 
     std::string toString();
 

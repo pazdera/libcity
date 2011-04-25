@@ -31,7 +31,7 @@ class RoadLSystem : public GraphicLSystem
     RoadLSystem();
     virtual ~RoadLSystem();
 
-    virtual void generateRoads(int number);
+    virtual bool generateRoads(int number);
     virtual void generate();
 
     void setTarget(StreetGraph* target);

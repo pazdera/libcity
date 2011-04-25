@@ -136,11 +136,13 @@ Plan:
   - DONE Link files inheritance
   - DONE Add top comments
   - DONE Refactor the current code accordnig to the design
-  - Move street graph rendering into StreetGraphRenderer
-  - Modify intersections algorithm to accept different road parameters
-  - Create texture for 3 and 4 way intersections
+  - DONE Move street graph rendering into StreetGraphRenderer
+  - DONE Design RoadParameters
+  - DONE Refactor RoadParameters
+  - DONE Modify intersections algorithm to accept different road parameters
+  - DONE Create texture for 3 and 4 way intersections
   - Think about sampling intersections too
-  - Eliminate 5 and more way intersections in roadGenerators
+  - Eliminate 5 and more way intersections in roadGenerators 
   - Minimal distance between two intersections
   - Think about separating intersections into a different module
   - Clean-up textures and material scripts

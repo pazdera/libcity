@@ -73,11 +73,14 @@ void RoadLSystem::generate()
   {}
 }
 
-void RoadLSystem::generateRoads(int number)
+bool RoadLSystem::generateRoads(int number)
 {
   double targetNumberOfRoads = generatedRoads + number;
-  while (generatedRoads < targetNumberOfRoads && readNextSymbol() != 0)
+  bool returnValue = true;
+  while (generatedRoads < targetNumberOfRoads && (returnValue = readNextSymbol()) != 0)
   {}
+
+  return returnValue;
 }
 
 void RoadLSystem::turnLeft()
@@ -115,7 +118,7 @@ void RoadLSystem::drawLine()
 
   if (targetStreetGraph->isIntersectionAtPosition(proposedPath.end()))
   {
-    // Don't branch from existing intersections
+    // Don't branch into existing intersections
     cancelBranch();
   }
 
@@ -140,12 +143,15 @@ void RoadLSystem::cancelBranch()
 
 bool RoadLSystem::localConstraints(Path* proposedPath)
 {
-  // FIXME
   Intersection* nearestIntersection = 0;
   double distanceToNearestIntersection = snapDistance + 1;
 
   Road* nearestRoad = 0;
   double distanceToNearestRoad = snapDistance + 1;
+  bool isClose = false;
+  bool snapped = false;
+
+  const double MINIMAL_ROAD_LENGTH = 100;
 
   Point intersection;
   double distance;
@@ -156,7 +162,6 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     // Check for intersection
     if (proposedPath->crosses(*(*currentRoad)->path(), &intersection))
     {
-
       if (intersection == proposedPath->begining() ||
           intersection == proposedPath->end())
       /* New road is just touching some other one */
@@ -174,19 +179,32 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     distance = Vector(proposedPath->end(), (*currentRoad)->begining()->position()).length();
     if (distance < snapDistance && distance < distanceToNearestIntersection)
     {
+      if (targetStreetGraph->getIntersectionAtPosition((*currentRoad)->end()->position())->numberOfWays() < 4)
+      {
       nearestIntersection = (*currentRoad)->begining();
+      }
     }
 
     distance = Vector(proposedPath->end(), (*currentRoad)->end()->position()).length();
     if (distance < snapDistance && distance < distanceToNearestIntersection)
     {
-      nearestIntersection = (*currentRoad)->end();
+      isClose = true;
+      if (targetStreetGraph->getIntersectionAtPosition((*currentRoad)->end()->position())->numberOfWays() < 4)
+      {
+        nearestIntersection = (*currentRoad)->end();
+      }
     }
 
-    distance = Vector(proposedPath->end(), (*currentRoad)->path()->nearestPoint(proposedPath->end())).length();
+    Point nearestPointOfRoad = (*currentRoad)->path()->nearestPoint(proposedPath->end());
+    distance = Vector(proposedPath->end(), nearestPointOfRoad).length();
     if (distance < snapDistance && distance < distanceToNearestRoad)
     {
-      nearestRoad = (*currentRoad);
+      isClose = true;
+      if (Vector((*currentRoad)->path()->begining(), nearestPointOfRoad).length() >= MINIMAL_ROAD_LENGTH &&
+          Vector((*currentRoad)->path()->end(), nearestPointOfRoad).length() >= MINIMAL_ROAD_LENGTH)
+      {
+        nearestRoad = (*currentRoad);
+      }
     }
 
     // Measure similarity of the two paths
@@ -207,15 +225,53 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
 
   if (nearestIntersection != 0)
   {
+    snapped = true;
     proposedPath->setEnd(nearestIntersection->position());
   }
   else
   {
     if (nearestRoad != 0)
     {
+      snapped = true;
       proposedPath->setEnd(nearestRoad->path()->nearestPoint(proposedPath->end()));
     }
   }
+
+  if (isClose && !snapped)
+  {
+    return false;
+  }
+
+  if (proposedPath->length() < MINIMAL_ROAD_LENGTH)
+  {
+    return false;
+  }
+
+  if (targetStreetGraph->isIntersectionAtPosition(proposedPath->end()) &&
+      targetStreetGraph->getIntersectionAtPosition(proposedPath->end())->numberOfWays() >= 4)
+  {
+    return false;
+  }
+
+//   for (std::list<Road*>::iterator currentRoad = targetStreetGraph->begin();
+//         currentRoad != targetStreetGraph->end();
+//         currentRoad++)
+//   {
+//     // Check for intersection
+//     if (proposedPath->crosses(*(*currentRoad)->path(), &intersection))
+//     {
+//       if (intersection == proposedPath->begining() ||
+//           intersection == proposedPath->end())
+//       /* New road is just touching some other one */
+//       {
+//       }
+//       else
+//       /* Cut off the end of the path. */
+//       {
+//         assert(false);
+//       }
+//     }
+//   }
 
   return true;
 }

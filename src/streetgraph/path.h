@@ -70,6 +70,8 @@ class Path
     Point nearestPoint(Point const& point);
     double distance(Point const& point);
 
+    double length();
+
     void shorten(Point const& newBegining, Point const& newEnd);
 
     /**
