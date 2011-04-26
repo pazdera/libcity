@@ -11,8 +11,8 @@
 
 #include "areaextractor.h"
 #include "intersection.h"
-#include "../streetgraph/zone.h"
-#include "../buildings/block.h"
+#include "../area/zone.h"
+#include "../area/block.h"
 #include "../streetgraph/streetgraph.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"

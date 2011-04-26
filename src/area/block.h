@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file buildings/block.h
+ * @file area/block.h
  * @date 25.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -12,15 +12,20 @@
 #ifndef _BLOCK_H_
 #define _BLOCK_H_
 
+/* STL */
 #include <string>
+
+/* libcity */
+#include "area.h"
 
 class LineSegment;
 class Point;
 class Vector;
 class Polygon;
 class Zone;
+class Lot;
 
-class Block
+class Block : public Area
 {
   public:
     Block();
@@ -32,17 +37,11 @@ class Block
 
     ~Block();
 
-    Polygon areaConstraints();
-    void setAreaConstraints(Polygon const& area);
-
-    void setZone(Zone* zone);
   private:
-    void initialize();
-    void reset();
-    void freeMemory();
+    std::list<Lot*> lots;
 
-    Polygon* constraints;
-    Zone* associatedZone;
+    void initialize();
+    void freeMemory();
 };
 
 

@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file streetgraph/zone.cpp
+ * @file area/zone.cpp
  * @date 05.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -11,8 +11,9 @@
 
 #include "zone.h"
 
-#include "streetgraph.h"
-#include "intersection.h"
+/* libcity */
+#include "../streetgraph/streetgraph.h"
+#include "../streetgraph/intersection.h"
 #include "../geometry/polygon.h"
 #include "../geometry/point.h"
 #include "../streetgraph/areaextractor.h"
@@ -73,16 +74,6 @@ Zone& Zone::operator=(Zone const& source)
 void Zone::setRoadGenerator(RoadLSystem* generator)
 {
   roadGenerator = generator;
-}
-
-void Zone::setAreaConstraints(Polygon const& area)
-{
-  *constraints = area;
-}
-
-Polygon Zone::areaConstraints()
-{
-  return *constraints;
 }
 
 void Zone::setStreetGraph(StreetGraph* streets)

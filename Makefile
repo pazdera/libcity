@@ -26,8 +26,7 @@ GEOMETRY_PACKAGE=src/geometry/curve.o \
                  src/geometry/ray.o
 
 # Streetgraph package
-STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
-                    src/streetgraph/intersection.o \
+STREETGRAPH_PACKAGE=src/streetgraph/intersection.o \
                     src/streetgraph/road.o \
                     src/streetgraph/primaryroad.o \
                     src/streetgraph/secondaryroad.o \
@@ -42,14 +41,20 @@ LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
                 src/lsystem/graphiclsystem.o \
                 src/lsystem/roadlsystem.o
 
+# Area package
+AREA_PACKAGE=src/area/block.o \
+             src/area/area.o \
+             src/area/zone.o \
+             src/area/lot.o
+
 # Buildings package
-BUILDINGS_PACKAGE=src/buildings/block.o
+BUILDINGS_PACKAGE=
 
 # No package
 MISC=src/random.o \
      src/city.o
 
-LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(BUILDINGS_PACKAGE) $(MISC)
+LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(AREA_PACKAGE) $(BUILDINGS_PACKAGE) $(MISC)
 
 $(LIB_OBJECTS): %.o: %.cpp %.h
 	$(COMPILER) $(COMPILER_FLAGS) -c $< -o $@
@@ -72,7 +77,9 @@ TEST_UNITS=test/testPoint.o   \
            test/testAreaExtractor.o \
            test/testPath.o \
            test/testRay.o \
-           test/testBlock.o
+           test/testBlock.o \
+           test/testLot.o \
+           test/testZone.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

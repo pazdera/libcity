@@ -1,22 +1,25 @@
 /**
  * This code is part of libcity library.
  *
- * @file streetgraph/zone.h
+ * @file area/zone.h
  * @date 02.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief !!! NOT SURE YET
+ * @brief Representation of a city district or zone.
  *
  */
 
 #ifndef _ZONE_H_
 #define _ZONE_H_
 
+/* STL */
 #include <vector>
 #include <list>
 #include <map>
 
-#include "road.h"
+/* libcity */
+#include "../streetgraph/road.h"
+#include "area.h"
 
 class Polygon;
 class StreetGraph;
@@ -24,7 +27,7 @@ class RoadLSystem;
 class Intersection;
 class Block;
 
-class Zone
+class Zone : public Area
 {
   public:
     Zone(StreetGraph* streets);
@@ -34,10 +37,9 @@ class Zone
     Zone& operator=(Zone const& source);
 
     void setRoadGenerator(RoadLSystem* generator);
-    void setAreaConstraints(Polygon const& area);
 
     StreetGraph* streetGraph();
-    Polygon areaConstraints();
+    void setStreetGraph(StreetGraph* streets);
 
     bool isIntersectionInside(Intersection* intersection);
     bool roadIsInside(Road* road);
@@ -46,7 +48,6 @@ class Zone
     std::list<Block*> getBlocks();
 
   private:
-    Polygon* constraints;
     RoadLSystem* roadGenerator;
     StreetGraph* associatedStreetGraph;
 
@@ -55,8 +56,6 @@ class Zone
     void initialize();
     void freeMemory();
     void freeRoadGenerator();
-
-    void setStreetGraph(StreetGraph* streets);
 };
 
 #endif

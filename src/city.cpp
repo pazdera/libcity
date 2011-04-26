@@ -12,7 +12,7 @@
 #include "city.h"
 
 #include "streetgraph/streetgraph.h"
-#include "streetgraph/zone.h"
+#include "area/zone.h"
 #include "geometry/polygon.h"
 
 City::City()

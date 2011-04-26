@@ -20,7 +20,7 @@
 #include <stdexcept>
 
 // Tested modules
-#include "../src/buildings/block.h"
+#include "../src/area/block.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/point.h"
 #include "../src/geometry/linesegment.h"

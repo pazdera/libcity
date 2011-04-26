@@ -12,7 +12,7 @@
 #include "streetgraph.h"
 #include "road.h"
 #include "intersection.h"
-#include "zone.h"
+#include "../area/zone.h"
 #include "path.h"
 #include "areaextractor.h"
 #include "../lsystem/roadlsystem.h"

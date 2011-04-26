@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file buildings/block.cpp
+ * @file area/block.cpp
  * @date 25.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -16,7 +16,8 @@
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"
 #include "../geometry/vector.h"
-#include "../streetgraph/zone.h"
+#include "zone.h"
+#include "lot.h"
 
 Block::Block()
 {
@@ -26,42 +27,32 @@ Block::Block()
 Block::Block(Zone* parentZone)
 {
   initialize();
-  associatedZone = parentZone;
+  setParent(parentZone);
 }
 
 Block::Block(Zone* parentZone, Polygon const& border)
 {
   initialize();
-  associatedZone = parentZone;
-  *constraints = border;
+  setParent(parentZone);
+  setAreaConstraints(border);
 }
 
 Block::Block(Block const& source)
+  : Area(source)
 {
   initialize();
-
-  associatedZone = source.associatedZone;
-  *constraints = *(source.constraints);
 }
 
 void Block::initialize()
 {
-  constraints = new Polygon();
+  lots.clear();
 }
 
 Block& Block::operator=(Block const& source)
 {
-  reset();
-
-  associatedZone = source.associatedZone;
-  *constraints = *(source.constraints);
+  Area::operator=(source);
 
   return *this;
-}
-
-void Block::reset()
-{
-  constraints->clear();
 }
 
 Block::~Block()
@@ -71,20 +62,5 @@ Block::~Block()
 
 void Block::freeMemory()
 {
-  delete constraints;
-}
-
-Polygon Block::areaConstraints()
-{
-  return *constraints;
-}
-
-void Block::setAreaConstraints(Polygon const& area)
-{
-  *constraints = area;
-}
-
-void Block::setZone(Zone* zone)
-{
-  associatedZone = zone;
+  lots.clear();
 }

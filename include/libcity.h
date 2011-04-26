@@ -44,16 +44,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../src/streetgraph/path.h"
 #include "../src/streetgraph/intersection.h"
 #include "../src/streetgraph/streetgraph.h"
-#include "../src/streetgraph/zone.h"
 #include "../src/streetgraph/rasterroadpattern.h"
 #include "../src/streetgraph/organicroadpattern.h"
 #include "../src/streetgraph/areaextractor.h"
 
+#include "../src/area/area.h"
+#include "../src/area/zone.h"
+#include "../src/area/block.h"
+#include "../src/area/lot.h"
+
+
 #include "../src/lsystem/lsystem.h"
 #include "../src/lsystem/graphiclsystem.h"
 #include "../src/lsystem/roadlsystem.h"
-
-#include "../src/buildings/block.h"
 
 #include "../src/random.h"
 #include "../src/city.h"
