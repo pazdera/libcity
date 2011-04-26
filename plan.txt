@@ -154,9 +154,9 @@ Plan:
   - DONE How to pass road widths to createBlocks()?
   - DONE Implement debuging of blocks into 2D
   - Division of Blocks into Lots
-  - Create CityArea class
-  - Make Zone, Block and Lot inherit from CityArea
-  - Create Lot class
+  - DONE Create CityArea class
+  - DONE Make Zone, Block and Lot inherit from CityArea
+  - DONE Create Lot class
   - Eliminate 5 and more way intersections in roadGenerators 
   - Minimal distance between two intersections
   - Think about separating intersections into a different module

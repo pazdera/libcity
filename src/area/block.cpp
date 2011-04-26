@@ -64,3 +64,8 @@ void Block::freeMemory()
 {
   lots.clear();
 }
+
+void Block::createLots()
+{
+  
+}
