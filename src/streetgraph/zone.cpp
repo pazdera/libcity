@@ -12,7 +12,10 @@
 #include "zone.h"
 
 #include "streetgraph.h"
+#include "intersection.h"
 #include "../geometry/polygon.h"
+#include "../geometry/point.h"
+#include "../streetgraph/areaextractor.h"
 #include "../lsystem/roadlsystem.h"
 
 Zone::Zone(StreetGraph* streets)
@@ -26,6 +29,7 @@ void Zone::initialize()
   associatedStreetGraph = 0;
   roadGenerator = 0;
   constraints = new Polygon();
+  blocks = new std::list<Block*>;
 }
 
 Zone::~Zone()
@@ -37,6 +41,7 @@ void Zone::freeMemory()
 {
   freeRoadGenerator();
   delete constraints;
+  delete blocks;
 }
 
 void Zone::freeRoadGenerator()
@@ -83,4 +88,31 @@ Polygon Zone::areaConstraints()
 void Zone::setStreetGraph(StreetGraph* streets)
 {
   associatedStreetGraph = streets;
+}
+
+StreetGraph* Zone::streetGraph()
+{
+  return associatedStreetGraph;
+}
+
+bool Zone::isIntersectionInside(Intersection* intersection)
+{
+  return constraints->encloses2D(intersection->position());
+}
+
+bool Zone::roadIsInside(Road* road)
+{
+  return isIntersectionInside(road->begining()) && isIntersectionInside(road->end());
+}
+
+void Zone::createBlocks(std::map<Road::Types, double> roadWidths)
+{
+  AreaExtractor graph;
+  graph.setRoadWidths(roadWidths);
+  *blocks = graph.extractBlocks(associatedStreetGraph, this);
+}
+
+std::list<Block*> Zone::getBlocks()
+{
+  return *blocks;
 }

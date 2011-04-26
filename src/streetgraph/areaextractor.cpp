@@ -1,48 +1,54 @@
 /**
  * This code is part of libcity library.
  *
- * @file minimalcyclebasis.cpp
+ * @file areaextractor.cpp
  * @date 31.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @see minimalcyclebasis.h
+ * @see areaextractor.h
  *
  */
 
-#include "minimalcyclebasis.h"
+#include "areaextractor.h"
 #include "intersection.h"
+#include "../streetgraph/zone.h"
+#include "../buildings/block.h"
+#include "../streetgraph/streetgraph.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"
 #include "../geometry/vector.h"
 #include "../debug.h"
 
-MinimalCycleBasis::MinimalCycleBasis(std::list<Intersection*>* inputIntersections)
+AreaExtractor::AreaExtractor()
 {
   initialize();
-
-  /* Add all nodes into adjacency list. */
-  for (std::list<Intersection*>::iterator insertedIntersectionIterator = inputIntersections->begin();
-       insertedIntersectionIterator != inputIntersections->end();
-       insertedIntersectionIterator++)
-  {
-    addVertex(*insertedIntersectionIterator);
-  }
 }
 
-void MinimalCycleBasis::initialize()
+void AreaExtractor::initialize()
 {
   vertices = new std::list<Intersection*>;
   adjacentNodes = new std::map< Intersection*, std::vector<Intersection*> >;
   cycleEdges = new std::set< std::pair<Intersection*, Intersection*> >;
   cycles = new std::list<Polygon>;
+
+  reset();
 }
 
-MinimalCycleBasis::~MinimalCycleBasis()
+void AreaExtractor::reset()
+{
+  vertices->clear();
+  adjacentNodes->clear();
+  cycleEdges->clear();
+  cycles->clear();
+  substractRoadWidthFromAreas = false;
+}
+
+AreaExtractor::~AreaExtractor()
 {
   freeMemory();
 }
 
-void MinimalCycleBasis::freeMemory()
+void AreaExtractor::freeMemory()
 {
   delete vertices;
   delete adjacentNodes;
@@ -50,7 +56,7 @@ void MinimalCycleBasis::freeMemory()
   delete cycles;
 }
 
-MinimalCycleBasis::MinimalCycleBasis(MinimalCycleBasis const& source)
+AreaExtractor::AreaExtractor(AreaExtractor const& source)
 {
   initialize();
 
@@ -60,10 +66,9 @@ MinimalCycleBasis::MinimalCycleBasis(MinimalCycleBasis const& source)
   *cycles        = *(source.cycles);
 }
 
-MinimalCycleBasis& MinimalCycleBasis::operator=(MinimalCycleBasis const& source)
+AreaExtractor& AreaExtractor::operator=(AreaExtractor const& source)
 {
-  freeMemory();
-  initialize();
+  reset();
 
   *vertices      = *(source.vertices);
   *adjacentNodes = *(source.adjacentNodes);
@@ -73,12 +78,145 @@ MinimalCycleBasis& MinimalCycleBasis::operator=(MinimalCycleBasis const& source)
   return *this;
 }
 
-void MinimalCycleBasis::extractIsolatedVertex(Intersection* vertex)
+void AreaExtractor::copyVertices(StreetGraph* map, Zone* zone)
+{
+  reset();
+
+  /* Add all nodes into adjacency list. */
+  StreetGraph::Intersections inputIntersections = map->getIntersections();
+  for (std::list<Intersection*>::iterator insertedIntersectionIterator = inputIntersections.begin();
+       insertedIntersectionIterator != inputIntersections.end();
+       insertedIntersectionIterator++)
+  {
+    addVertex(*insertedIntersectionIterator, zone);
+  }
+}
+
+
+void AreaExtractor::setRoadWidth(Road::Types type, double width)
+{
+  roadWidths[type] = width;
+}
+
+void AreaExtractor::setRoadWidths(std::map<Road::Types, double> widths)
+{
+  roadWidths = widths;
+}
+
+std::list<Zone*> AreaExtractor::extractZones(StreetGraph* fromMap, Zone* zoneConstraints)
+{
+  reset();
+  map = fromMap;
+  copyVertices(map, zoneConstraints);
+  substractRoadWidthFromAreas = false;
+
+  getMinimalCycles();
+
+  std::list<Zone*> zones;
+  for (std::list<Polygon>::iterator foundZone = cycles->begin();
+       foundZone != cycles->end();
+       foundZone++)
+  {
+    Zone* newZone = new Zone(map);
+    newZone->setAreaConstraints(*foundZone);
+    zones.push_back(newZone);
+  }
+
+  return zones;
+}
+
+std::list<Block*> AreaExtractor::extractBlocks(StreetGraph* fromMap, Zone* zoneConstraints)
+{
+  reset();
+  map = fromMap;
+  copyVertices(map, zoneConstraints);
+  substractRoadWidthFromAreas = true;
+  std::list<Block*> blocks;
+
+  getMinimalCycles();
+
+  for (std::list<Polygon>::iterator foundZone = cycles->begin();
+       foundZone != cycles->end();
+       foundZone++)
+  {
+    Block* newBlock = new Block(zoneConstraints);
+    newBlock->setAreaConstraints(*foundZone);
+    blocks.push_back(newBlock);
+  }
+  return blocks;
+}
+
+
+void AreaExtractor::substractRoadWidths(Polygon* minimalCycle, std::vector<Intersection*> const& correspondingIntersections)
+{
+  assert(minimalCycle->numberOfVertices() == correspondingIntersections.size());
+
+  Polygon oldArea(*minimalCycle);
+  int current, next;
+  int vertices = minimalCycle->numberOfVertices();
+  Road* road;
+  Vector normal;
+  Point newCurrent, newNext;
+
+  for(int i = 0; i < vertices; i++)
+  {
+    current = i;
+    next = (i + 1) % vertices;
+
+    road = map->getRoadBetweenIntersections(correspondingIntersections[current], correspondingIntersections[next]);
+    assert(roadWidths.find(road->type()) != roadWidths.end());
+
+    normal = minimalCycle->edgeNormal(current);
+    normal.normalize();
+
+    newCurrent = minimalCycle->vertex(current) + normal*roadWidths[road->type()];
+    newNext    = minimalCycle->vertex(next)    + normal*roadWidths[road->type()];
+    minimalCycle->updateVertex(current, newCurrent);
+    minimalCycle->updateVertex(next, newNext);
+  }
+}
+
+void AreaExtractor::getMinimalCycles()
+{
+  std::vector<Intersection*> adjacentNodes;
+  Intersection* current;
+  Intersection* next;
+
+  while (!empty())
+  {
+    current = first();
+
+    adjacentNodes = adjacent(current);
+
+    if (adjacentNodes.size() == 0)
+    /* Isolated, no cycle possible. */
+    {
+      debug("AreaExtractor::getMinimalCycles(): Extracting isolated vertex.");
+      extractIsolatedVertex(current);
+    }
+    else if (adjacentNodes.size() == 1)
+    /* Remove filaments */
+    {
+      debug("AreaExtractor::getMinimalCycles(): Extracting filament.");
+      next = adjacentNodes[0];
+      extractFilament(current, next);
+    }
+    else
+    /* Extract cycles. */
+    {
+      debug("AreaExtractor::getMinimalCycles(): Extracting minimal cycle.");
+      next = adjacentNodes[0];
+      extractMinimalCycle(current, next);
+    }
+  }
+}
+
+void AreaExtractor::extractIsolatedVertex(Intersection* vertex)
 {
   removeVertex(vertex);
 }
 
-void MinimalCycleBasis::extractFilament(Intersection* v0, Intersection* v1)
+void AreaExtractor::extractFilament(Intersection* v0, Intersection* v1)
 {
   if (isCycleEdge(v0,v1))
   {
@@ -139,7 +277,7 @@ void MinimalCycleBasis::extractFilament(Intersection* v0, Intersection* v1)
   }
 }
 
-void MinimalCycleBasis::extractMinimalCycle(Intersection* current, Intersection* next)
+void AreaExtractor::extractMinimalCycle(Intersection* current, Intersection* next)
 {
   std::set<Intersection*> visited;
   std::list<Intersection*> sequence;
@@ -154,7 +292,7 @@ void MinimalCycleBasis::extractMinimalCycle(Intersection* current, Intersection*
          (currentVertex != current) &&
          (visited.find(currentVertex) == visited.end()))
   {
-    debug("MinimalCycleBasis::extractMinimalCycle(): Next point in sequence is " << currentVertex->position().toString());
+    debug("AreaExtractor::extractMinimalCycle(): Next point in sequence is " << currentVertex->position().toString());
     sequence.push_back(currentVertex);
     visited.insert(currentVertex);
     nextVertex = getCounterclockwiseMost(previousVertex, currentVertex);
@@ -171,23 +309,30 @@ void MinimalCycleBasis::extractMinimalCycle(Intersection* current, Intersection*
   {
     // Minimal cycle found.
     Polygon minimalCycle;
+    std::vector<Intersection*> correspondingIntersections;
 
     for (std::list<Intersection*>::iterator nodeInCycle = sequence.begin();
           nodeInCycle != sequence.end();
           nodeInCycle++)
     {
       minimalCycle.addVertex((*nodeInCycle)->position());
+      correspondingIntersections.push_back(*nodeInCycle);
 
       std::list<Intersection*>::iterator nextNodeInCycle = nodeInCycle;
       nextNodeInCycle++;
       if (nextNodeInCycle == sequence.end())
+      /* So we can mark the last edge */
       {
         nextNodeInCycle = sequence.begin();
       }
       markCycleEdge(*nodeInCycle, *nextNodeInCycle);
     }
 
-    debug("MinimalCycleBasis::extractMinimalCycle(): Storing minimal cycle.");
+    debug("AreaExtractor::extractMinimalCycle(): Storing minimal cycle.");
+    if (substractRoadWidthFromAreas)
+    {
+      substractRoadWidths(&minimalCycle, correspondingIntersections);
+    }
     cycles->push_back(minimalCycle);
 
     removeEdge(current, next);
@@ -227,50 +372,7 @@ void MinimalCycleBasis::extractMinimalCycle(Intersection* current, Intersection*
   }
 }
 
-std::list<Polygon> MinimalCycleBasis::getMinimalCycles()
-{
-  std::vector<Intersection*> adjacentNodes;
-  Intersection* current;
-  Intersection* next;
-
-//   debug("MinimalCycleBasis::getMinimalCycles(): Adjacency list dump");
-//   dumpAdjacencyLists();
-//   debug("MinimalCycleBasis::getMinimalCycles(): Adjacencies from intersections");
-//   dumpAdjacenciesFromVertices();
-
-  while (!empty())
-  {
-    current = first();
-    //debug(current->position().toString());
-
-    adjacentNodes = adjacent(current);
-
-    if (adjacentNodes.size() == 0)
-    /* Isolated, no cycle possible. */
-    {
-      debug("MinimalCycleBasis::getMinimalCycles(): Extracting isolated vertex.");
-      extractIsolatedVertex(current);
-    }
-    else if (adjacentNodes.size() == 1)
-    /* Remove filaments */
-    {
-      debug("MinimalCycleBasis::getMinimalCycles(): Extracting filament.");
-      next = adjacentNodes[0];
-      extractFilament(current, next);
-    }
-    else
-    /* Extract cycles. */
-    {
-      debug("MinimalCycleBasis::getMinimalCycles(): Extracting minimal cycle.");
-      next = adjacentNodes[0];
-      extractMinimalCycle(current, next);
-    }
-  }
-
-  return *cycles;
-}
-
-Intersection* MinimalCycleBasis::getClockwiseMost(Intersection *previous, Intersection* current)
+Intersection* AreaExtractor::getClockwiseMost(Intersection *previous, Intersection* current)
 {
   std::vector<Intersection*> adjacentNodes = adjacent(current);
 
@@ -325,7 +427,7 @@ Intersection* MinimalCycleBasis::getClockwiseMost(Intersection *previous, Inters
   return next;
 }
 
-Intersection* MinimalCycleBasis::getCounterclockwiseMost(Intersection *previous, Intersection* current)
+Intersection* AreaExtractor::getCounterclockwiseMost(Intersection *previous, Intersection* current)
 {
   std::vector<Intersection*> adjacentNodes = adjacent(current);
 
@@ -380,15 +482,37 @@ Intersection* MinimalCycleBasis::getCounterclockwiseMost(Intersection *previous,
   return next;
 }
 
-int MinimalCycleBasis::numberOfAdjacentNodes(Intersection* node)
+int AreaExtractor::numberOfAdjacentNodes(Intersection* node)
 {
   return (*adjacentNodes)[node].size();
 }
 
-void MinimalCycleBasis::addVertex(Intersection* node)
+void AreaExtractor::addVertex(Intersection* node, Zone* zone)
 {
+  std::vector<Intersection*> adjacent = node->adjacentIntersections();
+
+  if (zone != 0)
+  {
+    if (!zone->isIntersectionInside(node))
+    {
+      return;
+    }
+
+    std::vector<Intersection*> adjacentNodesInZone;
+    for (unsigned int i = 0; i < adjacent.size(); i++)
+    {
+      if (zone->isIntersectionInside(adjacent[i]))
+      {
+        adjacentNodesInZone.push_back(adjacent[i]);
+      }
+    }
+    adjacent.clear();
+    adjacent.assign(adjacentNodesInZone.begin(), adjacentNodesInZone.end());
+  }
+
+
   /* Insert adjacent intersections. */
-  adjacentNodes->insert(std::pair< Intersection*, std::vector<Intersection*> >(node, node->adjacentIntersections()));
+  adjacentNodes->insert(std::pair< Intersection*, std::vector<Intersection*> >(node, adjacent));
 
   std::list<Intersection*>::iterator sequenceIterator;
   Intersection* existing;
@@ -431,7 +555,7 @@ void MinimalCycleBasis::addVertex(Intersection* node)
   vertices->insert(sequenceIterator, node);
 }
 
-void MinimalCycleBasis::removeVertex(Intersection* node)
+void AreaExtractor::removeVertex(Intersection* node)
 {
   vertices->remove(node);
 
@@ -445,7 +569,7 @@ void MinimalCycleBasis::removeVertex(Intersection* node)
   adjacentNodes->erase(node);
 }
 
-void MinimalCycleBasis::removeEdge(Intersection* begining, Intersection* end)
+void AreaExtractor::removeEdge(Intersection* begining, Intersection* end)
 {
   /* Remove second point from adjacency list of first point. */
   for (std::vector<Intersection*>::iterator adjacentNode = (*adjacentNodes)[begining].begin();
@@ -476,12 +600,12 @@ void MinimalCycleBasis::removeEdge(Intersection* begining, Intersection* end)
   cycleEdges->erase(std::make_pair(end, begining));
 }
 
-Intersection* MinimalCycleBasis::first()
+Intersection* AreaExtractor::first()
 {
   return vertices->front();
 }
 
-std::vector<Intersection*> MinimalCycleBasis::adjacent(Intersection* node)
+std::vector<Intersection*> AreaExtractor::adjacent(Intersection* node)
 {
   if (adjacentNodes->find(node) == adjacentNodes->end())
   {
@@ -493,12 +617,12 @@ std::vector<Intersection*> MinimalCycleBasis::adjacent(Intersection* node)
   return (*adjacentNodes)[node];
 }
 
-bool MinimalCycleBasis::empty()
+bool AreaExtractor::empty()
 {
   return vertices->empty();
 }
 
-Intersection* MinimalCycleBasis::firstAdjacentNode(Intersection* node)
+Intersection* AreaExtractor::firstAdjacentNode(Intersection* node)
 {
   // FIXME throw exception when empty
   assert(numberOfAdjacentNodes(node) > 0);
@@ -506,18 +630,18 @@ Intersection* MinimalCycleBasis::firstAdjacentNode(Intersection* node)
   return adjacent(node).front();
 }
 
-bool MinimalCycleBasis::isCycleEdge(Intersection* begining, Intersection* end)
+bool AreaExtractor::isCycleEdge(Intersection* begining, Intersection* end)
 {
   return cycleEdges->find(std::make_pair(begining, end)) != cycleEdges->end() ||
          cycleEdges->find(std::make_pair(end, begining)) != cycleEdges->end();
 }
 
-void MinimalCycleBasis::markCycleEdge(Intersection* begining, Intersection* end)
+void AreaExtractor::markCycleEdge(Intersection* begining, Intersection* end)
 {
   cycleEdges->insert(std::make_pair(begining, end));
 }
 
-void MinimalCycleBasis::dumpAdjacencyLists()
+void AreaExtractor::dumpAdjacencyLists()
 {
   for (std::map< Intersection*, std::vector<Intersection*> >::iterator nodeIterator = adjacentNodes->begin();
        nodeIterator != adjacentNodes->end();
@@ -533,7 +657,7 @@ void MinimalCycleBasis::dumpAdjacencyLists()
   }
 }
 
-void MinimalCycleBasis::dumpAdjacenciesFromVertices()
+void AreaExtractor::dumpAdjacenciesFromVertices()
 {
   for (std::list<Intersection*>::iterator nodeIterator = vertices->begin();
        nodeIterator != vertices->end();

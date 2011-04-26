@@ -1,11 +1,13 @@
 /**
  * This code is part of libcity library.
  *
- * @file minimalcyclebasis.h
+ * @file areaextractor.h
  * @date 31.02.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief Minimal cycle basis algorithm.
+ * @brief Class for extracting closed areas between roads in StreetGraph.
+ *
+ * Extract Zones and Blocks from StreetGraph.
  *
  * Takes a snapshot of the StreetGraph and then
  * finds all minimal cycles in the graph using
@@ -17,15 +19,20 @@
  * It could for example work with points as nodes.
  */
 
-class Intersection;
-class Polygon;
-
 #include <list>
 #include <set>
 #include <map>
 #include <vector>
 
-class MinimalCycleBasis
+#include "road.h"
+
+class Intersection;
+class Polygon;
+class Zone;
+class Block;
+class StreetGraph;
+
+class AreaExtractor
 {
   public:
     /**
@@ -34,22 +41,32 @@ class MinimalCycleBasis
      * the graph as it goes. In the end the whole graph is
      * deleted.
      */
-    MinimalCycleBasis(std::list<Intersection*>* inputIntersections);
-    ~MinimalCycleBasis();
+    AreaExtractor();
+    ~AreaExtractor();
 
-    MinimalCycleBasis(MinimalCycleBasis const& source);
-    MinimalCycleBasis& operator=(MinimalCycleBasis const& source);
+    AreaExtractor(AreaExtractor const& source);
+    AreaExtractor& operator=(AreaExtractor const& source);
+
+    void setRoadWidth(Road::Types type, double width);
+    void setRoadWidths(std::map<Road::Types, double> widths);
+
+    std::list<Zone*> extractZones(StreetGraph* fromMap, Zone* zoneConstraints = 0);
+    std::list<Block*> extractBlocks(StreetGraph* fromMap, Zone* zoneConstraints = 0);
 
     /**
      * Find all minimal cycles and return them as polygons.
      */
-    std::list<Polygon> getMinimalCycles();
+    void getMinimalCycles();
+
 
   private:
     Intersection* first(); /**< Get first node in sequence. */
     bool empty(); /**< Is graph empty? */
 
-    void addVertex(Intersection* node);
+    void substractRoadWidths(Polygon* minimalCycle, std::vector<Intersection*> const& correspondingIntersections);
+
+    void copyVertices(StreetGraph* map, Zone* zone = 0);
+    void addVertex(Intersection* node, Zone* zone = 0);
     void removeVertex(Intersection* node);
 
     /* Adding edges not neccessary */
@@ -72,6 +89,7 @@ class MinimalCycleBasis
     Intersection* firstAdjacentNode(Intersection* node);
 
     void initialize();
+    void reset();
     void freeMemory();
 
     void dumpAdjacencyLists();
@@ -86,6 +104,11 @@ class MinimalCycleBasis
 
     /** Edges marked as a part of a cycle. */
     std::set< std::pair<Intersection*, Intersection*> > *cycleEdges;
+
+    std::map<Road::Types, double> roadWidths;
+    bool substractRoadWidthFromAreas;
+
+    StreetGraph* map;
 
     std::list<Polygon>* cycles;
 };

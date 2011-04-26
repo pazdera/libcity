@@ -14,7 +14,7 @@
 #include "intersection.h"
 #include "zone.h"
 #include "path.h"
-#include "minimalcyclebasis.h"
+#include "areaextractor.h"
 #include "../lsystem/roadlsystem.h"
 #include "../geometry/polygon.h"
 #include "../geometry/linesegment.h"
@@ -68,22 +68,26 @@ void StreetGraph::freeMemory()
 std::list<Zone*> StreetGraph::findZones()
 {
   debug("StreetGraph::findZones() passing " << intersections->size() << " intersections to MCB.");
-  MinimalCycleBasis graph(intersections);
-  std::list<Polygon> boundaries = graph.getMinimalCycles();
+  AreaExtractor graph;
+  return graph.extractZones(this);
+}
 
-  std::list<Zone*> zones;
-  debug("StreetGraph::findZones() found " << boundaries.size() << " zones.");
+Road* StreetGraph::getRoadBetweenIntersections(Intersection* first, Intersection* second)
+{
+  std::list<Road*> roadsOfFirst = first->getRoads();
 
-  for (std::list<Polygon>::iterator foundZone = boundaries.begin();
-       foundZone != boundaries.end();
-       foundZone++)
+  for (std::list<Road*>::iterator road = roadsOfFirst.begin();
+       road != roadsOfFirst.end();
+       road++)
   {
-    Zone* newZone = new Zone(this);
-    newZone->setAreaConstraints(*foundZone);
-    zones.push_back(newZone);
+    if (((*road)->begining() == first && (*road)->end() == second) ||
+        ((*road)->begining() == second && (*road)->end() == first))
+    {
+      return *road;
+    }
   }
 
-  return zones;
+  return 0;
 }
 
 

@@ -141,15 +141,31 @@ Plan:
   - DONE Refactor RoadParameters
   - DONE Modify intersections algorithm to accept different road parameters
   - DONE Create texture for 3 and 4 way intersections
-  - Think about sampling intersections too
+  - DONE Add Block class
+  - RoadLSystem setAreaConstraints Replace pointer with reference
+  - DONE Modify MinimalCycleBasis to work on zones as well
+  - DONE Rename MinimalCycleBasis to AreaExtractor
+  - DONE Refactor AreaExtractor to not recieve parameters by constructor
+  - DONE Implement new method setRoadWidth(roadType, width)
+  - DONE Implement extractBlocks(zone) that will extract blocks taking into account widths of roads
+  - DONE Design Block class
+  - DONE Implement division into Blocks to Zone class
+  - DONE Division of Zones into Blocks
+  - DONE How to pass road widths to createBlocks()?
+  - DONE Implement debuging of blocks into 2D
+  - Division of Blocks into Lots
+  - Create CityArea class
+  - Make Zone, Block and Lot inherit from CityArea
+  - Create Lot class
   - Eliminate 5 and more way intersections in roadGenerators 
   - Minimal distance between two intersections
   - Think about separating intersections into a different module
   - Clean-up textures and material scripts
   - Refactor OgreCity
-  - Split OgreCity into two classes
   - Clean debug messages
+  - flattenTerrain() under buildings and roads
   - DONE Create documentation in Ogre demo app
+  - Think about sampling intersections too
   - 
   - design error handling and exceptions
   - BUILDINGS

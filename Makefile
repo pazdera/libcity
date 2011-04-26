@@ -35,7 +35,7 @@ STREETGRAPH_PACKAGE=src/streetgraph/zone.o \
                     src/streetgraph/path.o \
                     src/streetgraph/rasterroadpattern.o \
                     src/streetgraph/organicroadpattern.o \
-                    src/streetgraph/minimalcyclebasis.o
+                    src/streetgraph/areaextractor.o
 
 # LSystem package
 LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
@@ -69,7 +69,7 @@ TEST_UNITS=test/testPoint.o   \
            test/testLineSegment.o \
            test/testRasterRoadPattern.o \
            test/testRandom.o \
-           test/testMCB.o \
+           test/testAreaExtractor.o \
            test/testPath.o \
            test/testRay.o \
            test/testBlock.o

@@ -11,7 +11,9 @@
 
 #include "polygon.h"
 #include "point.h"
+#include "vector.h"
 #include "linesegment.h"
+#include "ray.h"
 #include "../debug.h"
 
 #include <cmath>
@@ -91,11 +93,22 @@ unsigned int Polygon::numberOfVertices() const
   return vertices->size();
 }
 
+void Polygon::clear()
+{
+  vertices->clear();
+}
+
 void Polygon::addVertex(Point const& vertex)
 {
   vertices->push_back(new Point(vertex));
 
   // FIXME: check if the vertex is in a plane with other vertices!
+}
+
+void Polygon::updateVertex(unsigned int number, Point const& vertex)
+{
+  assert(number < vertices->size());
+  *vertices->at(number) = vertex;
 }
 
 void Polygon::removeVertex(unsigned int number)
@@ -112,7 +125,16 @@ void Polygon::removeVertex(unsigned int number)
 
 Point Polygon::vertex(unsigned int number) const
 {
+  assert(number < numberOfVertices());
   return *vertices->at(number);
+}
+
+LineSegment Polygon::edge(unsigned int number) const
+{
+  assert(numberOfVertices() >= 2);
+  assert(number < (numberOfVertices()));
+
+  return LineSegment(*vertices->at(number), *vertices->at((number + 1) % numberOfVertices()));
 }
 
 double Polygon::area() const
@@ -203,4 +225,72 @@ bool Polygon::encloses2D(Point const& point) const
 
   return isInside;
 
+}
+
+
+Vector Polygon::normal()
+{
+  assert(numberOfVertices() >= 3);
+
+  Vector first(*vertices->at(1), *vertices->at(0)),
+         second(*vertices->at(1), *vertices->at(2));
+
+  Vector normalVector = first.crossProduct(second);
+  normalVector.normalize();
+
+  return normalVector;
+}
+
+Vector Polygon::edgeNormal(unsigned int edgeNumber)
+{
+  unsigned int verticesNumber = numberOfVertices();
+  assert(edgeNumber < verticesNumber);
+
+  int first  = edgeNumber;
+  int second = (edgeNumber + 1) % verticesNumber;
+
+  Vector direction(*(vertices->at(first)), *(vertices->at(second))),
+         normalVector;
+
+  normalVector = direction.crossProduct(normal());
+  normalVector.normalize();
+
+  Point edgeCenter((vertices->at(first)->x() + vertices->at(second)->x())/2,
+                   (vertices->at(first)->y() + vertices->at(second)->y())/2,
+                   (vertices->at(first)->z() + vertices->at(second)->z())/2);
+
+  Ray testRay(edgeCenter, normalVector);
+
+  Point intersection;
+  int intersections = 0, vertexHits = 0;
+  for (unsigned int i = 0; i < (verticesNumber); i++)
+  {
+    LineSegment currentEdge = edge(i);
+    if (i != edgeNumber &&
+        testRay.intersection2D(currentEdge, &intersection) == Ray::INTERSECTING)
+    {
+      if (intersection == currentEdge.begining() ||
+          intersection == currentEdge.end())
+      {
+        vertexHits++;
+      }
+      intersections++;
+    }
+  }
+  assert((vertexHits % 2) == 0);
+  intersections -= vertexHits/2;
+
+
+  return (intersections % 2) ? normalVector : normalVector*(-1);
+}
+
+std::string Polygon::toString()
+{
+  std::string output = "Polygon(";
+
+  for (unsigned int i = 0; i < numberOfVertices(); i++)
+  {
+    output += (*vertices)[i]->toString() + ", ";
+  }
+  return output + ").";
 }

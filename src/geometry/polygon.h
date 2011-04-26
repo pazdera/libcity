@@ -13,8 +13,11 @@
 #define _POLYGON_H_
 
 #include <vector>
+#include <string>
 
 class Point;
+class Vector;
+class LineSegment;
 
 class Polygon
 {
@@ -33,11 +36,14 @@ class Polygon
 
   public:
     Point vertex(unsigned int number) const;
+    LineSegment edge(unsigned int number) const;
 
     unsigned int numberOfVertices() const;
 
     void addVertex(Point const& vertex);
+    void updateVertex(unsigned int number, Point const& vertex);
     void removeVertex(unsigned int number);
+    void clear();
 
     /** Works ONLY in 2D !!! */
     double area() const;
@@ -45,11 +51,29 @@ class Polygon
     /** Works ONLY in 2D !!! */
     Point centroid() const;
 
+    /**
+      Get normal vector of a certain edge. The
+      vector ALWAYS points inside the polygon.
+
+     @param[in] edgeNumber Number of the edge. Edges are numbered from 0
+                           to numberOfVertices() - 1.
+     @return Normalized normal vector.
+      */
+    Vector edgeNormal(unsigned int edgeNumber);
+
+    /**
+      Get normal vector to the plane this polygon makes.
+
+     @return Normalized normal vector.
+      */
+    Vector normal();
+
     bool encloses2D(Point const& point) const;
 
     bool isSubAreaOf(Polygon const& biggerPolygon);
     bool operator==(Polygon const& second);
 
+    std::string toString();
   private:
     void initialize();
     void freeVertices();

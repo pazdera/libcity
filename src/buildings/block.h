@@ -18,20 +18,31 @@ class LineSegment;
 class Point;
 class Vector;
 class Polygon;
+class Zone;
 
 class Block
 {
   public:
     Block();
-    Block(Polygon const& border);
+    Block(Zone* parentZone);
+    Block(Zone* parentZone, Polygon const& border);
 
     Block(Block const& source);
     Block& operator=(Block const& source);
 
     ~Block();
 
+    Polygon areaConstraints();
+    void setAreaConstraints(Polygon const& area);
+
+    void setZone(Zone* zone);
   private:
-    
+    void initialize();
+    void reset();
+    void freeMemory();
+
+    Polygon* constraints;
+    Zone* associatedZone;
 };
 
 

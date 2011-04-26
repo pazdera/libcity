@@ -12,9 +12,17 @@
 #ifndef _ZONE_H_
 #define _ZONE_H_
 
+#include <vector>
+#include <list>
+#include <map>
+
+#include "road.h"
+
 class Polygon;
 class StreetGraph;
 class RoadLSystem;
+class Intersection;
+class Block;
 
 class Zone
 {
@@ -28,12 +36,21 @@ class Zone
     void setRoadGenerator(RoadLSystem* generator);
     void setAreaConstraints(Polygon const& area);
 
+    StreetGraph* streetGraph();
     Polygon areaConstraints();
+
+    bool isIntersectionInside(Intersection* intersection);
+    bool roadIsInside(Road* road);
+
+    void createBlocks(std::map<Road::Types, double> roadWidths);
+    std::list<Block*> getBlocks();
 
   private:
     Polygon* constraints;
     RoadLSystem* roadGenerator;
     StreetGraph* associatedStreetGraph;
+
+    std::list<Block*>* blocks;
 
     void initialize();
     void freeMemory();

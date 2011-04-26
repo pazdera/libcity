@@ -113,6 +113,16 @@ class StreetGraph
     bool isIntersectionAtPosition(Point const& position);
     Intersection* getIntersectionAtPosition(Point const& position);
 
+    /**
+      Get road that connects two intersections.
+      If there's no such a road 0 is returned.
+
+     @param[in] first  First intersection.
+     @param[in] second Second intersection.
+     @return Road or 0 (NULL).
+     */
+    Road* getRoadBetweenIntersections(Intersection* first, Intersection* second);
+
     std::string toString();
 
   private:

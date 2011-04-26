@@ -19,6 +19,7 @@
 class Point;
 class Vector;
 class Line;
+class LineSegment;
 
 class Ray
 {
@@ -49,6 +50,7 @@ class Ray
 
     Intersection intersection2D(Ray const& another, Point* intersection) const;
     Intersection intersection2D(Line const& another, Point* intersection) const;
+    Intersection intersection2D(LineSegment const& another, Point* intersection) const;
 
     std::string toString();
 
