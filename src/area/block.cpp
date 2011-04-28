@@ -23,6 +23,7 @@
 #include "../geometry/linesegment.h"
 #include "zone.h"
 #include "lot.h"
+#include "region.h"
 
 Block::Block()
 {
@@ -76,16 +77,16 @@ void Block::createLots()
   const double MAX_LOT_DEPTH = 100;
   const double LOT_DEVIANCE  = 0;
 
-  Area* region;
-  std::vector<Area*> regionQueue;
-  std::vector<Area*> newRegions;
-  std::vector<Area*> outputRegions;
-  Area::Edge* longestEdge;
+  Region* region;
+  std::vector<Region*> regionQueue;
+  std::vector<Region*> newRegions;
+  std::vector<Region*> outputRegions;
+  Region::Edge* longestEdge;
   LineSegment edgeLine;
   double splitSize;
   Point sp1, sp2;
 
-  regionQueue.push_back(this);
+  regionQueue.push_back(new Region(*constraints));
   while(!regionQueue.empty())
   {
     region = regionQueue.back();
@@ -118,7 +119,7 @@ void Block::createLots()
     // split and process the new regions
     newRegions = splitRegion(region, sp1, sp2);
     regionQueue.pop_back();
-    for (std::vector<Area*>::iterator newRegion = newRegions.begin();
+    for (std::vector<Region*>::iterator newRegion = newRegions.begin();
          newRegion != newRegions.end();
          newRegion++)
     {
@@ -149,13 +150,13 @@ Point Block::calcSplitPoint(LineSegment const& longestEdge, double splitSize, do
          (midPosition + (lotDeviance * (numberGenerator.generateDouble(0, 1) - 0.5) * fraction));
 }
 
-std::vector<Area*> Block::splitRegion(Area* area, Point a, Point b)
+std::vector<Region*> Block::splitRegion(Region* area, Point a, Point b)
 {
-  Edge* region = area->getPolygonGraphCopy();
+  Region::Edge* region = area->getFirstEdge();
   Vector ab = b - a;
   double Lsq = ab.squaredLength();
 
-  Edge* edge = region;
+  Region::Edge* edge = region;
   while(edge->next != region)
   {
     Vector ac = edge->begining - a;
@@ -166,8 +167,8 @@ std::vector<Area*> Block::splitRegion(Area* area, Point a, Point b)
   double denom, r, s;
   Vector ca, cd;
   edge = region;
-  Edge* intersection;
-  std::list<Edge*> createdEdges;
+  Region::Edge* intersection;
+  std::list<Region::Edge*> createdEdges;
   while(edge->next != region)
   {
     if((edge->s > 0 && edge->next->s <= 0)
@@ -190,7 +191,7 @@ std::vector<Area*> Block::splitRegion(Area* area, Point a, Point b)
       else
       {
         // intersection point calc using cd, splitline ab is flat
-        intersection = area->insertToPolygonGraph(edge, edge->begining + cd*s);
+        intersection = area->insert(edge, edge->begining + cd*s);
         intersection->hasRoadAccess = edge;
       }
       intersection->s = r;
@@ -213,9 +214,9 @@ std::vector<Area*> Block::splitRegion(Area* area, Point a, Point b)
 
   // bridge intersection pairs
   assert(createdEdges.size() % 2 == 0);
-  std::list<Edge*>::iterator last = --createdEdges.end();
-  std::list<Edge*>::iterator next;
-  for(std::list<Edge*>::iterator createdEdge = createdEdges.begin();
+  std::list<Region::Edge*>::iterator last = --createdEdges.end();
+  std::list<Region::Edge*>::iterator next;
+  for(std::list<Region::Edge*>::iterator createdEdge = createdEdges.begin();
       createdEdge != last;
       createdEdge++, createdEdge++) /* Step by two */
   {
@@ -226,9 +227,8 @@ std::vector<Area*> Block::splitRegion(Area* area, Point a, Point b)
 
   // finally extract the new regions
   bool skipDuplicate;
-  std::vector<Area*> outputRegions;
-  Area* newRegion;
-  for(std::list<Edge*>::iterator createdEdge = createdEdges.begin();
+  std::vector<Region*> outputRegions;
+  for(std::list<Region::Edge*>::iterator createdEdge = createdEdges.begin();
       createdEdge != createdEdges.end();
       createdEdge++)
   {
@@ -247,10 +247,7 @@ std::vector<Area*> Block::splitRegion(Area* area, Point a, Point b)
     while(edge != *createdEdge);
     if(!skipDuplicate)
     {
-      newRegion = new Area;
-      area->setParent(this);
-      area->setAreaConstraints(edge);
-      outputRegions.push_back(newRegion);
+      outputRegions.push_back(new Region(edge));
     }
   }
 

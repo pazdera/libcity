@@ -387,7 +387,7 @@ std::list<Polygon*> Polygon::split(LineSegment const& splitLine)
   return output;
 }
 
-bool isVertexIntersection(Point vertex, std::list<Point> intersections)
+bool Polygon::isVertexIntersection(Point vertex, std::list<Point> intersections)
 {
   for (std::list<Point>::iterator vertexIterator = intersections.begin();
        vertexIterator != intersections.end();
@@ -402,7 +402,7 @@ bool isVertexIntersection(Point vertex, std::list<Point> intersections)
   return false;
 }
 
-bool areVerticesInPair(Point first, Point second, std::list<Point> intersections)
+bool Polygon::areVerticesInPair(Point first, Point second, std::list<Point> intersections)
 {
   int i = 0;
   std::list<Point>::iterator vertexIterator;

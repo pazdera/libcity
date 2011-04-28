@@ -29,10 +29,7 @@ class LineSegment;
 
 class Region
 {
-  protected:
-    //Polygon* constraints;
-    Area* parentArea;
-
+  public:
     struct Edge;
     struct Edge
     {
@@ -44,34 +41,31 @@ class Region
 
       bool operator<(Edge* second) { return s < second->s; }
     };
-    Edge *polygonGraph;
-    Edge* constructPolygonGraph(Polygon const& polygon);
-    Polygon constructPolygon(Edge* graph);
-    Edge* copyPolygonGraph(Edge* source);
 
-  public:
-    Area();
-    virtual ~Area();
+    Region();
+    Region(Edge* edge);
+    Region(Polygon const& polygon);
+    ~Region();
 
-    Area(Area const& source);
-    Area& operator=(Area const& source);
+    Region(Region const& source);
+    Region& operator=(Region const& source);
 
-    virtual void setAreaConstraints(Polygon const& area);
-    virtual void setAreaConstraints(Edge* polygonGraphRepresentation);
-    virtual Polygon areaConstraints();
-    virtual Edge* getPolygonGraph();
-    virtual Edge* getPolygonGraphCopy();
-    Edge* insertToPolygonGraph(Edge* after, Point const& begining);
+    Edge* getFirstEdge();
+    Edge* insert(Edge* after, Point const& begining);
     void bridge(Edge* first, Edge* second);
-
-    virtual void setParent(Area* area);
-    virtual Area* parent();
 
     bool hasRoadAccess();
     Edge* getLongestEdgeWithRoadAccess();
     Edge* getLongestEdgeWithoutRoadAccess();
 
+    Polygon toPolygon();
   private:
+    Edge *polygonGraph;
+
+    Edge* insertFirst(Point const& begining);
+    Edge* constructPolygonGraph(Polygon const& polygon);
+    Edge* copyPolygonGraph(Edge* source);
+
     void initialize();
     void freeMemory();
 };

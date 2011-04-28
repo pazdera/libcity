@@ -23,23 +23,32 @@ Region::Region()
   initialize();
 }
 
+Region::Region(Polygon const& polygon)
+{
+  initialize();
+  polygonGraph = constructPolygonGraph(polygon);
+}
+
+Region::Region(Edge* edge)
+{
+  initialize();
+  polygonGraph = copyPolygonGraph(edge);
+}
+
 Region::Region(Region const& source)
 {
   initialize();
 
-  //*constraints = *(source.constraints);
   polygonGraph = copyPolygonGraph(source.polygonGraph);
 }
 
 void Region::initialize()
 {
   polygonGraph = 0;
-  //constraints = new Polygon();
 }
 
 Region& Region::operator=(Region const& source)
 {
-  //*constraints = *(source.constraints);
   polygonGraph = copyPolygonGraph(source.polygonGraph);
 
   return *this;
@@ -52,7 +61,6 @@ Region::~Region()
 
 void Region::freeMemory()
 {
-  //delete constraints;
   Edge* first = polygonGraph;
   while(polygonGraph->next != first)
   {
@@ -64,19 +72,27 @@ void Region::freeMemory()
 
 Region::Edge* Region::getLongestEdgeWithRoadAccess()
 {
+  assert(polygonGraph != 0);
+
   Edge* current = polygonGraph;
   Edge* longest = 0;
 
-  while(current->next != polygonGraph)
+  do
   {
-    if (((current->begining - current->next->begining).length() >
-         (longest->begining - longest->next->begining).length() && !current->hasRoadAccess) ||
-        (longest == 0 && !current->hasRoadAccess))
+    if (longest == 0 && current->hasRoadAccess)
+    {
+      longest = current;
+    }
+
+    if (current->hasRoadAccess &&
+       ((current->begining - current->next->begining).length() >
+       (longest->begining - longest->next->begining).length()))
     {
       longest = current;
     }
     current = current->next;
   }
+  while(current != polygonGraph);
 
   return longest;
 }
@@ -86,16 +102,22 @@ Region::Edge* Region::getLongestEdgeWithoutRoadAccess()
   Edge* current = polygonGraph;
   Edge* longest = 0;
 
-  while(current->next != polygonGraph)
+  do
   {
-    if (((current->begining - current->next->begining).length() >
-         (longest->begining - longest->next->begining).length() && !current->hasRoadAccess) ||
-        (longest == 0 && !current->hasRoadAccess))
+    if (longest == 0 && !current->hasRoadAccess)
+    {
+      longest = current;
+    }
+
+    if (!current->hasRoadAccess &&
+       ((current->begining - current->next->begining).length() >
+       (longest->begining - longest->next->begining).length()))
     {
       longest = current;
     }
     current = current->next;
   }
+  while(current != polygonGraph);
 
   return longest;
 }
@@ -103,7 +125,8 @@ Region::Edge* Region::getLongestEdgeWithoutRoadAccess()
 bool Region::hasRoadAccess()
 {
   Edge* current = polygonGraph;
-  while(current->next != polygonGraph)
+
+  do
   {
     if (current->hasRoadAccess)
     {
@@ -111,6 +134,7 @@ bool Region::hasRoadAccess()
     }
     current = current->next;
   }
+  while(current != polygonGraph);
 
   return false;
 }
@@ -121,24 +145,27 @@ Region::Edge* Region::constructPolygonGraph(Polygon const& polygon)
 
   Edge* current = new Edge;
   Edge* first = current;
+  Edge* next;
   Edge* previous = 0;
   for (unsigned int i = 0; i < polygon.numberOfVertices(); i++)
   {
     current->begining = polygon.vertex(i);
     current->hasRoadAccess = false;
-    current->next = new Edge;
-    current->previous = previous;
+    next = new Edge;
     previous = current;
-    current = current->next;
+    current->next = next;
+    next->previous = current;
+
+    current = next;
   }
 
   /* Connect the end to the begining */
-  current = current->previous;
-  delete current->next;
-  current->next = first;
-  first->previous = current;
+  current = next->previous;  // one step back
+  delete next;               // discard the prepared node
+  current->next = first;     // connect to cycle
+  first->previous = current; // and back
 
-  return current;
+  return first;
 }
 
 Region::Edge* Region::copyPolygonGraph(Edge* source)
@@ -148,7 +175,8 @@ Region::Edge* Region::copyPolygonGraph(Edge* source)
   Edge* current = new Edge;
   Edge* first = current;
   Edge* previous = 0;
-  while(sourceCurrent->next != source)
+
+  do
   {
     current->begining = sourceCurrent->begining;
     current->hasRoadAccess = sourceCurrent->hasRoadAccess; // All block edges have road access
@@ -159,6 +187,7 @@ Region::Edge* Region::copyPolygonGraph(Edge* source)
 
     sourceCurrent = sourceCurrent->next;
   }
+  while(sourceCurrent != source);
 
   /* Connect the end to the begining */
   current = current->previous;
@@ -169,40 +198,43 @@ Region::Edge* Region::copyPolygonGraph(Edge* source)
   return first;
 }
 
-Polygon Region::constructPolygon(Edge* graph)
-{
-  Edge* current = polygonGraph;
-  Polygon polygon;
-  while(current->next != polygonGraph)
-  {
-    polygon.addVertex(current->begining);
-    current = current->next;
-  }
-
-  return polygon;
-}
-
-Region::Edge* Region::getPolygonGraph()
+Region::Edge* Region::getFirstEdge()
 {
   return polygonGraph;
 }
 
-Region::Edge* Region::getPolygonGraphCopy()
+Region::Edge* Region::insert(Edge* after, Point const& begining)
 {
-  return copyPolygonGraph(polygonGraph);
-}
+  if (polygonGraph == 0)
+  {
+    return insertFirst(begining);
+  }
 
-Region::Edge* Region::insertToPolygonGraph(Edge* after, Point const& begining)
-{
   assert(after != 0);
 
-  Edge* next = after->next;
-  after->next = new Edge;
-  after->next->previous = after;
-  after->next->next = next;
-  next->previous = after->next;
+  Edge* newEdge = new Edge;
+  newEdge->begining = begining;
+  newEdge->hasRoadAccess = false;
 
-  return after->next;
+  Edge* next = after->next;
+  after->next = newEdge;
+  newEdge->previous = after;
+  newEdge->next = next;
+  next->previous = newEdge;
+
+  return newEdge;
+}
+
+Region::Edge* Region::insertFirst(Point const& begining)
+{
+  polygonGraph = new Edge;
+  polygonGraph->begining = begining;
+  polygonGraph->hasRoadAccess = false;
+
+  polygonGraph->previous = polygonGraph;
+  polygonGraph->next = polygonGraph;
+
+  return polygonGraph;
 }
 
 void Region::bridge(Edge* first, Edge* second)
@@ -210,10 +242,10 @@ void Region::bridge(Edge* first, Edge* second)
   Edge* otherFirst;
   Edge* otherSecond;
 
-  otherFirst = insertToPolygonGraph(first, first->begining);
+  otherFirst = insert(first, first->begining);
   otherFirst->hasRoadAccess = false;
 
-  otherSecond = insertToPolygonGraph(second->previous, second->begining);
+  otherSecond = insert(second->previous, second->begining);
   otherSecond->hasRoadAccess = false;
 
   first->next  = otherSecond;
@@ -221,4 +253,19 @@ void Region::bridge(Edge* first, Edge* second)
 
   second->next = otherFirst;
   otherFirst->previous = second;
+}
+
+Polygon Region::toPolygon()
+{
+  Edge* current = polygonGraph;
+  Polygon polygon;
+
+  do
+  {
+    polygon.addVertex(current->begining);
+    current = current->next;
+  }
+  while(current != polygonGraph);
+
+  return polygon;
 }
