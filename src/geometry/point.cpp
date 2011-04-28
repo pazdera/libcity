@@ -53,6 +53,11 @@ bool Point::operator==(Point const& second)
          std::abs(zPosition - second.z()) < libcity::EPSILON;
 }
 
+bool Point::operator!=(Point const& second)
+{
+  return !(*this == second);
+}
+
 bool Point::operator<(Point const& second)
 {
   if (x() < second.x())
@@ -93,6 +98,11 @@ Point& Point::operator+=(Vector const& difference)
 Point Point::operator+(Vector const& difference) const
 {
   return Point(x() + difference.x(), y()+difference.y(), z()+difference.z());
+}
+
+Vector Point::operator-(Point const& second)
+{
+  return Vector(second, *this);
 }
 
 std::string Point::toString()

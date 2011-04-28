@@ -1,15 +1,15 @@
 /**
  * This code is part of libcity library.
  *
- * @file area/area.cpp
- * @date 26.04.2011
+ * @file area/region.cpp
+ * @date 28.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @see area.h
+ * @see region.h
  *
  */
 
-#include "area.h"
+#include "region.h"
 
 #include "../debug.h"
 #include "../geometry/units.h"
@@ -18,42 +18,39 @@
 #include "../geometry/vector.h"
 #include "../geometry/linesegment.h"
 
-Area::Area()
+Region::Region()
 {
   initialize();
 }
 
-Area::Area(Area const& source)
+Region::Region(Region const& source)
 {
   initialize();
 
   //*constraints = *(source.constraints);
   polygonGraph = copyPolygonGraph(source.polygonGraph);
-  parentArea = source.parentArea;
 }
 
-void Area::initialize()
+void Region::initialize()
 {
-  parentArea = 0;
   polygonGraph = 0;
   //constraints = new Polygon();
 }
 
-Area& Area::operator=(Area const& source)
+Region& Region::operator=(Region const& source)
 {
   //*constraints = *(source.constraints);
   polygonGraph = copyPolygonGraph(source.polygonGraph);
-  parentArea = source.parentArea;
 
   return *this;
 }
 
-Area::~Area()
+Region::~Region()
 {
   freeMemory();
 }
 
-void Area::freeMemory()
+void Region::freeMemory()
 {
   //delete constraints;
   Edge* first = polygonGraph;
@@ -64,30 +61,8 @@ void Area::freeMemory()
   }
 }
 
-Polygon Area::areaConstraints()
-{
-  return constructPolygon(polygonGraph);
-  //return constraints;
-}
 
-void Area::setAreaConstraints(Polygon const& area)
-{
-  //*constraints = area;
-  assert(area.numberOfVertices() >= 3);
-  polygonGraph = constructPolygonGraph(area);
-}
-
-void  Area::setParent(Area* area)
-{
-  parentArea = area;
-}
-
-Area* Area::parent()
-{
-  return parentArea;
-}
-
-Area::Edge* Area::getLongestEdgeWithRoadAccess()
+Region::Edge* Region::getLongestEdgeWithRoadAccess()
 {
   Edge* current = polygonGraph;
   Edge* longest = 0;
@@ -106,7 +81,7 @@ Area::Edge* Area::getLongestEdgeWithRoadAccess()
   return longest;
 }
 
-Area::Edge* Area::getLongestEdgeWithoutRoadAccess()
+Region::Edge* Region::getLongestEdgeWithoutRoadAccess()
 {
   Edge* current = polygonGraph;
   Edge* longest = 0;
@@ -125,7 +100,7 @@ Area::Edge* Area::getLongestEdgeWithoutRoadAccess()
   return longest;
 }
 
-bool Area::hasRoadAccess()
+bool Region::hasRoadAccess()
 {
   Edge* current = polygonGraph;
   while(current->next != polygonGraph)
@@ -140,7 +115,7 @@ bool Area::hasRoadAccess()
   return false;
 }
 
-Area::Edge* Area::constructPolygonGraph(Polygon const& polygon)
+Region::Edge* Region::constructPolygonGraph(Polygon const& polygon)
 {
   assert(polygon.numberOfVertices() >= 3);
 
@@ -166,7 +141,7 @@ Area::Edge* Area::constructPolygonGraph(Polygon const& polygon)
   return current;
 }
 
-Area::Edge* Area::copyPolygonGraph(Edge* source)
+Region::Edge* Region::copyPolygonGraph(Edge* source)
 {
   Edge* sourceCurrent = source;
 
@@ -194,7 +169,7 @@ Area::Edge* Area::copyPolygonGraph(Edge* source)
   return first;
 }
 
-Polygon Area::constructPolygon(Edge* graph)
+Polygon Region::constructPolygon(Edge* graph)
 {
   Edge* current = polygonGraph;
   Polygon polygon;
@@ -207,17 +182,17 @@ Polygon Area::constructPolygon(Edge* graph)
   return polygon;
 }
 
-Area::Edge* Area::getPolygonGraph()
+Region::Edge* Region::getPolygonGraph()
 {
   return polygonGraph;
 }
 
-Area::Edge* Area::getPolygonGraphCopy()
+Region::Edge* Region::getPolygonGraphCopy()
 {
   return copyPolygonGraph(polygonGraph);
 }
 
-Area::Edge* Area::insertToPolygonGraph(Edge* after, Point const& begining)
+Region::Edge* Region::insertToPolygonGraph(Edge* after, Point const& begining)
 {
   assert(after != 0);
 
@@ -230,7 +205,7 @@ Area::Edge* Area::insertToPolygonGraph(Edge* after, Point const& begining)
   return after->next;
 }
 
-void Area::bridge(Edge* first, Edge* second)
+void Region::bridge(Edge* first, Edge* second)
 {
   Edge* otherFirst;
   Edge* otherSecond;

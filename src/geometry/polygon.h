@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <string>
+#include <list>
 
 class Point;
 class Vector;
@@ -68,6 +69,8 @@ class Polygon
       */
     Vector normal();
 
+    std::list<Polygon*> split(LineSegment const& splitLine);
+
     bool encloses2D(Point const& point) const;
 
     bool isSubAreaOf(Polygon const& biggerPolygon);
@@ -79,6 +82,10 @@ class Polygon
     void freeVertices();
 
     double signedArea() const;
+
+    /* Helper functions for split polygon */
+    bool isVertexIntersection(Point vertex, std::list<Point> intersections);
+    bool areVerticesInPair(Point first, Point second, std::list<Point> intersections);
 };
 
 #endif

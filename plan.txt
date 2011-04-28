@@ -153,11 +153,14 @@ Plan:
   - DONE Division of Zones into Blocks
   - DONE How to pass road widths to createBlocks()?
   - DONE Implement debuging of blocks into 2D
-  - Division of Blocks into Lots
+  - DONE Division of Blocks into Lots
   - DONE Create CityArea class
   - DONE Make Zone, Block and Lot inherit from CityArea
   - DONE Create Lot class
-  - Eliminate 5 and more way intersections in roadGenerators 
+  - DONE Eliminate 5 and more way intersections in roadGenerators
+  - Refactor subdivision into lots to Region class
+  - http://cg.tutsplus.com/articles/where-to-get-your-textures-19-free-photo-source-sites-for-cg-artists/
+  - Create special data structure for storing edges while creating lots
   - Minimal distance between two intersections
   - Think about separating intersections into a different module
   - Clean-up textures and material scripts
@@ -169,6 +172,38 @@ Plan:
   - 
   - design error handling and exceptions
   - BUILDINGS
-  - think about thesis chapters
+  - DONE think about thesis chapters
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D
+
+
+
+Úvod
+Související práce
+Použité technologie
+  - porovnání existující (přehled)
+  - vybrat a zdůvodnit, popsat vybrané
+Návrh aplikace
+ - úvod
+ - popis obou
+Implementace
+  - Popis návrhu
+  - Class diagram
+  - High level a speciality
+  -
+Testování
+  - unit testy
+  - performace, grafy
+Závěr
+
+Zmínit všechno.
+
+2.5.  Budovy
+9.5.  Text
+16.5. Finish
+
+
+DESKY
+Nechat si připravit desky. Vytisknout předlohu, 2 výtisky.
+
+Přidat v Makefile LD_LIBRARY_PATH

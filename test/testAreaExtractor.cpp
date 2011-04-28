@@ -152,8 +152,5 @@ SUITE(MCBClass)
 
     std::list<Block*> cycles = mcb->extractBlocks(sg, zone);
     CHECK(2 == cycles.size());
-
-    debug((cycles.front()->areaConstraints().toString()));
-    debug((cycles.back()->areaConstraints().toString()));
   }
 }

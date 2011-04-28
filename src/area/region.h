@@ -1,16 +1,16 @@
 /**
  * This code is part of libcity library.
  *
- * @file area/area.h
- * @date 26.04.2011
+ * @file area/region.h
+ * @date 28.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief Base class for city areas (zones, districts, blocks, alottments).
+ * @brief Area implementation using directed polygon graphs.
  *
  */
 
-#ifndef _AREA_H_
-#define _AREA_H_
+#ifndef _REGION_H_
+#define _REGION_H_
 
 /* STL */
 #include <vector>
@@ -27,8 +27,7 @@ class Intersection;
 class Block;
 class LineSegment;
 
-class Area;
-class Area
+class Region
 {
   protected:
     //Polygon* constraints;

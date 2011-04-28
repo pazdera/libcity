@@ -20,6 +20,7 @@
 
 // Modules
 #include "../src/geometry/point.h"
+#include "../src/geometry/vector.h"
 
 SUITE(PointClass)
 {
@@ -62,5 +63,15 @@ SUITE(PointClass)
     p1.set(1.3, 2.2 ,3.1);
     p2.set(1.3, 2.2 ,3.1);
     CHECK(p1 == p2);
+  }
+
+  TEST(MinusOperator)
+  {
+    Point a(0,0);
+    Point b(1,0);
+
+    Vector ab = b - a;
+
+    CHECK(ab == Vector(1,0));
   }
 }

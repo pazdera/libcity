@@ -44,11 +44,14 @@ class Point
     void setZ(double const& coordinate);
 
     bool operator==(Point const& second);
+    bool operator!=(Point const& second);
     bool operator<(Point const& second);
     bool operator>(Point const& second);
 
     Point& operator+=(Vector const& difference);
     Point  operator+(Vector const& difference) const;
+
+    Vector operator-(Point const& second);
 };
 
 inline double Point::x() const

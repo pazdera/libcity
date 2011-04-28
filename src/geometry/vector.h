@@ -26,7 +26,7 @@ class Vector
     Vector(double x, double y, double z); /**< Three dimensions (3D). */
 
     /** Initialize Vector from two points. */
-    Vector(Point const& first, Point const& second);
+    Vector(Point const& from, Point const& to);
 
        /* Not neccessary */
 //     Vector(Vector const& source);
@@ -50,13 +50,19 @@ class Vector
       */
     double length() const;
 
+    /**
+      Compute vector squared length.
+     @note 3D space safe.
+      */
+    double squaredLength() const;
+
 
     void setX(double coordinate);
     void setY(double coordinate);
     void setZ(double coordinate);
 
     void set(double xCoord, double yCoord, double zCoord = 0);
-    void set(Point const& first, Point const& second);
+    void set(Point const& from, Point const& to);
 
     void rotateAroundX(double degrees);
     void rotateAroundY(double degrees);
@@ -107,6 +113,13 @@ class Vector
      @return Resulting angle in RADIANS.
      */
     double angleTo(Vector const& second);
+
+    /**
+      Determine if the two Vectors are parallel.
+     @param[in] second The second Vector of the two.
+     @return True if they are parallel, otherwise false.
+     */
+    bool isParallelWith(Vector const& second);
 
     /**
       Compute angle between the Vector and X axis (Vector(1,0)).

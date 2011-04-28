@@ -53,17 +53,18 @@ class AreaExtractor
     std::list<Zone*> extractZones(StreetGraph* fromMap, Zone* zoneConstraints = 0);
     std::list<Block*> extractBlocks(StreetGraph* fromMap, Zone* zoneConstraints = 0);
 
-    /**
-     * Find all minimal cycles and return them as polygons.
-     */
-    void getMinimalCycles();
-
-
   private:
     Intersection* first(); /**< Get first node in sequence. */
     bool empty(); /**< Is graph empty? */
 
-    void substractRoadWidths(Polygon* minimalCycle, std::vector<Intersection*> const& correspondingIntersections);
+    /**
+     * Find all minimal cycles and return them as polygons.
+     */
+    void getMinimalCycles();
+    
+    void minimalizeCycle(Polygon* minimalCycle, std::vector<double>* distances);
+    std::vector<double> getSubstractDistances(std::vector<Intersection*> intersections);
+    void substractRoadWidths(Polygon* minimalCycle, std::vector<double> const& distances);
 
     void copyVertices(StreetGraph* map, Zone* zone = 0);
     void addVertex(Intersection* node, Zone* zone = 0);

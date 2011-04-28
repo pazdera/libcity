@@ -37,7 +37,13 @@ class Block : public Area
 
     ~Block();
 
+    void createLots();
+
   private:
+
+    Point calcSplitPoint(LineSegment const& longestEdge, double splitSize, double lotDeviance);
+    std::vector<Area*> splitRegion(Area* area, Point a, Point b);
+
     std::list<Lot*> lots;
 
     void initialize();

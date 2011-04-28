@@ -45,7 +45,8 @@ LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
 AREA_PACKAGE=src/area/block.o \
              src/area/area.o \
              src/area/zone.o \
-             src/area/lot.o
+             src/area/lot.o \
+             src/area/region.o
 
 # Buildings package
 BUILDINGS_PACKAGE=
@@ -79,7 +80,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testRay.o \
            test/testBlock.o \
            test/testLot.o \
-           test/testZone.o
+           test/testZone.o \
+           test/testRegion.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

@@ -10,6 +10,7 @@
  */
 
 #include "polygon.h"
+#include "units.h"
 #include "point.h"
 #include "vector.h"
 #include "linesegment.h"
@@ -233,12 +234,29 @@ Vector Polygon::normal()
   assert(numberOfVertices() >= 3);
 
   Vector first(*vertices->at(1), *vertices->at(0)),
-         second(*vertices->at(1), *vertices->at(2));
+         second;
 
-  Vector normalVector = first.crossProduct(second);
-  normalVector.normalize();
+  double angle;
+  int current, next, verticesCount = numberOfVertices();
+  for (int i = 1; i < verticesCount; i++)
+  {
+    current = i;
+    next = (i + 1) % verticesCount;
+    second.set(*vertices->at(current), *vertices->at(next));
+    angle = std::abs(first.angleTo(second));
 
-  return normalVector;
+    /* Edges are not parallel */
+    if (std::abs(angle - 0) > libcity::EPSILON &&
+        std::abs(angle - libcity::PI) > libcity::EPSILON)
+    {
+
+      Vector normalVector = first.crossProduct(second);
+      normalVector.normalize();
+      return normalVector;
+    }
+  }
+
+  assert("HERE should be exception" == 0);
 }
 
 Vector Polygon::edgeNormal(unsigned int edgeNumber)
@@ -282,6 +300,132 @@ Vector Polygon::edgeNormal(unsigned int edgeNumber)
 
 
   return (intersections % 2) ? normalVector : normalVector*(-1);
+}
+
+bool Polygon::isSubAreaOf(Polygon const& biggerPolygon)
+{
+  for (unsigned int i = 0; i < numberOfVertices(); i++)
+  {
+    if (!biggerPolygon.encloses2D(*(*vertices)[i]))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+std::list<Polygon*> Polygon::split(LineSegment const& splitLine)
+{
+  std::list<Point> vertexList;
+  std::list<Point> intersections;
+
+  LineSegment currentEdge;
+  LineSegment::Intersection result;
+  Point intersection;
+
+  /* for each edge */
+  for (unsigned int i = 0; i < numberOfVertices(); i++)
+  {
+    currentEdge = edge(i);
+
+    vertexList.push_back(vertex(i));
+
+    result = splitLine.intersection2D(currentEdge, &intersection);
+    if (result == LineSegment::INTERSECTING)
+    {
+      if (intersection != currentEdge.begining() &&
+          intersection != currentEdge.end())
+      {
+        vertexList.push_back(intersection);
+      }
+
+      intersections.push_back(intersection);
+//       /* Insert-sort into intersections */
+//       std::list<Point>::iterator appropriatePosition = intersections.begin();
+//       while (appropriatePosition != intersections.end() && *appropriatePosition < intersection)
+//       {
+//         appropriatePosition++;
+//       }
+//       intersections.insert(appropriatePosition, intersection);
+    }
+  }
+  intersections.sort();
+
+  std::list<Polygon*> stack;
+  std::list<Polygon*> output;
+  Polygon* top;
+
+  stack.push_back(new Polygon);
+  for (std::list<Point>::iterator vertexIterator = vertexList.begin();
+       vertexIterator != vertexList.end();
+       vertexIterator++)
+  {
+    top = stack.back();
+
+    top->addVertex(*vertexIterator);
+
+    if (isVertexIntersection(*vertexIterator, intersections))
+    {
+      if (top->numberOfVertices() > 0 && areVerticesInPair(*vertexIterator, top->vertex(0), intersections))
+      {
+        output.push_back(top);
+        stack.pop_back();
+        top = stack.back();
+        top->addVertex(*vertexIterator);
+      }
+      else
+      {
+        stack.push_back(new Polygon);
+        top = stack.back();
+        top->addVertex(*vertexIterator);
+      }
+    }
+  }
+
+  return output;
+}
+
+bool isVertexIntersection(Point vertex, std::list<Point> intersections)
+{
+  for (std::list<Point>::iterator vertexIterator = intersections.begin();
+       vertexIterator != intersections.end();
+       vertexIterator++)
+  {
+    if (*vertexIterator == vertex)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool areVerticesInPair(Point first, Point second, std::list<Point> intersections)
+{
+  int i = 0;
+  std::list<Point>::iterator vertexIterator;
+  for (vertexIterator =intersections.begin();
+       vertexIterator != intersections.end();
+       vertexIterator++, i++)
+  {
+    if (*vertexIterator == first)
+    {
+      if (i % 2)
+      {
+        vertexIterator--;
+      }
+      else
+      {
+        vertexIterator++;
+      }
+      break;
+    }
+  }
+
+  assert(vertexIterator != intersections.end());
+  return *vertexIterator == second;
 }
 
 std::string Polygon::toString()

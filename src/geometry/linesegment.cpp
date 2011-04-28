@@ -212,6 +212,14 @@ bool LineSegment::operator==(LineSegment const& another) const
          (begining() == another.end() && begining() == another.end());
 }
 
+Vector LineSegment::normal() const
+{
+  Vector direction = *second - *first;
+
+  return Vector(-direction.y(), direction.x());
+}
+
+
 std::string LineSegment::toString()
 {
   return "LineSegment(" + first->toString() + ", " + second->toString() + ")";

@@ -14,10 +14,14 @@
 #include "../area/zone.h"
 #include "../area/block.h"
 #include "../streetgraph/streetgraph.h"
+#include "../geometry/units.h"
 #include "../geometry/point.h"
+#include "../geometry/line.h"
 #include "../geometry/polygon.h"
 #include "../geometry/vector.h"
 #include "../debug.h"
+
+#include <cmath>
 
 AreaExtractor::AreaExtractor()
 {
@@ -146,33 +150,99 @@ std::list<Block*> AreaExtractor::extractBlocks(StreetGraph* fromMap, Zone* zoneC
   return blocks;
 }
 
-
-void AreaExtractor::substractRoadWidths(Polygon* minimalCycle, std::vector<Intersection*> const& correspondingIntersections)
+std::vector<double> AreaExtractor::getSubstractDistances(std::vector<Intersection*> intersections)
 {
-  assert(minimalCycle->numberOfVertices() == correspondingIntersections.size());
+  /* Get width of all edges */
+  std::vector<double> edgeWidth;
+  int current, next;
+  Road* road;
+  for (unsigned int i = 0; i < intersections.size(); i++)
+  {
+    current = i;
+    next = (i+1) % intersections.size();
+
+    road  = map->getRoadBetweenIntersections(intersections[current], intersections[next]);
+    assert(roadWidths.find(road->type()) != roadWidths.end());
+
+    edgeWidth.push_back(roadWidths[road->type()]);
+  }
+
+  return edgeWidth;
+}
+
+void AreaExtractor::minimalizeCycle(Polygon* minimalCycle, std::vector<double>* distances)
+{
+  double isMinimal = false;
+  while (!isMinimal)
+  {
+    int previous, current, next, verticesCount = minimalCycle->numberOfVertices();
+    isMinimal = true;
+    for (int i = 0; i < verticesCount; i++)
+    {
+      previous = (i-1) < 0 ? verticesCount-1 : i-1;
+      current = i;
+      next = (i + 1) % verticesCount;
+
+      if (previous == next)
+      {
+        break;
+      }
+
+      Vector first(minimalCycle->vertex(current), minimalCycle->vertex(previous)),
+             second(minimalCycle->vertex(current), minimalCycle->vertex(next));
+
+      if (first.isParallelWith(second))
+      {
+        minimalCycle->removeVertex(current);
+        distances->erase(distances->begin() + current);
+        isMinimal = false;
+        break;
+      }
+    }
+  }
+}
+
+void AreaExtractor::substractRoadWidths(Polygon* minimalCycle, std::vector<double> const& distances)
+{
+  assert(minimalCycle->numberOfVertices() == distances.size());
 
   Polygon oldArea(*minimalCycle);
-  int current, next;
+  int current, next, previous;
   int vertices = minimalCycle->numberOfVertices();
-  Road* road;
-  Vector normal;
-  Point newCurrent, newNext;
+  Vector previousNormal, currentNormal;
+  Line previousEdge, currentEdge;
+  Point newVertex;
 
   for(int i = 0; i < vertices; i++)
   {
+    previous = (i-1) < 0 ? vertices-1 : i-1;
     current = i;
     next = (i + 1) % vertices;
 
-    road = map->getRoadBetweenIntersections(correspondingIntersections[current], correspondingIntersections[next]);
-    assert(roadWidths.find(road->type()) != roadWidths.end());
+    previousNormal = oldArea.edgeNormal(previous);
+    currentNormal  = oldArea.edgeNormal(current);
+    previousNormal.normalize();
+    currentNormal.normalize();
 
-    normal = minimalCycle->edgeNormal(current);
-    normal.normalize();
+    previousEdge.setBegining(oldArea.vertex(current) + previousNormal*distances[previous]);
+    previousEdge.setEnd(oldArea.vertex(previous) + previousNormal*distances[previous]);
 
-    newCurrent = minimalCycle->vertex(current) + normal*roadWidths[road->type()];
-    newNext    = minimalCycle->vertex(next)    + normal*roadWidths[road->type()];
-    minimalCycle->updateVertex(current, newCurrent);
-    minimalCycle->updateVertex(next, newNext);
+    currentEdge.setBegining(oldArea.vertex(current) + currentNormal*distances[current]);
+    currentEdge.setEnd(oldArea.vertex(next) + currentNormal*distances[current]);
+
+    Line::Intersection result;
+    result = currentEdge.intersection2D(previousEdge, &newVertex);
+    if (result == Line::PARALLEL)
+    {
+      double distance = distances[previous];
+      if (distance < distances[current])
+      {
+        distance = distances[current];
+      }
+      newVertex = oldArea.vertex(current) + currentNormal*distance;
+    }
+
+    minimalCycle->updateVertex(current, newVertex);
   }
 }
 
@@ -331,7 +401,9 @@ void AreaExtractor::extractMinimalCycle(Intersection* current, Intersection* nex
     debug("AreaExtractor::extractMinimalCycle(): Storing minimal cycle.");
     if (substractRoadWidthFromAreas)
     {
-      substractRoadWidths(&minimalCycle, correspondingIntersections);
+      std::vector<double> distances = getSubstractDistances(correspondingIntersections);
+      minimalizeCycle(&minimalCycle, &distances);
+      substractRoadWidths(&minimalCycle, distances);
     }
     cycles->push_back(minimalCycle);
 
@@ -400,7 +472,7 @@ Intersection* AreaExtractor::getClockwiseMost(Intersection *previous, Intersecti
     {
         next = adjacent;
         vNext = vAdjacent;
-        vCurrentIsConvex = (vNext.perpDotProduct(vCurrent) <= 0);
+        vCurrentIsConvex = (vNext.perpDotProduct(vCurrent) <= -libcity::EPSILON);
         continue;
     }
 
@@ -410,7 +482,7 @@ Intersection* AreaExtractor::getClockwiseMost(Intersection *previous, Intersecti
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= -libcity::EPSILON;
       }
     }
     else
@@ -419,7 +491,7 @@ Intersection* AreaExtractor::getClockwiseMost(Intersection *previous, Intersecti
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= -libcity::EPSILON;
       }
     }
   }
@@ -455,7 +527,7 @@ Intersection* AreaExtractor::getCounterclockwiseMost(Intersection *previous, Int
     {
         next = adjacent;
         vNext = vAdjacent;
-        vCurrentIsConvex = (vNext.perpDotProduct(vCurrent) <= 0);
+        vCurrentIsConvex = (vNext.perpDotProduct(vCurrent) <= -libcity::EPSILON);
         continue;
     }
 
@@ -465,7 +537,7 @@ Intersection* AreaExtractor::getCounterclockwiseMost(Intersection *previous, Int
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= -libcity::EPSILON;
       }
     }
     else
@@ -474,7 +546,7 @@ Intersection* AreaExtractor::getCounterclockwiseMost(Intersection *previous, Int
       {
           next = adjacent;
           vNext = vAdjacent;
-          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= 0;
+          vCurrentIsConvex = vNext.perpDotProduct(vCurrent) <= -libcity::EPSILON;
       }
     }
   }

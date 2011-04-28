@@ -125,6 +125,11 @@ double Vector::length() const
   return sqrt(xDirection*xDirection + yDirection*yDirection + zDirection*zDirection);
 }
 
+double Vector::squaredLength() const
+{
+  return xDirection*xDirection + yDirection*yDirection + zDirection*zDirection;
+}
+
 void Vector::set(double xCoord, double yCoord, double zCoord)
 {
   xDirection = xCoord;
@@ -132,11 +137,11 @@ void Vector::set(double xCoord, double yCoord, double zCoord)
   zDirection = zCoord;
 }
 
-void Vector::set(Point const& first, Point const& second)
+void Vector::set(Point const& from, Point const& to)
 {
-  xDirection = second.x() - first.x();
-  yDirection = second.y() - first.y();
-  zDirection = second.z() - first.z();
+  xDirection = to.x() - from.x();
+  yDirection = to.y() - from.y();
+  zDirection = to.z() - from.z();
 }
 
 std::string Vector::toString()
@@ -156,8 +161,17 @@ double Vector::perpDotProduct(Vector const& vector)
   return x()*vector.y() - vector.x()*y();
 }
 
+bool Vector::isParallelWith(Vector const& second)
+{
+  double angle = angleTo(second);
+  return std::abs(angle - 0) <= libcity::EPSILON || std::abs(angle - libcity::PI) <= libcity::EPSILON;
+}
+
 Vector Vector::crossProduct(Vector const& vector)
 {
+  /* Vectors are parallel, thats undefined. */
+  assert(!isParallelWith(vector));
+
   double resultX = y()*vector.z() - z()*vector.y(),
          resultY = z()*vector.x() - x()*vector.z(),
          resultZ = x()*vector.y() - y()*vector.x();
@@ -228,7 +242,7 @@ Vector Vector::operator+(Vector const& vector)
   return Vector(xDirection + vector.x(), yDirection + vector.y(), zDirection + vector.z());
 }
 
-Vector::Vector(Point const& first, Point const& second)
+Vector::Vector(Point const& from, Point const& to)
 {
-  set(first, second);
+  set(from, to);
 }
