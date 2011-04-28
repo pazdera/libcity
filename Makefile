@@ -46,7 +46,7 @@ AREA_PACKAGE=src/area/block.o \
              src/area/area.o \
              src/area/zone.o \
              src/area/lot.o \
-             src/area/region.o
+             src/area/subregion.o
 
 # Buildings package
 BUILDINGS_PACKAGE=
@@ -81,7 +81,7 @@ TEST_UNITS=test/testPoint.o   \
            test/testBlock.o \
            test/testLot.o \
            test/testZone.o \
-           test/testRegion.o
+           test/testSubRegion.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

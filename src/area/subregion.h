@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file area/region.h
+ * @file area/subregion.h
  * @date 28.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef _REGION_H_
-#define _REGION_H_
+#ifndef _SUBREGION_H_
+#define _SUBREGION_H_
 
 /* STL */
 #include <vector>
@@ -27,7 +27,7 @@ class Intersection;
 class Block;
 class LineSegment;
 
-class Region
+class SubRegion
 {
   public:
     struct Edge;
@@ -42,13 +42,13 @@ class Region
       bool operator<(Edge* second) { return s < second->s; }
     };
 
-    Region();
-    Region(Edge* edge);
-    Region(Polygon const& polygon);
-    ~Region();
+    SubRegion();
+    SubRegion(Edge* edge);
+    SubRegion(Polygon const& polygon);
+    ~SubRegion();
 
-    Region(Region const& source);
-    Region& operator=(Region const& source);
+    SubRegion(SubRegion const& source);
+    SubRegion& operator=(SubRegion const& source);
 
     Edge* getFirstEdge();
     Edge* insert(Edge* after, Point const& begining);

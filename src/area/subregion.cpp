@@ -1,15 +1,15 @@
 /**
  * This code is part of libcity library.
  *
- * @file area/region.cpp
+ * @file area/subregion.cpp
  * @date 28.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @see region.h
+ * @see subregion.h
  *
  */
 
-#include "region.h"
+#include "subregion.h"
 
 #include "../debug.h"
 #include "../geometry/units.h"
@@ -18,48 +18,48 @@
 #include "../geometry/vector.h"
 #include "../geometry/linesegment.h"
 
-Region::Region()
+SubRegion::SubRegion()
 {
   initialize();
 }
 
-Region::Region(Polygon const& polygon)
+SubRegion::SubRegion(Polygon const& polygon)
 {
   initialize();
   polygonGraph = constructPolygonGraph(polygon);
 }
 
-Region::Region(Edge* edge)
+SubRegion::SubRegion(Edge* edge)
 {
   initialize();
   polygonGraph = copyPolygonGraph(edge);
 }
 
-Region::Region(Region const& source)
+SubRegion::SubRegion(SubRegion const& source)
 {
   initialize();
 
   polygonGraph = copyPolygonGraph(source.polygonGraph);
 }
 
-void Region::initialize()
+void SubRegion::initialize()
 {
   polygonGraph = 0;
 }
 
-Region& Region::operator=(Region const& source)
+SubRegion& SubRegion::operator=(SubRegion const& source)
 {
   polygonGraph = copyPolygonGraph(source.polygonGraph);
 
   return *this;
 }
 
-Region::~Region()
+SubRegion::~SubRegion()
 {
   freeMemory();
 }
 
-void Region::freeMemory()
+void SubRegion::freeMemory()
 {
   Edge* first = polygonGraph;
   while(polygonGraph->next != first)
@@ -70,7 +70,7 @@ void Region::freeMemory()
 }
 
 
-Region::Edge* Region::getLongestEdgeWithRoadAccess()
+SubRegion::Edge* SubRegion::getLongestEdgeWithRoadAccess()
 {
   assert(polygonGraph != 0);
 
@@ -97,7 +97,7 @@ Region::Edge* Region::getLongestEdgeWithRoadAccess()
   return longest;
 }
 
-Region::Edge* Region::getLongestEdgeWithoutRoadAccess()
+SubRegion::Edge* SubRegion::getLongestEdgeWithoutRoadAccess()
 {
   Edge* current = polygonGraph;
   Edge* longest = 0;
@@ -122,7 +122,7 @@ Region::Edge* Region::getLongestEdgeWithoutRoadAccess()
   return longest;
 }
 
-bool Region::hasRoadAccess()
+bool SubRegion::hasRoadAccess()
 {
   Edge* current = polygonGraph;
 
@@ -139,7 +139,7 @@ bool Region::hasRoadAccess()
   return false;
 }
 
-Region::Edge* Region::constructPolygonGraph(Polygon const& polygon)
+SubRegion::Edge* SubRegion::constructPolygonGraph(Polygon const& polygon)
 {
   assert(polygon.numberOfVertices() >= 3);
 
@@ -168,7 +168,7 @@ Region::Edge* Region::constructPolygonGraph(Polygon const& polygon)
   return first;
 }
 
-Region::Edge* Region::copyPolygonGraph(Edge* source)
+SubRegion::Edge* SubRegion::copyPolygonGraph(Edge* source)
 {
   Edge* sourceCurrent = source;
 
@@ -198,12 +198,12 @@ Region::Edge* Region::copyPolygonGraph(Edge* source)
   return first;
 }
 
-Region::Edge* Region::getFirstEdge()
+SubRegion::Edge* SubRegion::getFirstEdge()
 {
   return polygonGraph;
 }
 
-Region::Edge* Region::insert(Edge* after, Point const& begining)
+SubRegion::Edge* SubRegion::insert(Edge* after, Point const& begining)
 {
   if (polygonGraph == 0)
   {
@@ -225,7 +225,7 @@ Region::Edge* Region::insert(Edge* after, Point const& begining)
   return newEdge;
 }
 
-Region::Edge* Region::insertFirst(Point const& begining)
+SubRegion::Edge* SubRegion::insertFirst(Point const& begining)
 {
   polygonGraph = new Edge;
   polygonGraph->begining = begining;
@@ -237,7 +237,7 @@ Region::Edge* Region::insertFirst(Point const& begining)
   return polygonGraph;
 }
 
-void Region::bridge(Edge* first, Edge* second)
+void SubRegion::bridge(Edge* first, Edge* second)
 {
   Edge* otherFirst;
   Edge* otherSecond;
@@ -255,7 +255,7 @@ void Region::bridge(Edge* first, Edge* second)
   otherFirst->previous = second;
 }
 
-Polygon Region::toPolygon()
+Polygon SubRegion::toPolygon()
 {
   Edge* current = polygonGraph;
   Polygon polygon;

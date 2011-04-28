@@ -52,6 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../src/area/zone.h"
 #include "../src/area/block.h"
 #include "../src/area/lot.h"
+#include "../src/area/region.h"
 
 
 #include "../src/lsystem/lsystem.h"
