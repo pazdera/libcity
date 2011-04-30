@@ -51,3 +51,8 @@ Building& Building::operator=(Building const& source)
 
   return *this;
 }
+
+void Building::generate()
+{
+  
+}

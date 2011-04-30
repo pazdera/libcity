@@ -346,7 +346,7 @@ void RoadLSystem::freeAreaConstraints()
 }
 
 
-void RoadLSystem::setRoadType(Road::Types type)
+void RoadLSystem::setRoadType(Road::Type type)
 {
   generatedType = type;
 }

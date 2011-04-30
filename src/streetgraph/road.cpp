@@ -20,6 +20,14 @@
 #include "../geometry/point.h"
 
 
+Road::Type Road::numberOfDefinedRoadTypes = 1000;
+
+Road::Type Road::defineNewRoadType()
+{
+  numberOfDefinedRoadTypes++;
+  return numberOfDefinedRoadTypes;
+}
+
 Road::Road()
   : from(0), to(0), geometrical_path(0)
 {
@@ -66,12 +74,12 @@ void Road::estimatePath()
   geometrical_path = new Path(LineSegment(from->position(), to->position()));
 }
 
-Road::Types Road::type()
+Road::Type Road::type()
 {
   return roadType;
 }
 
-void Road::setType(Road::Types type)
+void Road::setType(Road::Type type)
 {
   roadType = type;
 }

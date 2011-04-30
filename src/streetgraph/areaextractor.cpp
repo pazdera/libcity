@@ -97,12 +97,12 @@ void AreaExtractor::copyVertices(StreetGraph* map, Zone* zone)
 }
 
 
-void AreaExtractor::setRoadWidth(Road::Types type, double width)
+void AreaExtractor::setRoadWidth(Road::Type type, double width)
 {
   roadWidths[type] = width;
 }
 
-void AreaExtractor::setRoadWidths(std::map<Road::Types, double> widths)
+void AreaExtractor::setRoadWidths(std::map<Road::Type, double> widths)
 {
   roadWidths = widths;
 }

@@ -91,7 +91,7 @@ Road* StreetGraph::getRoadBetweenIntersections(Intersection* first, Intersection
 }
 
 
-void StreetGraph::addRoad(Path const& path, Road::Types roadType)
+void StreetGraph::addRoad(Path const& path, Road::Type roadType)
 {
   Path roadPath(path);
 

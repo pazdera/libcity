@@ -21,6 +21,17 @@ class Path;
 class Road
 {
   public:
+    typedef unsigned short Type;
+    static Type defineNewRoadType();
+
+    /* Available built-in types. */
+    /* These must be initialized to UNIQUE values. */
+    static const Type PRIMARY_ROAD   = 0;
+    static const Type SECONDARY_ROAD = 1;
+
+    virtual Type type();
+    virtual void setType(Type type);
+
     /** Create road between two intersections.
         Path is determined automaticaly.*/
     Road();
@@ -43,16 +54,12 @@ class Road
 
     std::string toString();
 
-    enum Types
-    {
-      PRIMARY_ROAD,
-      SECONDARY_ROAD
-    };
-
-    virtual Types type();
-    virtual void setType(Types type);
-
   private:
+    /** Must be initialized to a proper value.
+    There are TWO predefined road types. So in this case
+    it ought be set to a number above 2. */
+    static Type numberOfDefinedRoadTypes;
+
     /* Topological information */
     Intersection* from; /**< Where the road starts. */
     Intersection* to;   /**< Where it leads to. */
@@ -60,7 +67,7 @@ class Road
     /* Geometrical information */
     Path* geometrical_path; /**< Path that the road takes between the two topological points */
 
-    Types roadType;
+    Type roadType;
 
     void estimatePath();
 };

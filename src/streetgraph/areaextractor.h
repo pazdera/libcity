@@ -47,8 +47,8 @@ class AreaExtractor
     AreaExtractor(AreaExtractor const& source);
     AreaExtractor& operator=(AreaExtractor const& source);
 
-    void setRoadWidth(Road::Types type, double width);
-    void setRoadWidths(std::map<Road::Types, double> widths);
+    void setRoadWidth(Road::Type type, double width);
+    void setRoadWidths(std::map<Road::Type, double> widths);
 
     std::list<Zone*> extractZones(StreetGraph* fromMap, Zone* zoneConstraints = 0);
     std::list<Block*> extractBlocks(StreetGraph* fromMap, Zone* zoneConstraints = 0);
@@ -106,7 +106,7 @@ class AreaExtractor
     /** Edges marked as a part of a cycle. */
     std::set< std::pair<Intersection*, Intersection*> > *cycleEdges;
 
-    std::map<Road::Types, double> roadWidths;
+    std::map<Road::Type, double> roadWidths;
     bool substractRoadWidthFromAreas;
 
     StreetGraph* map;

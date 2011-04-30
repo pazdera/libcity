@@ -163,9 +163,10 @@ Plan:
   - DONE Create special data structure for storing edges while creating lots
   - DONE Remove lots that are not planar or that are out of their cycle
   - DONE Make lot subdivision constants alterable
-  - Design UrbanEntity class
-  - Create Building class
-  - Building class text
+  - DONE Design UrbanEntity class
+  - DONE Create Building class
+  - DONE Modify Road type system to be Building-like
+  - Modify lot generation to keep non-road lots
   - Modify road class grammar
   - Refactor Random generator
   - Configuration into separate file?

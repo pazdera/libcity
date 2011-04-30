@@ -96,7 +96,7 @@ bool Zone::roadIsInside(Road* road)
   return isIntersectionInside(road->begining()) && isIntersectionInside(road->end());
 }
 
-void Zone::createBlocks(std::map<Road::Types, double> roadWidths)
+void Zone::createBlocks(std::map<Road::Type, double> roadWidths)
 {
   AreaExtractor graph;
   graph.setRoadWidths(roadWidths);

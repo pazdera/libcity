@@ -44,7 +44,7 @@ class Zone : public Area
     bool isIntersectionInside(Intersection* intersection);
     bool roadIsInside(Road* road);
 
-    void createBlocks(std::map<Road::Types, double> roadWidths);
+    void createBlocks(std::map<Road::Type, double> roadWidths);
     std::list<Block*> getBlocks();
 
   private:

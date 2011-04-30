@@ -53,7 +53,7 @@ class UrbanEntity
     /** Must be initialized to a proper value.
     There is ONE predefined entity. So in this case
     it ought be set to a number above 1. */
-    static unsigned short numberOfDefinedEntityTypes;
+    static Type numberOfDefinedEntityTypes;
     Type entityType;
 
     void initialize();

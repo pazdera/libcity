@@ -88,7 +88,7 @@ class StreetGraph
 
      @param[in] path Path of the new road (low level part of the graph).
     */
-    void addRoad(Path const& path, Road::Types roadTypes = Road::PRIMARY_ROAD);
+    void addRoad(Path const& path, Road::Type roadTypes = Road::PRIMARY_ROAD);
 
     /**
       Erase road from the StreetGraph.
