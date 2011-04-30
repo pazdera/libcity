@@ -16,9 +16,6 @@
 /* STL */
 #include <string>
 
-/* libcity */
-#include "urbanentity.h"
-
 class LineSegment;
 class Point;
 class Vector;
@@ -30,7 +27,7 @@ class Lot;
 class UrbanEntity
 {
   public:
-    typedef short int Type;
+    typedef unsigned short Type;
     static Type defineNewEntityType();
 
     /* Available built-in types. */
@@ -56,8 +53,10 @@ class UrbanEntity
     /** Must be initialized to a proper value.
     There is ONE predefined entity. So in this case
     it ought be set to a number above 1. */
-    static unsigned int numberOfDefinedEntityTypes;
+    static unsigned short numberOfDefinedEntityTypes;
     Type entityType;
+
+    void initialize();
 };
 
 #endif

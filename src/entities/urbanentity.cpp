@@ -19,7 +19,7 @@
 #include "../area/lot.h"
 
 
-unsigned int UrbanEntity::numberOfDefinedEntityTypes = 1000;
+unsigned short UrbanEntity::numberOfDefinedEntityTypes = 1000;
 
 UrbanEntity::Type UrbanEntity::defineNewEntityType()
 {
@@ -28,11 +28,19 @@ UrbanEntity::Type UrbanEntity::defineNewEntityType()
 }
 
 UrbanEntity::UrbanEntity()
-{}
+{
+  initialize();
+}
 
 UrbanEntity::UrbanEntity(Lot* parentAlottment)
 {
+  initialize();
   setLot(parentAlottment);
+}
+
+void UrbanEntity::initialize()
+{
+
 }
 
 UrbanEntity::~UrbanEntity()

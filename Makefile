@@ -49,7 +49,8 @@ REGIONS_PACKAGE=src/area/block.o \
                 src/area/subregion.o
 
 # Entities package
-ENTITIES_PACKAGE=src/entities/urbanentity.o
+ENTITIES_PACKAGE=src/entities/urbanentity.o \
+                 src/entities/building.o
 
 # No package
 MISC=src/random.o \
