@@ -30,7 +30,7 @@ class Lot : public Area
 {
   public:
     Lot();
-    Lot(Block* parentBlock);
+    Lot(Block* parentBlock, Polygon const& area);
 
     Lot(Lot const& source);
     Lot& operator=(Lot const& source);

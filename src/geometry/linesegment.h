@@ -38,6 +38,7 @@ class LineSegment : public Line
     Vector normal() const;
     bool hasPoint2D(Point const& point) const;
     Intersection intersection2D(LineSegment const& another, Point* intersection) const;
+    Intersection intersection2D(Line const& another, Point* intersection) const;
     double distance(Point const& point) const;
     Point nearestPoint(Point const& point) const;
 

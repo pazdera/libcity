@@ -1,11 +1,11 @@
 /**
  * This code is part of libcity library.
  *
- * @file test/testRegion.cpp
+ * @file test/testSubRegion.cpp
  * @date 28.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief Unit test of Region class
+ * @brief Unit test of SubRegion class
  *
  * Unit tests require UnitTest++ framework! See README
  * for more informations.
@@ -20,11 +20,12 @@
 #include <stdexcept>
 
 // Tested modules
-#include "../src/area/region.h"
+#include "../src/area/subregion.h"
+#include "../src/geometry/point.h"
 #include "../src/geometry/polygon.h"
 #include "../src/debug.h"
 
-SUITE(RegionClass)
+SUITE(SubRegionClass)
 {
   TEST(InitializeFromPolygon)
   {
@@ -34,8 +35,8 @@ SUITE(RegionClass)
     p.addVertex(Point(10,10));
     p.addVertex(Point(0,10));
 
-    Region r(p);
-    Region::Edge* e = r.getFirstEdge();
+    SubRegion r(p);
+    SubRegion::Edge* e = r.getFirstEdge();
 
     CHECK(Point(0,0)  == e->begining);
     CHECK(Point(10,0) == e->next->begining);
@@ -44,9 +45,9 @@ SUITE(RegionClass)
 
   TEST(InsertInitialize)
   {
-    Region r;
-    Region::Edge* current;
-    Region::Edge* e;
+    SubRegion r;
+    SubRegion::Edge* current;
+    SubRegion::Edge* e;
 
     current = r.insert(0, Point(0,0));
     current = r.insert(current, Point(10,0));
@@ -63,8 +64,8 @@ SUITE(RegionClass)
 
   TEST(LongestEdges)
   {
-    Region r;
-    Region::Edge* current;
+    SubRegion r;
+    SubRegion::Edge* current;
 
     current = r.insert(0, Point(0,0));
     current = r.insert(current, Point(10,0));
@@ -76,5 +77,37 @@ SUITE(RegionClass)
     CHECK(Point(10,10) == r.getLongestEdgeWithoutRoadAccess()->begining);
 
     CHECK(r.hasRoadAccess());
+  }
+
+  TEST(ToPolygon)
+  {
+    SubRegion r;
+    SubRegion::Edge* current;
+    Polygon p;
+
+    current = r.insert(0, Point(0,0));
+    current = r.insert(current, Point(10,0));
+    current = r.insert(current, Point(10,10));
+    current = r.insert(current, Point(0,10));
+
+    p = r.toPolygon();
+    CHECK(Point(0,0)   == p.vertex(0));
+    CHECK(Point(10,0)  == p.vertex(1));
+    CHECK(Point(10,10) == p.vertex(2));
+    CHECK(Point(0,10)  == p.vertex(3));
+  }
+
+  TEST(CopyConstructor)
+  {
+    SubRegion r;
+    SubRegion::Edge* current;
+
+    current = r.insert(0, Point(0,0));
+    current = r.insert(current, Point(10,0));
+    current = r.insert(current, Point(10,10));
+    current = r.insert(current, Point(0,10));
+
+    SubRegion s(r);
+    CHECK(s.getFirstEdge()->begining == r.getFirstEdge()->begining);
   }
 }

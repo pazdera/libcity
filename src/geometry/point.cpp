@@ -48,9 +48,9 @@ void Point::set(double const& xCoord, double const& yCoord, double const& zCoord
 
 bool Point::operator==(Point const& second)
 {
-  return std::abs(xPosition - second.x()) < libcity::EPSILON &&
-         std::abs(yPosition - second.y()) < libcity::EPSILON &&
-         std::abs(zPosition - second.z()) < libcity::EPSILON;
+  return std::abs(xPosition - second.x()) < libcity::COORDINATES_EPSILON &&
+         std::abs(yPosition - second.y()) < libcity::COORDINATES_EPSILON &&
+         std::abs(zPosition - second.z()) < libcity::COORDINATES_EPSILON;
 }
 
 bool Point::operator!=(Point const& second)

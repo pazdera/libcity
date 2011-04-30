@@ -28,5 +28,6 @@ SUITE(LotClass)
 {
   TEST(Empty)
   {
+
   }
 }

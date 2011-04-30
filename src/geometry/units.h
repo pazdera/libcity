@@ -17,7 +17,8 @@ namespace libcity
 
   const double PI = 3.14159265;
 
-  const double EPSILON = 0.000001;
+  const double COORDINATES_EPSILON = 0.01;
+  const double EPSILON = 0.0000001;
 
   const double SNAP_DISTANCE = 25;
 }

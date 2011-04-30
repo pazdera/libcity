@@ -160,7 +160,15 @@ Plan:
   - DONE Eliminate 5 and more way intersections in roadGenerators
   - Refactor subdivision into lots to Region class
   - http://cg.tutsplus.com/articles/where-to-get-your-textures-19-free-photo-source-sites-for-cg-artists/
-  - Create special data structure for storing edges while creating lots
+  - DONE Create special data structure for storing edges while creating lots
+  - DONE Remove lots that are not planar or that are out of their cycle
+  - DONE Make lot subdivision constants alterable
+  - Design UrbanEntity class
+  - Create Building class
+  - Building class text
+  - Modify road class grammar
+  - Refactor Random generator
+  - Configuration into separate file?
   - Minimal distance between two intersections
   - Think about separating intersections into a different module
   - Clean-up textures and material scripts

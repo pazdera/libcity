@@ -23,10 +23,11 @@ Lot::Lot()
   initialize();
 }
 
-Lot::Lot(Block* parentBlock)
+Lot::Lot(Block* parentBlock, Polygon const& area)
 {
   initialize();
   setParent(parentBlock);
+  setAreaConstraints(area);
 }
 
 Lot::Lot(Lot const& source)

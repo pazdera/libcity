@@ -16,6 +16,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <string>
 
 /* libcity */
 #include "../geometry/point.h"
@@ -26,6 +27,7 @@ class RoadLSystem;
 class Intersection;
 class Block;
 class LineSegment;
+class Point;
 
 class SubRegion
 {
@@ -39,7 +41,7 @@ class SubRegion
       Edge* previous;
       Edge* next;
 
-      bool operator<(Edge* second) { return s < second->s; }
+      bool operator<(Edge* second) { return begining < second->begining; }
     };
 
     SubRegion();
@@ -59,6 +61,7 @@ class SubRegion
     Edge* getLongestEdgeWithoutRoadAccess();
 
     Polygon toPolygon();
+    std::string toString();
   private:
     Edge *polygonGraph;
 

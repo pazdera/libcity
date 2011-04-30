@@ -19,7 +19,7 @@
 OrganicRoadPattern::OrganicRoadPattern()
   : RoadLSystem()
 {
-  setAxiom("E");
+  setAxiom("[[[-_E]+_E]_E]++_E");
 
   // Rules
   addRule('E', "[[-_E]+_E]_E");

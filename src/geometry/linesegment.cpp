@@ -157,6 +157,34 @@ LineSegment::Intersection LineSegment::intersection2D(LineSegment const& another
   return NONINTERSECTING;
 }
 
+LineSegment::Intersection LineSegment::intersection2D(Line const& another, Point* intersection) const
+{
+  float r, s, d;
+
+  double x1 = begining().x(), y1 = begining().y(),
+         x2 = end().x(), y2 = end().y(),
+         x3 = another.begining().x(), y3 = another.begining().y(),
+         x4 = another.end().x(), y4 = another.end().y();
+
+  // Make sure the lines aren't parallel
+  if (std::abs((y2 - y1) / (x2 - x1) - (y4 - y3) / (x4 - x3)) > libcity::EPSILON)
+  {
+    d = (((x2 - x1) * (y4 - y3)) - (y2 - y1) * (x4 - x3));
+    if (d != 0)
+    {
+      r = (((y1 - y3) * (x4 - x3)) - (x1 - x3) * (y4 - y3)) / d;
+      s = (((y1 - y3) * (x2 - x1)) - (x1 - x3) * (y2 - y1)) / d;
+      if (r >= -libcity::EPSILON && r <= (1 + libcity::EPSILON))
+      {
+        intersection->set(x1 +  r * (x2 - x1), y1 + r * (y2 - y1));
+        return LineSegment::INTERSECTING;
+      }
+    }
+  }
+
+  return LineSegment::NONINTERSECTING;
+}
+
 
 Point LineSegment::nearestPoint(Point const& point) const
 {

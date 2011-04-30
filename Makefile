@@ -41,21 +41,21 @@ LSYSTEM_PACKAGE=src/lsystem/lsystem.o \
                 src/lsystem/graphiclsystem.o \
                 src/lsystem/roadlsystem.o
 
-# Area package
-AREA_PACKAGE=src/area/block.o \
-             src/area/area.o \
-             src/area/zone.o \
-             src/area/lot.o \
-             src/area/subregion.o
+# Regions package
+REGIONS_PACKAGE=src/area/block.o \
+                src/area/area.o \
+                src/area/zone.o \
+                src/area/lot.o \
+                src/area/subregion.o
 
-# Buildings package
-BUILDINGS_PACKAGE=
+# Entities package
+ENTITIES_PACKAGE=src/entities/urbanentity.o
 
 # No package
 MISC=src/random.o \
      src/city.o
 
-LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(AREA_PACKAGE) $(BUILDINGS_PACKAGE) $(MISC)
+LIB_OBJECTS=$(GEOMETRY_PACKAGE) $(STREETGRAPH_PACKAGE) $(LSYSTEM_PACKAGE) $(REGIONS_PACKAGE) $(ENTITIES_PACKAGE) $(MISC)
 
 $(LIB_OBJECTS): %.o: %.cpp %.h
 	$(COMPILER) $(COMPILER_FLAGS) -c $< -o $@

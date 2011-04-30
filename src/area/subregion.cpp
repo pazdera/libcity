@@ -11,6 +11,9 @@
 
 #include "subregion.h"
 
+#include <sstream>
+#include <string>
+
 #include "../debug.h"
 #include "../geometry/units.h"
 #include "../geometry/point.h"
@@ -49,6 +52,7 @@ void SubRegion::initialize()
 
 SubRegion& SubRegion::operator=(SubRegion const& source)
 {
+  freeMemory();
   polygonGraph = copyPolygonGraph(source.polygonGraph);
 
   return *this;
@@ -151,6 +155,7 @@ SubRegion::Edge* SubRegion::constructPolygonGraph(Polygon const& polygon)
   {
     current->begining = polygon.vertex(i);
     current->hasRoadAccess = false;
+
     next = new Edge;
     previous = current;
     current->next = next;
@@ -174,26 +179,30 @@ SubRegion::Edge* SubRegion::copyPolygonGraph(Edge* source)
 
   Edge* current = new Edge;
   Edge* first = current;
+  Edge* next;
   Edge* previous = 0;
 
   do
   {
     current->begining = sourceCurrent->begining;
     current->hasRoadAccess = sourceCurrent->hasRoadAccess; // All block edges have road access
-    current->next = new Edge;
-    current->previous = previous;
+    current->s = sourceCurrent->s;
+
+    next = new Edge;
     previous = current;
-    current = current->next;
+    current->next = next;
+    next->previous = current;
+    current = next;
 
     sourceCurrent = sourceCurrent->next;
   }
   while(sourceCurrent != source);
 
   /* Connect the end to the begining */
-  current = current->previous;
-  delete current->next;
-  current->next = first;
-  first->previous = current;
+  current = next->previous;  // one step back
+  delete next;               // discard the prepared node
+  current->next = first;     // connect to cycle
+  first->previous = current; // and back
 
   return first;
 }
@@ -215,6 +224,7 @@ SubRegion::Edge* SubRegion::insert(Edge* after, Point const& begining)
   Edge* newEdge = new Edge;
   newEdge->begining = begining;
   newEdge->hasRoadAccess = false;
+  newEdge->s = 0;
 
   Edge* next = after->next;
   after->next = newEdge;
@@ -230,6 +240,7 @@ SubRegion::Edge* SubRegion::insertFirst(Point const& begining)
   polygonGraph = new Edge;
   polygonGraph->begining = begining;
   polygonGraph->hasRoadAccess = false;
+  polygonGraph->s = 0;
 
   polygonGraph->previous = polygonGraph;
   polygonGraph->next = polygonGraph;
@@ -242,17 +253,38 @@ void SubRegion::bridge(Edge* first, Edge* second)
   Edge* otherFirst;
   Edge* otherSecond;
 
+  debug("BRIDGING GRAPH:");
+  debug("  First  road access = " << first->hasRoadAccess);
+  debug("  Second road access = " << second->hasRoadAccess);
   otherFirst = insert(first, first->begining);
-  otherFirst->hasRoadAccess = false;
+  otherFirst->hasRoadAccess = first->hasRoadAccess;
 
-  otherSecond = insert(second->previous, second->begining);
-  otherSecond->hasRoadAccess = false;
+  otherSecond = insert(second, second->begining);
+  otherSecond->hasRoadAccess = second->hasRoadAccess;
 
   first->next  = otherSecond;
   otherSecond->previous = first;
 
   second->next = otherFirst;
   otherFirst->previous = second;
+
+  debug(" after:");
+  debug("  First  road access = " << first->hasRoadAccess);
+  debug("  Second road access = " << second->hasRoadAccess);
+
+  first->hasRoadAccess  = false;
+  second->hasRoadAccess = false;
+//   SubRegion::Edge* current = first;
+//   do
+//   {
+//     current = current->next;
+//   } while (current != first);
+// 
+//   current = second;
+//   do
+//   {
+//     current = current->next;
+//   } while (current != second);
 }
 
 Polygon SubRegion::toPolygon()
@@ -268,4 +300,24 @@ Polygon SubRegion::toPolygon()
   while(current != polygonGraph);
 
   return polygon;
+}
+
+std::string SubRegion::toString()
+{
+  Edge* current = polygonGraph;
+  std::stringstream output;
+
+  output << "SubRegion( \n";
+  do
+  {
+    output << "  Edge(\n";
+    output << "    point      = " << current->begining.toString() << "\n";
+    output << "    roadAccess = " << current->hasRoadAccess << "\n";
+    output << "    s          = " << current->s << "),\n";
+    current = current->next;
+  }
+  while(current != polygonGraph);
+  output << ")\n";
+
+  return output.str();
 }

@@ -402,10 +402,21 @@ void AreaExtractor::extractMinimalCycle(Intersection* current, Intersection* nex
     if (substractRoadWidthFromAreas)
     {
       std::vector<double> distances = getSubstractDistances(correspondingIntersections);
+      Polygon boundaries(minimalCycle);
       minimalizeCycle(&minimalCycle, &distances);
       substractRoadWidths(&minimalCycle, distances);
+
+      // Discard wrong blocks
+      if (minimalCycle.isSubAreaOf(boundaries))
+      {
+        cycles->push_back(minimalCycle);
+      }
+        //cycles->push_back(minimalCycle);
     }
-    cycles->push_back(minimalCycle);
+    else
+    {
+      cycles->push_back(minimalCycle);
+    }
 
     removeEdge(current, next);
 

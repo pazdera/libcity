@@ -217,9 +217,9 @@ double Vector::angleToXAxis()
 
 bool   Vector::operator==(Vector const& second)
 {
-  return std::abs(xDirection - second.x()) < libcity::EPSILON &&
-         std::abs(yDirection - second.y()) < libcity::EPSILON &&
-         std::abs(zDirection - second.z()) < libcity::EPSILON;
+  return std::abs(xDirection - second.x()) < libcity::COORDINATES_EPSILON &&
+         std::abs(yDirection - second.y()) < libcity::COORDINATES_EPSILON &&
+         std::abs(zDirection - second.z()) < libcity::COORDINATES_EPSILON;
 }
 
 bool   Vector::operator!=(Vector const& second)

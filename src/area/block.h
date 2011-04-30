@@ -24,7 +24,7 @@ class Vector;
 class Polygon;
 class Zone;
 class Lot;
-class Region;
+class SubRegion;
 
 class Block : public Area
 {
@@ -38,12 +38,13 @@ class Block : public Area
 
     ~Block();
 
-    void createLots();
+    void createLots(double lotWidth, double lotHeight, double deviance);
+    std::list<Lot*> getLots();
 
   private:
 
     Point calcSplitPoint(LineSegment const& longestEdge, double splitSize, double lotDeviance);
-    std::vector<Region*> splitRegion(Region* area, Point a, Point b);
+    std::list<SubRegion*> splitRegion(SubRegion* area, Point a, Point b);
 
     std::list<Lot*> lots;
 

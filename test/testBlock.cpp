@@ -23,13 +23,26 @@
 #include "../src/area/block.h"
 #include "../src/geometry/vector.h"
 #include "../src/geometry/point.h"
+#include "../src/geometry/polygon.h"
 #include "../src/geometry/linesegment.h"
 #include "../src/debug.h"
 
 SUITE(Block)
 {
-  TEST(Interface)
+  TEST(SubdivisionAlgorithm)
   {
-    
+    Polygon p;
+    p.addVertex(Point(0,0));
+    p.addVertex(Point(200,0));
+    p.addVertex(Point(200,200));
+    p.addVertex(Point(0,200));
+
+    Block b(0, p);
+
+    b.createLots();
+
+    std::list<Lot*> lots = b.getLots();
+
+    debug(lots.size());
   }
 }

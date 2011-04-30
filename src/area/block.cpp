@@ -19,11 +19,12 @@
 #include "../geometry/units.h"
 #include "../geometry/point.h"
 #include "../geometry/polygon.h"
+#include "../geometry/line.h"
 #include "../geometry/vector.h"
 #include "../geometry/linesegment.h"
 #include "zone.h"
 #include "lot.h"
-#include "region.h"
+#include "subregion.h"
 
 Block::Block()
 {
@@ -71,67 +72,133 @@ void Block::freeMemory()
   lots.clear();
 }
 
-void Block::createLots()
+void Block::createLots(double lotWidth, double lotHeight, double deviance)
 {
-  const double MAX_LOT_WIDTH = 100;
-  const double MAX_LOT_DEPTH = 100;
-  const double LOT_DEVIANCE  = 0;
+  double LOT_WIDTH = lotWidth;
+  double LOT_DEPTH = lotHeight;
 
-  Region* region;
-  std::vector<Region*> regionQueue;
-  std::vector<Region*> newRegions;
-  std::vector<Region*> outputRegions;
-  Region::Edge* longestEdge;
+  double LOT_DEVIANCE  = deviance;
+  assert(deviance >= 0 && deviance <= 1);
+
+  SubRegion* region; /* Current region. */
+  std::vector<SubRegion*> regionQueue; /* Elements to be subdivided. */
+  std::list<SubRegion*>   newRegions;  /* Newly added regions by splitRegion. */
+  std::list<SubRegion*>   outputRegions; /* Regions that need no further subdivision. */
+  SubRegion::Edge* longestEdge; /* Longest edge of current region. */
   LineSegment edgeLine;
   double splitSize;
-  Point sp1, sp2;
+  Point sp1, sp2; /* Split line. */
 
-  regionQueue.push_back(new Region(*constraints));
+  /* A valid region must have at least 3 vertices. */
+  assert(constraints->numberOfVertices() >= 3);
+
+  /* Convert areaConstraints of this block to polygonGraph
+     that is used in subdivision algorithm. */
+  region = new SubRegion(*constraints);
+
+  SubRegion::Edge* blockFirst = region->getFirstEdge();
+  SubRegion::Edge* current = blockFirst;
+  do /* All edges of Block has road access */
+  {
+    current->hasRoadAccess = true;
+    current = current->next;
+  }
+  while (current != blockFirst);
+
+
+  /* Add the region to queue for splitting */
+  regionQueue.push_back(region);
+
+  /* While there are some more regions to subdivide. */
   while(!regionQueue.empty())
   {
+    /* Get first region. */
     region = regionQueue.back();
-    // calc the longest road edge and split size
+
+    /* Calc the longest road edge and split size. */
     longestEdge = region->getLongestEdgeWithRoadAccess();
-    edgeLine.set(longestEdge->begining, longestEdge->next->begining);
-    if(edgeLine.length() < MAX_LOT_WIDTH)
+    if (longestEdge != 0)
     {
-      // calc the longest non-road edge and split size
-      longestEdge = region->getLongestEdgeWithoutRoadAccess();
-      if(edgeLine.length() < MAX_LOT_DEPTH)
+      edgeLine.set(longestEdge->begining, longestEdge->next->begining);
+      debug("Longest Road edge: " << edgeLine.length());
+      if(edgeLine.length() <= LOT_WIDTH) /* No road edge requires further splitting. */
       {
-        // if lot is small enough, add completed region
-        outputRegions.push_back(region);
-        regionQueue.pop_back();
-        continue;
+        /* Calc the longest non-road edge and split size. */
+        longestEdge = region->getLongestEdgeWithoutRoadAccess();
+        if (longestEdge != 0)
+        {
+          edgeLine.set(longestEdge->begining, longestEdge->next->begining);
+          debug("Longest NONRoad edge: " << edgeLine.length());
+          if(edgeLine.length() <= LOT_DEPTH) /* No non-road edge requires further splitting. */
+          {
+            debug("Region is small enough, moving to output.");
+            debug("  area = " << region->toPolygon().area());
+            debug(region->toString());
+            /* Region is complete. */
+            outputRegions.push_back(region);
+            regionQueue.pop_back();
+            continue;
+          }
+          else
+          {
+            splitSize = LOT_DEPTH;
+          }
+        }
+        else
+        {
+          /* All edges are small enough */
+          outputRegions.push_back(region);
+          regionQueue.pop_back();
+          continue;
+        }
       }
       else
       {
-        splitSize = MAX_LOT_DEPTH;
+        splitSize = LOT_WIDTH;
       }
     }
     else
     {
-      splitSize = MAX_LOT_WIDTH;
+      // if lot is small enough, add completed region
+      debug("THIS REGION HAS NO Edge with RoadAccess.");
+      debug("  " << region->toPolygon().toString());
+      outputRegions.push_back(region);
+      regionQueue.pop_back();
+      continue;
     }
+
     // calculate the split points
     sp1 = calcSplitPoint(edgeLine, splitSize, LOT_DEVIANCE);
     sp2 = sp1 + edgeLine.normal();//*longestEdge.length();
     // split and process the new regions
     newRegions = splitRegion(region, sp1, sp2);
     regionQueue.pop_back();
-    for (std::vector<Region*>::iterator newRegion = newRegions.begin();
+    for (std::list<SubRegion*>::iterator newRegion = newRegions.begin();
          newRegion != newRegions.end();
          newRegion++)
     {
+      debug("New region:");
+      debug((*newRegion)->toString());
       if((*newRegion)->hasRoadAccess())
       {
+        debug("  Adding to processing queue: " << (*newRegion)->toPolygon().toString());
         regionQueue.push_back(*newRegion);    // add to processing queue
       }
       else
       {
+        debug("  Discarded.");
         delete *newRegion;                    // discard region
       }
     }
+  }
+
+  debug("Block::createLots() numberOfRegions " << outputRegions.size());
+  for (std::list<SubRegion*>::iterator newRegion = outputRegions.begin();
+      newRegion != outputRegions.end();
+      newRegion++)
+  {
+    lots.push_back(new Lot(this, (*newRegion)->toPolygon()));
+    delete *newRegion;
   }
 }
 
@@ -139,96 +206,119 @@ Point Block::calcSplitPoint(LineSegment const& longestEdge, double splitSize, do
 {
   double factor, fraction, midPosition;
 
-  factor = std::floor(longestEdge.length() / splitSize);
+  debug("Block::calcSplitPoint() longestEdge.length() = " << longestEdge.length());
+  factor = std::floor(longestEdge.length() / splitSize + 0.5);
   fraction = 1/factor;
-  midPosition = std::floor(factor/2) * fraction;
+  debug("Block::calcSplitPoint() factor = " << factor);
+  midPosition = (factor/2) * fraction;
+  debug("Block::calcSplitPoint() midPosition = " << midPosition);
+
+  assert(midPosition > 0 && midPosition < 1);
 
   // calculate longest edge vector src -> dst
   Vector longestEdgeDirection(longestEdge.begining(), longestEdge.end());
   Random numberGenerator;
-  return longestEdge.begining() + longestEdgeDirection *
+
+  Point retval = longestEdge.begining() + longestEdgeDirection *
          (midPosition + (lotDeviance * (numberGenerator.generateDouble(0, 1) - 0.5) * fraction));
+  return retval;
 }
 
-std::vector<Region*> Block::splitRegion(Region* area, Point a, Point b)
+std::list<SubRegion*> Block::splitRegion(SubRegion* area, Point a, Point b)
 {
-  Region::Edge* region = area->getFirstEdge();
+  SubRegion::Edge* region = area->getFirstEdge();
   Vector ab = b - a;
   double Lsq = ab.squaredLength();
 
-  Region::Edge* edge = region;
-  while(edge->next != region)
+  SubRegion::Edge* edge = region;
+  do
   {
     Vector ac = edge->begining - a;
     edge->s = (-ac.y() * ab.x() + ac.x() * ab.y()) / Lsq;
     edge = edge->next;
   }
+  while(edge != region);
 
-  double denom, r, s;
   Vector ca, cd;
-  edge = region;
-  Region::Edge* intersection;
-  std::list<Region::Edge*> createdEdges;
-  while(edge->next != region)
-  {
-    if((edge->s > 0 && edge->next->s <= 0)
-      || (edge->s <= 0 && edge->next->s > 0))
-    {
-      cd = edge->next->begining - edge->begining;
-      denom = (ab.x() * cd.y()) - (ab.y() * cd.x());
-      ca = a - edge->begining;
-      r = ((ca.y() * cd.x()) - (ca.x() * cd.y())) / denom;   // loc on ab
-      s = ((ca.y() * ab.x()) - (ca.x() * ab.y())) / denom;   // loc on cd
+  SubRegion::Edge* intersection;
+  std::list<SubRegion::Edge*> createdEdges;
+  LineSegment::Intersection result;
+  Line splitLine(a, b);
+  LineSegment currentEdge;
+  Point intersectionPoint;
 
-      if(edge->s == 0)             // if split on src
+  debug("SPLITTING AREA: ");
+  debug(area->toString());
+
+  edge = region;
+  do
+  {
+    currentEdge.set(edge->begining, edge->next->begining);
+    debug("-------------------");
+    debug("splitLine " << splitLine.toString());
+    debug("currentEdge " << currentEdge.toString());
+    debug("Current edge roadAccess " << edge->hasRoadAccess);
+    result = currentEdge.intersection2D(splitLine, &intersectionPoint);
+    if (result == Line::INTERSECTING)
+    {
+      debug("Intersection at: " << intersectionPoint.toString());
+      if (intersectionPoint == currentEdge.begining())
       {
+        debug("New edge = current edge");
         intersection = edge;
+        intersection->hasRoadAccess = edge->hasRoadAccess;
+        createdEdges.push_back(intersection);
       }
-      else if(edge->next->s == 0) // if split on dst
+      else if (intersectionPoint == currentEdge.end())
       {
-        intersection = edge->next;
+        //intersection->hasRoadAccess = edge->next->hasRoadAccess;
+        //intersection = edge->next;
       }
-      else
+      else if (intersectionPoint != currentEdge.begining() &&
+               intersectionPoint != currentEdge.end())
       {
-        // intersection point calc using cd, splitline ab is flat
-        intersection = area->insert(edge, edge->begining + cd*s);
-        intersection->hasRoadAccess = edge;
+        debug("begin diff x = " << intersectionPoint.x() - currentEdge.begining().x());
+        debug("begin diff y = " << intersectionPoint.y() - currentEdge.begining().y());
+        debug("end diff x = " << intersectionPoint.x() - currentEdge.end().x());
+        debug("end diff y = " << intersectionPoint.y() - currentEdge.end().y());
+        intersection = area->insert(edge, intersectionPoint);
+        intersection->hasRoadAccess = edge->hasRoadAccess;
+        createdEdges.push_back(intersection);
+        edge = edge->next; // Jump over the just inserted area
       }
-      intersection->s = r;
-      createdEdges.push_back(intersection);
     }
+
     edge = edge->next; // edge++;
   }
+  while(edge != region);
 
   // sort the created list by location on ab
   createdEdges.sort();
 
   // mark edges as unvisited
   edge = region;
-  while(edge->next != region)
+  do
   {
     edge->s = 0;
     edge = edge->next;
   }
-
+  while(edge != region);
 
   // bridge intersection pairs
+  
+  debug("Created edges: " << createdEdges.size());
   assert(createdEdges.size() % 2 == 0);
-  std::list<Region::Edge*>::iterator last = --createdEdges.end();
-  std::list<Region::Edge*>::iterator next;
-  for(std::list<Region::Edge*>::iterator createdEdge = createdEdges.begin();
-      createdEdge != last;
-      createdEdge++, createdEdge++) /* Step by two */
+  std::vector<SubRegion::Edge*> temporary;
+  temporary.assign(createdEdges.begin(), createdEdges.end());
+  for(unsigned int i = 0; i < temporary.size(); i += 2) /* Step by two */
   {
-    next = createdEdge;
-    next++;
-    area->bridge(*createdEdge, *next);
+    area->bridge(temporary[i], temporary[i+1]);
   }
 
   // finally extract the new regions
   bool skipDuplicate;
-  std::vector<Region*> outputRegions;
-  for(std::list<Region::Edge*>::iterator createdEdge = createdEdges.begin();
+  std::list<SubRegion*> outputRegions;
+  for(std::list<SubRegion::Edge*>::iterator createdEdge = createdEdges.begin();
       createdEdge != createdEdges.end();
       createdEdge++)
   {
@@ -245,11 +335,18 @@ std::vector<Region*> Block::splitRegion(Region* area, Point a, Point b)
       edge = edge->next;    // advance to next edge
     }
     while(edge != *createdEdge);
+
     if(!skipDuplicate)
     {
-      outputRegions.push_back(new Region(edge));
+      outputRegions.push_back(new SubRegion(edge));
     }
   }
 
+  debug("Block::splitRegion(): returning regions: " << outputRegions.size());
   return outputRegions;
+}
+
+std::list<Lot*> Block::getLots()
+{
+  return lots;
 }
