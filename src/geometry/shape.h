@@ -34,11 +34,11 @@ class Shape
 
   private:
     Polygon* shapeBase;
-    Vector*  shapeHeight;
+    double   shapeHeight;
 
   public:
     Polygon base() const;
-    Vector  height() const;
+    double  height() const;
 
     void setBase(Polygon const& polygon);
     void setHeight(double const& number);
