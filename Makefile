@@ -23,7 +23,8 @@ GEOMETRY_PACKAGE=src/geometry/curve.o \
                  src/geometry/point.o \
                  src/geometry/vector.o \
                  src/geometry/polygon.o \
-                 src/geometry/ray.o
+                 src/geometry/ray.o \
+                 src/geometry/shape.o
 
 # Streetgraph package
 STREETGRAPH_PACKAGE=src/streetgraph/intersection.o \

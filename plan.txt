@@ -166,6 +166,8 @@ Plan:
   - DONE Design UrbanEntity class
   - DONE Create Building class
   - DONE Modify Road type system to be Building-like
+  - DONE Implement polygon scale and rotation
+  - Create Shape class for representing shapes
   - Modify lot generation to keep non-road lots
   - Modify road class grammar
   - Refactor Random generator

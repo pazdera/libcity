@@ -39,10 +39,8 @@ SUITE(Block)
 
     Block b(0, p);
 
-    b.createLots();
+    b.createLots(50,50,0.0);
 
     std::list<Lot*> lots = b.getLots();
-
-    debug(lots.size());
   }
 }

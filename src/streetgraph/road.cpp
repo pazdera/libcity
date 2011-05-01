@@ -21,6 +21,8 @@
 
 
 Road::Type Road::numberOfDefinedRoadTypes = 1000;
+const Road::Type Road::PRIMARY_ROAD   = 0;
+const Road::Type Road::SECONDARY_ROAD = 1;
 
 Road::Type Road::defineNewRoadType()
 {

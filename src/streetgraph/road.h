@@ -26,8 +26,8 @@ class Road
 
     /* Available built-in types. */
     /* These must be initialized to UNIQUE values. */
-    static const Type PRIMARY_ROAD   = 0;
-    static const Type SECONDARY_ROAD = 1;
+    static const Type PRIMARY_ROAD;
+    static const Type SECONDARY_ROAD;
 
     virtual Type type();
     virtual void setType(Type type);

@@ -14,7 +14,9 @@
 
 #include <cmath>
 
+#define NDEBUG
 #include "../debug.h"
+
 #include "../random.h"
 #include "../geometry/units.h"
 #include "../geometry/point.h"
@@ -304,10 +306,15 @@ std::list<SubRegion*> Block::splitRegion(SubRegion* area, Point a, Point b)
   }
   while(edge != region);
 
-  // bridge intersection pairs
-  
+  std::list<SubRegion*> outputRegions;
+
   debug("Created edges: " << createdEdges.size());
-  assert(createdEdges.size() % 2 == 0);
+  if (createdEdges.size() % 2 != 0)
+  {
+    // There was a problem with a subdivision
+    return outputRegions; // throw the block away
+  }
+
   std::vector<SubRegion::Edge*> temporary;
   temporary.assign(createdEdges.begin(), createdEdges.end());
   for(unsigned int i = 0; i < temporary.size(); i += 2) /* Step by two */
@@ -317,7 +324,6 @@ std::list<SubRegion*> Block::splitRegion(SubRegion* area, Point a, Point b)
 
   // finally extract the new regions
   bool skipDuplicate;
-  std::list<SubRegion*> outputRegions;
   for(std::list<SubRegion::Edge*>::iterator createdEdge = createdEdges.begin();
       createdEdge != createdEdges.end();
       createdEdge++)

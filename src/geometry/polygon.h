@@ -69,6 +69,18 @@ class Polygon
       */
     Vector normal();
 
+    /**
+      Rotate polygon around its centroid by amount of degrees
+      specified by the parameters.
+     @note
+       Uses centroid method, so it's not safe when the polygon
+       is not in the XY plane.
+     @param[in] xDegrees Amount of degrees to rotate in X.
+     @param[in] yDegrees Amount of degrees to rotate in Y.
+     @param[in] zDegrees Amount of degrees to rotate in Z.
+     */
+    void rotate(double xDegrees, double yDegrees, double zDegrees);
+
     std::list<Polygon*> split(LineSegment const& splitLine);
 
     bool encloses2D(Point const& point) const;

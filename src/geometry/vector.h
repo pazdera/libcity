@@ -68,6 +68,18 @@ class Vector
     void rotateAroundY(double degrees);
     void rotateAroundZ(double degrees);
 
+    /**
+      Rotates the vector by specified angles in
+      corresponding directions.
+     @note
+       This is just a shortcut to calling rotate
+       method in each direction.
+     @param[in] xDegrees Amount of degrees to rotate in X.
+     @param[in] yDegrees Amount of degrees to rotate in Y.
+     @param[in] zDegrees Amount of degrees to rotate in Z.
+     */
+    void rotate(double xDegrees, double yDegrees, double zDegrees);
+
     void normalize();
 
     /**

@@ -428,6 +428,20 @@ bool Polygon::areVerticesInPair(Point first, Point second, std::list<Point> inte
   return *vertexIterator == second;
 }
 
+
+void Polygon::rotate(double xDegrees, double yDegrees, double zDegrees)
+{
+  Point center = centroid();
+
+  Vector centroidToVertex;
+  for (unsigned int i = 0; i < numberOfVertices(); i++)
+  {
+    centroidToVertex = vertex(i) - center;
+    centroidToVertex.rotate(xDegrees, yDegrees, zDegrees);
+    updateVertex(i, center + centroidToVertex);
+  }
+}
+
 std::string Polygon::toString()
 {
   std::string output = "Polygon(";

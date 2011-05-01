@@ -67,6 +67,13 @@ void Vector::setZ(double coordinate)
   zDirection = coordinate;
 }
 
+void Vector::rotate(double xDegrees, double yDegrees, double zDegrees)
+{
+  rotateAroundX(xDegrees);
+  rotateAroundY(yDegrees);
+  rotateAroundZ(zDegrees);
+}
+
 void Vector::rotateAroundX(double degrees)
 {
   double radians = degrees * (libcity::PI/180.0);
