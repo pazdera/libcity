@@ -193,13 +193,23 @@ void Block::createLots(double lotWidth, double lotHeight, double deviance)
       }
     }
   }
-
+  
+  Polygon newRegionPolygon;
   debug("Block::createLots() numberOfRegions " << outputRegions.size());
   for (std::list<SubRegion*>::iterator newRegion = outputRegions.begin();
       newRegion != outputRegions.end();
       newRegion++)
   {
-    lots.push_back(new Lot(this, (*newRegion)->toPolygon()));
+    newRegionPolygon = (*newRegion)->toPolygon();
+    if (newRegionPolygon.isNonSelfIntersecting())
+    {
+      lots.push_back(new Lot(this, newRegionPolygon));
+    }
+    else
+    {
+      assert(false);
+    }
+
     delete *newRegion;
   }
 }

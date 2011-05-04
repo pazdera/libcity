@@ -34,8 +34,8 @@ class Intersection
     std::vector<Intersection*> adjacentIntersections();
     int  numberOfWays() const; /**< Number of ways of the intersection */
 
-    void addRoad(Road* road) throw();
-    void removeRoad(Road* road);
+    void connectRoad(Road* road) throw();
+    void disconnectRoad(Road* road);
 
     bool hasRoad(Road* road);
 

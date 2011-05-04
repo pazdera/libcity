@@ -105,7 +105,7 @@ Vector Point::operator-(Point const& second)
   return Vector(second, *this);
 }
 
-std::string Point::toString()
+std::string Point::toString() const
 {
   std::stringstream convertor;
   convertor << "Point(" << xPosition << ", " << yPosition << ", " << zPosition << ")";

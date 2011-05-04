@@ -49,7 +49,7 @@ class RoadLSystem : public GraphicLSystem
     virtual void turnLeft();
     virtual void turnRight();
 
-    virtual void drawLine();
+    virtual void drawRoad();
     virtual bool localConstraints(Path* proposedPath);
     virtual void cancelBranch();
 
@@ -58,7 +58,12 @@ class RoadLSystem : public GraphicLSystem
 
     bool isPathInsideAreaConstraints(Path* proposedPath);
 
+     bool checkSnapPossibility(Path* proposedPath, Intersection* intersection);
+     bool checkSnapPossibility(Path* proposedPath, Road* road);
+
   private:
+    const static double MINIMAL_ROAD_LENGTH;
+
     int generatedRoads;
     StreetGraph* targetStreetGraph;
     Polygon* areaConstraints;

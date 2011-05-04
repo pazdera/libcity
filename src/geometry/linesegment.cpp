@@ -48,23 +48,29 @@ bool LineSegment::hasPoint2D(Point const& point) const
 {
   double lineTest = (point.x() - first->x()) * (second->y() - first->y()) -
                     (point.y() - first->y()) * (second->x() - first->x());
-  if (std::abs(lineTest) < libcity::EPSILON)
+//   debug(std::abs(lineTest));
+//   debug(toString());
+//   debug(point.toString());
+  if (std::abs(lineTest) < libcity::COORDINATES_EPSILON)
   /* Point is on the line */
   {
     double t = 0.0;
-    if (first->x() != second->x())
+    if (std::abs(first->x() - second->x()) > libcity::COORDINATES_EPSILON) //(first->x() != second->x()) 
     {
       t = (point.x() - first->x()) / (second->x() - first->x());
+      //debug(t);
+      return t >= 0 && t <= 1;
     }
-    else if (first->y() != second->y())
+    else if (std::abs(first->y() - second->y()) > libcity::COORDINATES_EPSILON) //(first->y() != second->y())
     {
       t = (point.y() - first->y()) / (second->y() - first->y());
+      //debug(t);
+      return t >= 0 && t <= 1;
     }
     else
     {
       return (*first) == point;
     }
-    return t >= 0 && t <= 1;
   }
 
   return false;
@@ -80,18 +86,17 @@ LineSegment::Intersection LineSegment::intersection2D(LineSegment const& another
          secondNumerator = ((end().x() - begining().x())*(begining().y() - another.begining().y())) -
                            ((end().y() - begining().y())*(begining().x() - another.begining().x()));
 
-  if (std::abs(denominator) < libcity::EPSILON)
+  if (std::abs(denominator) < libcity::COORDINATES_EPSILON)
   /* If the denominator is 0, both lines have same direction vector */
   {
-    if  (std::abs(firstNumerator) < libcity::EPSILON &&
-        std::abs(secondNumerator) < libcity::EPSILON)
+    if  (std::abs(firstNumerator) < libcity::COORDINATES_EPSILON &&
+        std::abs(secondNumerator) < libcity::COORDINATES_EPSILON)
     /* Lines are coincident. */
     {
 
     /* WARNING
      * Order of following checks is important
      * for the right functionality. */
-
       if (*this == another)
       /* Line segments are identical */
       {
@@ -237,7 +242,7 @@ double LineSegment::length() const
 bool LineSegment::operator==(LineSegment const& another) const
 {
   return (begining() == another.begining() && end() == another.end()) ||
-         (begining() == another.end() && begining() == another.end());
+         (begining() == another.end() && end() == another.begining());
 }
 
 Vector LineSegment::normal() const
@@ -248,7 +253,7 @@ Vector LineSegment::normal() const
 }
 
 
-std::string LineSegment::toString()
+std::string LineSegment::toString() const
 {
   return "LineSegment(" + first->toString() + ", " + second->toString() + ")";
 }

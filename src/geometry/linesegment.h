@@ -42,7 +42,7 @@ class LineSegment : public Line
     double distance(Point const& point) const;
     Point nearestPoint(Point const& point) const;
 
-    std::string toString();
+    std::string toString() const;
 
     bool operator==(LineSegment const& another) const;
 };

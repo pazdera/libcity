@@ -26,7 +26,7 @@ class Point
 
     ~Point();
 
-    std::string toString();
+    std::string toString() const;
 
   private:
     double xPosition;

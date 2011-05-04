@@ -61,12 +61,6 @@ void GraphicLSystem::popCursor()
   cursorStack.pop_back();
 }
 
-void GraphicLSystem::drawLine()
-{}
-
-void GraphicLSystem::drawPoint()
-{}
-
 void GraphicLSystem::loadCursorPositionForSymbol(Symbol *symbol)
 {
   if (graphicInformationForSymbols->find(symbol) == graphicInformationForSymbols->end())
@@ -157,12 +151,6 @@ void GraphicLSystem::interpretSymbol(char symbol)
       break;
     case ']':
       popCursor();
-      break;
-    case '.':
-      drawPoint();
-      break;
-    case '_':
-      drawLine();
       break;
     default:
       /* do nothing */

@@ -94,14 +94,27 @@ Road* StreetGraph::getRoadBetweenIntersections(Intersection* first, Intersection
 void StreetGraph::addRoad(Path const& path, Road::Type roadType)
 {
   Path roadPath(path);
-
   Point intersection;
   for (StreetGraph::iterator currentRoad = begin();
         currentRoad != end();
         currentRoad++)
   {
     // Check for intersection
-    if (roadPath.crosses(*(*currentRoad)->path(), &intersection))
+    LineSegment::Intersection intersectionResult = roadPath.crosses(*(*currentRoad)->path(), &intersection);
+    if (intersectionResult == LineSegment::CONTAINED ||
+        intersectionResult == LineSegment::IDENTICAL)
+    {
+      assert(false);
+    }
+    else if (intersectionResult == LineSegment::CONTAINING)
+    {
+      assert(false);
+    }
+    else if (intersectionResult == LineSegment::OVERLAPING)
+    {
+      assert(false);
+    }
+    if (intersectionResult == LineSegment::INTERSECTING)
     {
 
       if (intersection == roadPath.begining() ||
@@ -129,11 +142,10 @@ void StreetGraph::addRoad(Path const& path, Road::Type roadType)
   //newRoad->setPath(roadPath);
 
   // Connect road to intersections
-  begining->addRoad(newRoad);
-  end->addRoad(newRoad);
+  begining->connectRoad(newRoad);
+  end->connectRoad(newRoad);
 
   roads->push_back(newRoad);
-
   return;
 }
 
@@ -142,14 +154,14 @@ void StreetGraph::removeRoad(Road* road)
   Intersection* begining = road->begining();
   Intersection* end = road->end();
 
-  begining->removeRoad(road);
+  begining->disconnectRoad(road);
   if (begining->numberOfWays() == 0)
   {
     intersections->remove(begining);
     delete begining;
   }
 
-  end->removeRoad(road);
+  end->disconnectRoad(road);
   if (end->numberOfWays() == 0)
   {
     intersections->remove(end);
@@ -187,18 +199,24 @@ Intersection* StreetGraph::addIntersection(Point const& position)
     /* If so, split the road into two. */
     {
       //debug("StreetGraph::addIntersection(): Splitting road for Intersection " << newIntersection->position().toString());
+
       Intersection *end = (*road)->end();
-      end->removeRoad(*road);
+      assert(!(LineSegment((*road)->begining()->position(), end->position()) == LineSegment(Point(-3000, -2509.3, 0), Point(-3000, -2244.59, 0))));
+      end->disconnectRoad(*road);
 
       (*road)->setEnd(newIntersection);
-      newIntersection->addRoad(*road);
+      newIntersection->connectRoad(*road);
 
       Road* secondPart = new Road(newIntersection, end);
       secondPart->setType((*road)->type());
       roads->push_back(secondPart);
 
-      newIntersection->addRoad(secondPart);
-      end->addRoad(secondPart);
+      newIntersection->connectRoad(secondPart);
+      end->connectRoad(secondPart);
+
+      assert(!(LineSegment((*road)->begining()->position(), end->position()) == LineSegment(Point(-3000, -2509.3, 0), Point(-3000, -2244.59, 0))));
+      assert(!(LineSegment(newIntersection->position(), end->position()) == LineSegment(Point(-3000, 837.305, 0), Point(-3000, -2509.3, 0))));
+
       break;
     }
   }
@@ -262,6 +280,53 @@ StreetGraph::Intersections StreetGraph::getIntersections()
 StreetGraph::Roads StreetGraph::getRoads()
 {
   return *roads;
+}
+
+void StreetGraph::checkConsistence()
+{
+  Point intersection;
+  for (StreetGraph::iterator currentRoad = begin();
+        currentRoad != end();
+        currentRoad++)
+  {
+    for (StreetGraph::iterator nextRoad = begin();
+        nextRoad != end();
+        nextRoad++)
+    {
+      if (*nextRoad == *currentRoad) continue;
+      // Check for intersection
+      LineSegment::Intersection intersectionResult = (*currentRoad)->path()->crosses(*(*nextRoad)->path(), &intersection);
+      if (intersectionResult == LineSegment::INTERSECTING)
+      {
+
+        if (intersection == (*currentRoad)->path()->begining() ||
+            intersection == (*currentRoad)->path()->end())
+        /* New road is just touching some other one */
+        {
+        }
+        else
+        {
+          assert(false);
+        }
+      }
+      else if (intersectionResult == LineSegment::CONTAINED)
+      {
+        assert(false);
+      }
+      else if (intersectionResult == LineSegment::IDENTICAL)
+      {
+        assert(false);
+      }
+      else if (intersectionResult == LineSegment::CONTAINING)
+      {
+        assert(false);
+      }
+      else if (intersectionResult == LineSegment::OVERLAPING)
+      {
+        assert(false);
+      }
+    }
+  }
 }
 
 std::string StreetGraph::toString()

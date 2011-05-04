@@ -55,6 +55,21 @@ SUITE(LineSegmentClass)
     delete line;
   }
 
+  TEST(HasPoint2)
+  {
+    LineSegment *line = new LineSegment(Point(1,1), Point(0,0));
+
+    CHECK(line->hasPoint2D(Point(0,0)));
+    CHECK(line->hasPoint2D(Point(1,1)));
+    CHECK(line->hasPoint2D(Point(0.5,0.5)));
+    CHECK(!line->hasPoint2D(Point(2,2)));
+
+    *line = LineSegment(Point(1,1), Point(-1,1));
+    CHECK(line->hasPoint2D(Point(-0.5,1)));
+
+    delete line;
+  }
+
   TEST(Intersecting)
   {
     LineSegment *l1 = new LineSegment(Point(0,0), Point(1,1)),
@@ -214,4 +229,20 @@ SUITE(LineSegmentClass)
     CHECK_CLOSE(sqrt(2)/2, l.distance(Point(3,4)), libcity::EPSILON);
     CHECK_CLOSE(sqrt(2)/2, l.distance(Point(4,3)), libcity::EPSILON);
   }
+
+  TEST(Contained)
+  {
+    LineSegment a = LineSegment(Point(-3000, -2509.3, 0), Point(-3000, -2244.59, 0));
+    LineSegment b = LineSegment(Point(-3000, 837.305, 0), Point(-3000, -2509.3, 0));
+
+    LineSegment::Intersection result;
+    Point point;
+    result = a.intersection2D(b, &point);
+
+    CHECK(LineSegment::CONTAINED == result);
+
+    result = b.intersection2D(a, &point);
+    CHECK(LineSegment::CONTAINING == result);
+  }
+
 }

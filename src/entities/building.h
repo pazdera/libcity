@@ -14,6 +14,7 @@
 
 /* STL */
 #include <string>
+#include <list>
 
 /* libcity */
 #include "urbanentity.h"
@@ -26,28 +27,41 @@ class Polygon;
 class Zone;
 class Block;
 class Lot;
+class Shape;
 
 class Building : public UrbanEntity, public GraphicLSystem
 {
-  public:
-    /* Available built-in types. */
-    /* These must be initialized to UNIQUE values. */
-    /* Initialization moved to cpp file */
-    const static Type SKY_SCRAPER;
-
+  private:
     Building();
+
+  public:
     Building(Lot* parentAlottment);
     virtual ~Building();
 
     Building(Building const& source);
     Building& operator=(Building const& source);
 
-    virtual void generate();
+    double maxHeight();
+    void setMaxHeight(double maxHeight);
+
+    void pushBoundingBox();
+    void popBoundingBox();
+
+    virtual void interpretSymbol(char symbol);
+
+    //virtual void draw() = 0;
 
   protected:
+    /**
+      Maximum height together with the lot in which this
+      building resides defines bounding box. */
+    Shape* boundingBox;
+
+    std::list<Shape*> boundingBoxStack;
 
   private:
     void initialize();
+    void freeMemory();
 };
 
 #endif

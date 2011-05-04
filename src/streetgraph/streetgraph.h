@@ -145,6 +145,8 @@ class StreetGraph
      */
     Intersection* addIntersection(Point const& position);
 
+    void checkConsistence();
+
     void initialize();
     void freeMemory();
 };

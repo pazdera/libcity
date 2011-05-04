@@ -67,28 +67,57 @@ class Polygon
 
      @return Normalized normal vector.
       */
-    Vector normal();
+    Vector normal() const;
 
     /**
       Rotate polygon around its centroid by amount of degrees
       specified by the parameters.
-     @note
+     @remarks
        Uses centroid method, so it's not safe when the polygon
        is not in the XY plane.
+     @note
+       Positive amount of degrees is rotation counterclock-wise.
+       Negative is clockwise.
      @param[in] xDegrees Amount of degrees to rotate in X.
      @param[in] yDegrees Amount of degrees to rotate in Y.
      @param[in] zDegrees Amount of degrees to rotate in Z.
      */
     void rotate(double xDegrees, double yDegrees, double zDegrees);
 
+    /**
+      Scale polygon by specified factor.
+     @note
+       The expansion is computed from polygon's centroid.
+     @param[in] factor The scale factor. Passing number <= 0 will result in unspecified behavior.
+     */
+    void scale(double factor);
+
+    /**
+      Substract distance from the polygon's borders.
+     @param[in] distance Distance to be substracted
+     */
+    void substract(double distance);
+    
+    /**
+      Substract distance just from a single edge.
+     @param[in] i Edge index
+     @param[in] distance Distance to be substracted
+     */
+    void substractEdge(int edgeNumber, double distance);
+
     std::list<Polygon*> split(LineSegment const& splitLine);
 
     bool encloses2D(Point const& point) const;
 
+    bool isNonSelfIntersecting();
+
+    std::vector<Point> triangulate();
+    std::vector<int> getSurfaceIndexes();
+
     bool isSubAreaOf(Polygon const& biggerPolygon);
     bool operator==(Polygon const& second);
 
-    std::string toString();
+    std::string toString() const;
   private:
     void initialize();
     void freeVertices();
@@ -98,6 +127,23 @@ class Polygon
     /* Helper functions for split polygon */
     bool isVertexIntersection(Point vertex, std::list<Point> intersections);
     bool areVerticesInPair(Point first, Point second, std::list<Point> intersections);
+
+  private:
+    /* Polygon triangulation */
+    /* Taken from:
+     * http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml */ 
+    // triangulate a contour/polygon, places results in STL vector
+    // as series of triangles.
+    bool triangulation(std::vector<Point> *points, std::vector<int> *sequence);
+
+    // decide if point Px/Py is inside triangle defined by
+    // (Ax,Ay) (Bx,By) (Cx,Cy)
+    bool isInsideTriangle(double Ax, double Ay,
+                        double Bx, double By,
+                        double Cx, double Cy,
+                        double Px, double Py);
+
+    bool snip(int u,int v,int w,int n,int *V);
 };
 
 #endif

@@ -63,7 +63,7 @@ std::vector<Intersection*> Intersection::adjacentIntersections()
   return adjacent;
 }
 
-void Intersection::addRoad(Road* road) throw()
+void Intersection::connectRoad(Road* road) throw()
 {
   if (road->begining()->position() == *geometrical_position ||
       road->end()->position()      == *geometrical_position)
@@ -77,7 +77,7 @@ void Intersection::addRoad(Road* road) throw()
 }
 
 
-void Intersection::removeRoad(Road* road)
+void Intersection::disconnectRoad(Road* road)
 {
   roads->remove(road);
 }

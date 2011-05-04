@@ -101,6 +101,17 @@ void Polygon::clear()
 
 void Polygon::addVertex(Point const& vertex)
 {
+  /* To avoid zero length edges. */
+  if (numberOfVertices() > 0)
+  {
+    double distanceFromLast = Vector(vertex, *vertices->back()).length();
+
+    if (distanceFromLast <= libcity::COORDINATES_EPSILON)
+    {
+      return;
+    }
+  }
+
   vertices->push_back(new Point(vertex));
 
   // FIXME: check if the vertex is in a plane with other vertices!
@@ -228,28 +239,26 @@ bool Polygon::encloses2D(Point const& point) const
 
 }
 
-
-Vector Polygon::normal()
+Vector Polygon::normal() const
 {
   assert(numberOfVertices() >= 3);
 
   Vector first(*vertices->at(1), *vertices->at(0)),
          second;
 
-  double angle;
+  first.normalize();
+
   int current, next, verticesCount = numberOfVertices();
   for (int i = 1; i < verticesCount; i++)
   {
     current = i;
     next = (i + 1) % verticesCount;
     second.set(*vertices->at(current), *vertices->at(next));
-    angle = std::abs(first.angleTo(second));
+    second.normalize();
 
     /* Edges are not parallel */
-    if (std::abs(angle - 0) > libcity::EPSILON &&
-        std::abs(angle - libcity::PI) > libcity::EPSILON)
+    if (first != second && first != second*(-1))
     {
-
       Vector normalVector = first.crossProduct(second);
       normalVector.normalize();
       return normalVector;
@@ -428,7 +437,6 @@ bool Polygon::areVerticesInPair(Point first, Point second, std::list<Point> inte
   return *vertexIterator == second;
 }
 
-
 void Polygon::rotate(double xDegrees, double yDegrees, double zDegrees)
 {
   Point center = centroid();
@@ -442,7 +450,119 @@ void Polygon::rotate(double xDegrees, double yDegrees, double zDegrees)
   }
 }
 
-std::string Polygon::toString()
+void Polygon::scale(double factor)
+{
+  assert(factor > 0);
+  Point center = centroid();
+
+  Vector centroidToVertex;
+  for (unsigned int i = 0; i < numberOfVertices(); i++)
+  {
+    centroidToVertex = vertex(i) - center;
+    updateVertex(i, center + centroidToVertex*factor);
+  }
+}
+
+void Polygon::substract(double distance)
+{
+  int previous, current, next;
+  int verticesCount = numberOfVertices();
+  Line first, second;
+  Vector firstNormal, secondNormal;
+  Line::Intersection result;
+  Point newVertex;
+  Polygon oldArea(*this);
+
+  for(int i = 0; i < verticesCount; i++)
+  {
+    previous = (i-1) < 0 ? verticesCount-1 : i-1;
+    current = i;
+    next = (i + 1) % verticesCount;
+
+    firstNormal = oldArea.edgeNormal(previous);
+    firstNormal.normalize();
+    first.setBegining(oldArea.vertex(previous) + firstNormal*distance);
+    first.setEnd(oldArea.vertex(current) + firstNormal*distance);
+
+    secondNormal = oldArea.edgeNormal(current);
+    secondNormal.normalize();
+    second.setBegining(oldArea.vertex(current) + secondNormal*distance);
+    second.setEnd(oldArea.vertex(next) + secondNormal*distance);
+
+    result = first.intersection2D(second, &newVertex);
+    if (result == Line::PARALLEL)
+    {
+      newVertex = oldArea.vertex(current) + firstNormal*distance;
+    }
+
+    updateVertex(current, newVertex);
+  }
+}
+
+void Polygon::substractEdge(int edgeNumber, double distance)
+{
+  assert(numberOfVertices() >= 3);
+
+  int previous, current1, current2, next;
+  int verticesCount = numberOfVertices();
+
+  previous = (edgeNumber-1) < 0 ? verticesCount-1 : edgeNumber-1;
+  current1 = edgeNumber;
+  current2 = (edgeNumber + 1) % verticesCount;
+  next     = (edgeNumber + 2) % verticesCount;
+
+  Vector normal = edgeNormal(edgeNumber);
+  normal.normalize();
+  Line first(vertex(previous), vertex(current1)),
+       second(vertex(next), vertex(current2)),
+       center(vertex(current1) + normal*distance, vertex(current2) + normal*distance);
+
+  Point newVertex1, newVertex2;
+  Line::Intersection result;
+
+  result = first.intersection2D(center, &newVertex1);
+  if (result == Line::PARALLEL)
+  {
+    newVertex1 = vertex(current1) + normal*distance;
+  }
+  updateVertex(current1, newVertex1);
+
+  result = second.intersection2D(center, &newVertex2);
+  if (result == Line::PARALLEL)
+  {
+    newVertex2 = vertex(current2) + normal*distance;
+  }
+  updateVertex(current2, newVertex2);
+
+}
+
+bool Polygon::isNonSelfIntersecting()
+{
+//   LineSegment first, second;
+//   Point intersection;
+//   for (unsigned int i = 0; i < numberOfVertices()-1; i++)
+//   {
+//     first = edge(i);
+//     for (unsigned int j = i+1; j < numberOfVertices(); j++)
+//     {
+//       second = edge(j);
+//       if (first.intersection2D(second, &intersection) == LineSegment::INTERSECTING)
+//       {
+//         if (intersection != first.begining() && intersection != first.end())
+//         {
+//           return false;
+//         }
+//       }
+//     }
+//   }
+  std::vector<Point> points;
+  std::vector<int> sequence;
+
+  return triangulation(&points, &sequence);
+
+}
+
+std::string Polygon::toString() const
 {
   std::string output = "Polygon(";
 
@@ -451,4 +571,149 @@ std::string Polygon::toString()
     output += (*vertices)[i]->toString() + ", ";
   }
   return output + ").";
+}
+
+
+
+   /*
+     isInsideTriangle decides if a point P is Inside of the triangle
+     defined by A, B, C.
+   */
+bool Polygon::isInsideTriangle(double Ax, double Ay,
+                      double Bx, double By,
+                      double Cx, double Cy,
+                      double Px, double Py)
+
+{
+  double ax, ay, bx, by, cx, cy, apx, apy, bpx, bpy, cpx, cpy;
+  double cCROSSap, bCROSScp, aCROSSbp;
+
+  ax = Cx - Bx;  ay = Cy - By;
+  bx = Ax - Cx;  by = Ay - Cy;
+  cx = Bx - Ax;  cy = By - Ay;
+  apx= Px - Ax;  apy= Py - Ay;
+  bpx= Px - Bx;  bpy= Py - By;
+  cpx= Px - Cx;  cpy= Py - Cy;
+
+  aCROSSbp = ax*bpy - ay*bpx;
+  cCROSSap = cx*apy - cy*apx;
+  bCROSScp = bx*cpy - by*cpx;
+
+  return ((aCROSSbp >= 0.0) && (bCROSScp >= 0.0) && (cCROSSap >= 0.0));
+}
+
+bool Polygon::snip(int u,int v,int w,int n,int *V)
+{
+  int p;
+  double Ax, Ay, Bx, By, Cx, Cy, Px, Py;
+
+  Ax = (*vertices)[V[u]]->x();
+  Ay = (*vertices)[V[u]]->y();
+
+  Bx = (*vertices)[V[v]]->x();
+  By = (*vertices)[V[v]]->y();
+
+  Cx = (*vertices)[V[w]]->x();
+  Cy = (*vertices)[V[w]]->y();
+
+  if ( libcity::EPSILON > (((Bx-Ax)*(Cy-Ay)) - ((By-Ay)*(Cx-Ax))) )
+  {
+    return false;
+  }
+
+  for (p=0;p<n;p++)
+  {
+    if( (p == u) || (p == v) || (p == w) ) continue;
+    Px = (*vertices)[V[p]]->x();
+    Py = (*vertices)[V[p]]->y();
+    if (isInsideTriangle(Ax,Ay,Bx,By,Cx,Cy,Px,Py)) return false;
+  }
+
+  return true;
+}
+
+std::vector<Point> Polygon::triangulate()
+{
+  std::vector<Point> points;
+  std::vector<int> sequence;
+
+  triangulation(&points, &sequence);
+
+  return points;
+}
+
+std::vector<int> Polygon::getSurfaceIndexes()
+{
+  std::vector<Point> points;
+  std::vector<int> sequence;
+
+  triangulation(&points, &sequence);
+
+  return sequence;
+}
+
+bool Polygon::triangulation(std::vector<Point> *points, std::vector<int> *sequence)
+{
+  /* allocate and initialize list of Vertices in polygon */
+  assert(numberOfVertices() >= 3);
+
+  int n = vertices->size();
+
+  int *V = new int[n];
+
+  /* we want a counter-clockwise polygon in V */
+
+  if ( 0.0 < signedArea() )
+    for (int v=0; v<n; v++) V[v] = v;
+  else
+    for(int v=0; v<n; v++) V[v] = (n-1)-v;
+
+  int nv = n;
+
+  /*  remove nv-2 Vertices, creating 1 triangle every time */
+  int count = 2*nv;   /* error detection */
+
+  for(int m=0, v=nv-1; nv>2; )
+  {
+    /* if we loop, it is probably a non-simple polygon */
+    if (0 >= (count--))
+    {
+      //** Triangulate: ERROR - probable bad polygon!
+      return false;
+    }
+
+    /* three consecutive vertices in current polygon, <u,v,w> */
+    int u = v  ; if (nv <= u) u = 0;     /* previous */
+    v = u+1; if (nv <= v) v = 0;     /* new v    */
+    int w = v+1; if (nv <= w) w = 0;     /* next     */
+
+    if ( snip(u,v,w,nv,V) )
+    {
+      int a,b,c,s,t;
+
+      /* true names of the vertices */
+      a = V[u]; b = V[v]; c = V[w];
+
+      /* output Triangle */
+      points->push_back( *((*vertices)[a]) );
+      points->push_back( *((*vertices)[b]) );
+      points->push_back( *((*vertices)[c]) );
+
+      sequence->push_back(a);
+      sequence->push_back(b);
+      sequence->push_back(c);
+
+      m++;
+
+      /* remove v from remaining polygon */
+      for(s=v,t=v+1;t<nv;s++,t++) V[s] = V[t]; nv--;
+
+      /* resest error detection counter */
+      count = 2*nv;
+    }
+  }
+
+  delete V;
+
+  return true;
 }

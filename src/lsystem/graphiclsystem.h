@@ -47,8 +47,6 @@ class GraphicLSystem : public LSystem
 
     void pushCursor();
     void popCursor(); /**< Does nothing when the stack is empty */
-    virtual void drawLine();
-    virtual void drawPoint();
 
     void loadCursorPositionForSymbol(Symbol *symbol);
     void saveCursorPositionForSymbol(Symbol *symbol);

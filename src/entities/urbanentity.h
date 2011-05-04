@@ -44,7 +44,7 @@ class UrbanEntity
     UrbanEntity(Lot* parentAlottment);
     virtual ~UrbanEntity();
 
-    virtual void generate() = 0;
+    //virtual void draw() = 0;
 
   protected:
     Lot* parentLot;

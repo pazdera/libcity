@@ -23,6 +23,8 @@
 
 #include "../debug.h"
 
+const double RoadLSystem::MINIMAL_ROAD_LENGTH = 100;
+
 RoadLSystem::RoadLSystem()
 {
   generatedRoads    = 0;
@@ -56,6 +58,10 @@ void RoadLSystem::interpretSymbol(char symbol)
       break;
     case '+':
       turnRight();
+      break;
+      break;
+    case '_':
+      drawRoad();
       break;
     case 'E':
       // nothing just control character
@@ -93,7 +99,7 @@ void RoadLSystem::turnRight()
   cursor.turn(getTurnAngle());
 }
 
-void RoadLSystem::drawLine()
+void RoadLSystem::drawRoad()
 {
   Point previousPosition = cursor.getPosition();
   cursor.move(getRoadSegmentLength());
@@ -151,8 +157,6 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
   bool isClose = false;
   bool snapped = false;
 
-  const double MINIMAL_ROAD_LENGTH = 100;
-
   Point intersection;
   double distance;
   for (std::list<Road*>::iterator currentRoad = targetStreetGraph->begin();
@@ -160,7 +164,10 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
         currentRoad++)
   {
     // Check for intersection
-    if (proposedPath->crosses(*(*currentRoad)->path(), &intersection))
+    LineSegment::Intersection intersectionResult = proposedPath->crosses(*(*currentRoad)->path(), &intersection);
+    assert(intersectionResult != LineSegment::INTERSECTING ||
+           intersectionResult != LineSegment::NONINTERSECTING);
+    if (intersectionResult == LineSegment::INTERSECTING)
     {
       if (intersection == proposedPath->begining() ||
           intersection == proposedPath->end())
@@ -179,9 +186,10 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     distance = Vector(proposedPath->end(), (*currentRoad)->begining()->position()).length();
     if (distance < snapDistance && distance < distanceToNearestIntersection)
     {
-      if (targetStreetGraph->getIntersectionAtPosition((*currentRoad)->end()->position())->numberOfWays() < 4)
+      isClose = true;
+      if (checkSnapPossibility(proposedPath, (*currentRoad)->begining()))
       {
-      nearestIntersection = (*currentRoad)->begining();
+        nearestIntersection = (*currentRoad)->begining();
       }
     }
 
@@ -189,7 +197,7 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     if (distance < snapDistance && distance < distanceToNearestIntersection)
     {
       isClose = true;
-      if (targetStreetGraph->getIntersectionAtPosition((*currentRoad)->end()->position())->numberOfWays() < 4)
+      if (checkSnapPossibility(proposedPath, (*currentRoad)->end()))
       {
         nearestIntersection = (*currentRoad)->end();
       }
@@ -200,10 +208,9 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     if (distance < snapDistance && distance < distanceToNearestRoad)
     {
       isClose = true;
-      if (Vector((*currentRoad)->path()->begining(), nearestPointOfRoad).length() >= MINIMAL_ROAD_LENGTH &&
-          Vector((*currentRoad)->path()->end(), nearestPointOfRoad).length() >= MINIMAL_ROAD_LENGTH)
+      if (checkSnapPossibility(proposedPath, *currentRoad))
       {
-        nearestRoad = (*currentRoad);
+          nearestRoad = (*currentRoad);
       }
     }
 
@@ -227,6 +234,9 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
   {
     snapped = true;
     proposedPath->setEnd(nearestIntersection->position());
+
+    /* Snap to intersection */
+
   }
   else
   {
@@ -253,6 +263,42 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
     return false;
   }
 
+  for (std::list<Road*>::iterator currentRoad = targetStreetGraph->begin();
+        currentRoad != targetStreetGraph->end();
+        currentRoad++)
+  {
+    // Check for intersection
+    LineSegment::Intersection intersectionResult = proposedPath->crosses(*(*currentRoad)->path(), &intersection);
+    if (intersectionResult == LineSegment::INTERSECTING)
+    {
+      if (intersection == proposedPath->begining() ||
+          intersection == proposedPath->end())
+      /* New road is just touching some other one */
+      {
+      }
+      else
+      /* Cut off the end of the path. */
+      {
+        proposedPath->setEnd(intersection);
+      }
+    }
+    else if (intersectionResult == LineSegment::CONTAINED)
+    {
+      assert(false);
+    }
+    else if (intersectionResult == LineSegment::IDENTICAL)
+    {
+      assert(false);
+    }
+    else if (intersectionResult == LineSegment::CONTAINING)
+    {
+      assert(false);
+    }
+    else if (intersectionResult == LineSegment::OVERLAPING)
+    {
+      assert(false);
+    }
+  }
 //   for (std::list<Road*>::iterator currentRoad = targetStreetGraph->begin();
 //         currentRoad != targetStreetGraph->end();
 //         currentRoad++)
@@ -274,6 +320,81 @@ bool RoadLSystem::localConstraints(Path* proposedPath)
 //   }
 
   return true;
+}
+
+bool RoadLSystem::checkSnapPossibility(Path* proposedPath, Road* road)
+{
+  Point nearestPointOfRoad = road->path()->nearestPoint(proposedPath->end());
+  double distance = Vector(proposedPath->end(), nearestPointOfRoad).length();
+  if (distance < snapDistance)
+  {
+    if (Vector(road->path()->begining(), nearestPointOfRoad).length() >= MINIMAL_ROAD_LENGTH &&
+        Vector(road->path()->end(), nearestPointOfRoad).length() >= MINIMAL_ROAD_LENGTH)
+    {
+      /* Snap to road -- we need to check intersections
+      again with this particular road to avoid overlaps
+      and stuff like that. */
+      Path snappedPath(*proposedPath);
+      snappedPath.setEnd(nearestPointOfRoad);
+
+      LineSegment::Intersection intersectionResult;
+      Point intersection;
+      intersectionResult = snappedPath.crosses(*(road)->path(), &intersection);
+      if (intersectionResult == LineSegment::IDENTICAL ||
+          intersectionResult == LineSegment::CONTAINED ||
+          intersectionResult == LineSegment::CONTAINING ||
+          intersectionResult == LineSegment::OVERLAPING)
+      {
+        /* Not good snap point */
+        return false;
+      }
+      else /* Sound's good */
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool RoadLSystem::checkSnapPossibility(Path* proposedPath, Intersection* intersection)
+{
+  double distance = Vector(proposedPath->end(), intersection->position()).length();
+  if (distance < snapDistance)
+  {
+    if (targetStreetGraph->getIntersectionAtPosition(intersection->position())->numberOfWays() < 4)
+    {
+      /* Snap to intersection -- we need to check for
+      intersections with adjacent roads of the intersection
+      again with this particular road to avoid overlaps
+      and stuff like that. */
+      Path snappedPath(*proposedPath);
+      snappedPath.setEnd(intersection->position());
+
+      std::list<Road*> intersectionRoads = intersection->getRoads();
+      LineSegment::Intersection intersectionResult;
+      Point intersection;
+      for (std::list<Road*>::iterator adjacentRoad = intersectionRoads.begin();
+           adjacentRoad != intersectionRoads.end();
+           adjacentRoad++)
+      {
+        intersectionResult = snappedPath.crosses(*(*adjacentRoad)->path(), &intersection);
+        if (intersectionResult == LineSegment::IDENTICAL ||
+            intersectionResult == LineSegment::CONTAINED ||
+            intersectionResult == LineSegment::CONTAINING ||
+            intersectionResult == LineSegment::OVERLAPING)
+        {
+          /* Not good snap point */
+          return false;
+        }
+      }
+      /* Sound's good */
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void RoadLSystem::setTarget(StreetGraph* target)
@@ -307,7 +428,7 @@ bool RoadLSystem::isPathInsideAreaConstraints(Path* proposedPath)
       continue;
     }
 
-    if (proposedPath->crosses(Path(edge), &intersection))
+    if (proposedPath->crosses(Path(edge), &intersection) == LineSegment::INTERSECTING)
     {
 
       if (!areaConstraints->encloses2D(proposedPath->begining()))

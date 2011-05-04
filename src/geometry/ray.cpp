@@ -184,7 +184,7 @@ Ray::Intersection Ray::intersection2D(LineSegment const& another, Point* interse
          x3 = another.begining().x(), y3 = another.begining().y(),
          x4 = another.end().x(), y4 = another.end().y();
 
-  if (std::abs((y2 - y1) / (x2 - x1) - (y4 - y3) / (x4 - x3)) > libcity::EPSILON)
+  if (std::abs((y2 - y1) / (x2 - x1) - (y4 - y3) / (x4 - x3)) > libcity::COORDINATES_EPSILON)
   /* Make sure the lines aren't parallel */
   {
     d = (((x2 - x1) * (y4 - y3)) - (y2 - y1) * (x4 - x3));
@@ -192,10 +192,10 @@ Ray::Intersection Ray::intersection2D(LineSegment const& another, Point* interse
     {
       r = (((y1 - y3) * (x4 - x3)) - (x1 - x3) * (y4 - y3)) / d;
       s = (((y1 - y3) * (x2 - x1)) - (x1 - x3) * (y2 - y1)) / d;
-      if (r >= 0 || r >= -libcity::EPSILON) // Check with an EPSILON to count in double error
+      if (r >= 0 || r >= -libcity::COORDINATES_EPSILON) // Check with an EPSILON to count in double error
       {
-        if ((s >= 0 || s >= -libcity::EPSILON) &&
-            (s <= 1 || std::abs(s - 1) <= libcity::EPSILON))
+        if ((s >= 0 || s >= -libcity::COORDINATES_EPSILON) &&
+            (s <= 1 || std::abs(s - 1) <= libcity::COORDINATES_EPSILON))
         {
           intersection->set(x1 +  r * (x2 - x1), y1 + r * (y2 - y1));
           return INTERSECTING;

@@ -149,7 +149,7 @@ double Line::distance(Point const& point) const
 bool Line::operator==(Line const& another) const
 {
   return (begining() == another.begining() && end() == another.end()) ||
-         (begining() == another.end() && begining() == another.end());
+         (begining() == another.end() && end() == another.begining());
 }
 
 std::string Line::toString()

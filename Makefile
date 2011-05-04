@@ -83,7 +83,8 @@ TEST_UNITS=test/testPoint.o   \
            test/testBlock.o \
            test/testLot.o \
            test/testZone.o \
-           test/testSubRegion.o
+           test/testSubRegion.o \
+           test/testShape.o
 
 TEST_MAIN=test/main.o
 TEST_OBJECTS=$(TEST_UNITS) $(TEST_MAIN)

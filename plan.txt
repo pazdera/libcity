@@ -159,7 +159,6 @@ Plan:
   - DONE Create Lot class
   - DONE Eliminate 5 and more way intersections in roadGenerators
   - Refactor subdivision into lots to Region class
-  - http://cg.tutsplus.com/articles/where-to-get-your-textures-19-free-photo-source-sites-for-cg-artists/
   - DONE Create special data structure for storing edges while creating lots
   - DONE Remove lots that are not planar or that are out of their cycle
   - DONE Make lot subdivision constants alterable
@@ -167,14 +166,41 @@ Plan:
   - DONE Create Building class
   - DONE Modify Road type system to be Building-like
   - DONE Implement polygon scale and rotation
-  - Create Shape class for representing shapes
+  - DONE Create Shape class for representing shapes
+  - DONE Write tests for polygon rotations and Shape class interface
+  - DONE Implement substraction from polygon
+  - DONE Write test for polygon substraction
+  - DONE Create ShapeLSystem from GraphicalLSystem
+  - DONE Implement substract edge into polygon class
+  - DONE Test substract edge
+  - DONE Create class SkyScraper
+  - DONE Implement is inside bounding box
+  - DONE Bounding box test test
+  - Create some materials for skyscrapers
+  - DONE Write ispolygonnonintersecting predicate
+  - DONE Test isPolygonNonIntersecting
+  - DONE Create struct Renderer::MaterialDefinition
+  - DONE Implement MaterialDefinition struct into SkyScraper
+  - Add probability parameter to stochastic rules in LSystems
+  - DONE Implement texture tilling into skyscraper add plane
+  - DONE Texture tiling in SkyScraper
+  - Research Static geometry and batching for buildings, zones
+  - Cite polygon triangulation
+  - http://amazingtextures.com/textures/cat-buildings-28.htm
+  - http://cg.tutsplus.com/articles/where-to-get-your-textures-19-free-photo-source-sites-for-cg-artists/
+  - Ogre3D static geometry http://www.ogre3d.org/tikiwiki/Intermediate+Tutorial+5&structure=Tutorials
+  - Flatten terrain under roads
+  - Another buildings
+  - Documentation
+  - Github
+  - Store road information into lots (which edge has road access?)
   - Modify lot generation to keep non-road lots
   - Modify road class grammar
   - Refactor Random generator
-  - Configuration into separate file?
+  - Configuration into separate file? NAH
   - Minimal distance between two intersections
   - Think about separating intersections into a different module
-  - Clean-up textures and material scripts
+  - DONE Clean-up textures and material scripts
   - Refactor OgreCity
   - Clean debug messages
   - flattenTerrain() under buildings and roads
@@ -187,7 +213,7 @@ Plan:
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D
 
-
+  - http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
 
 Úvod
 Související práce

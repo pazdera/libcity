@@ -77,9 +77,9 @@ bool Path::goesThrough(Point const& certainPoint) const
   return representation->hasPoint2D(certainPoint);
 }
 
-bool Path::crosses(Path const& anotherPath, Point* intersection)
+LineSegment::Intersection Path::crosses(Path const& anotherPath, Point* intersection)
 {
-  return representation->intersection2D(*(anotherPath.representation), intersection) == LineSegment::INTERSECTING;
+  return representation->intersection2D(*(anotherPath.representation), intersection);
 }
 
 Point Path::nearestPoint(Point const& point)

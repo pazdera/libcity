@@ -39,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../src/geometry/vector.h"
 #include "../src/geometry/polygon.h"
 #include "../src/geometry/ray.h"
+#include "../src/geometry/shape.h"
 
 #include "../src/streetgraph/road.h"
 #include "../src/streetgraph/path.h"
@@ -54,10 +55,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../src/area/lot.h"
 #include "../src/area/subregion.h"
 
-
 #include "../src/lsystem/lsystem.h"
 #include "../src/lsystem/graphiclsystem.h"
 #include "../src/lsystem/roadlsystem.h"
+
+#include "../src/entities/urbanentity.h"
+#include "../src/entities/building.h"
 
 #include "../src/random.h"
 #include "../src/city.h"

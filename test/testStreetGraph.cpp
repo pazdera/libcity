@@ -23,24 +23,17 @@
 #include "../src/streetgraph/streetgraph.h"
 #include "../src/streetgraph/rasterroadpattern.h"
 #include "../src/geometry/polygon.h"
+#include "../src/geometry/point.h"
+#include "../src/geometry/linesegment.h"
+#include "../src/streetgraph/path.h"
 
 SUITE(StreetGraphClass)
 {
   TEST(Empty)
   {
-/*    StreetGraph *sg = new StreetGraph();
-
-    Polygon *constraints = new Polygon;
-    sg->setAreaConstraints(constraints);
-
-    RasterRoadPattern *gen = new RasterRoadPattern;
-
-    gen->setTarget(sg);
-
-    gen->generate(10);
-
-    sg->divideToZones();*/
-
-//     StreetGraph::shallow_iterator
+    StreetGraph *sg = new StreetGraph();
+/*
+    sg->addRoad(Path(LineSegment(Point(-3000, -2509.3, 0), Point(-3000, -2244.59, 0))));
+    sg->addRoad(Path(LineSegment(Point(-3000, 837.305, 0), Point(-3000, -2509.3, 0))));*/
   }
 }

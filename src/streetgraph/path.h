@@ -15,7 +15,8 @@
 
 #include <string>
 
-class LineSegment;
+#include "../geometry/linesegment.h"
+
 class Point;
 class Vector;
 class Polygon;
@@ -65,7 +66,7 @@ class Path
     bool isInside(Polygon const& certainArea) const;
 
     bool goesThrough(Point const& certainPoint) const;
-    bool crosses(Path const& anotherPath, Point* intersection);
+    LineSegment::Intersection crosses(Path const& anotherPath, Point* intersection);
 
     Point nearestPoint(Point const& point);
     double distance(Point const& point);

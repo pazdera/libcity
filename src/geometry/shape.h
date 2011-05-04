@@ -38,12 +38,17 @@ class Shape
 
   public:
     Polygon base() const;
+    Polygon top() const;
     double  height() const;
 
     void setBase(Polygon const& polygon);
     void setHeight(double const& number);
 
-    //std::string toString();
+    bool encloses(Point const& point);
+    bool encloses(Shape const& shape);
+    bool encloses(Polygon const& polygon);
+
+    std::string toString();
   private:
     void initialize();
     void freeMemory();
