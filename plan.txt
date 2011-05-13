@@ -166,6 +166,7 @@ Plan:
   - DONE Create Building class
   - DONE Modify Road type system to be Building-like
   - DONE Implement polygon scale and rotation
+  - DONE think about thesis chapters
   - DONE Create Shape class for representing shapes
   - DONE Write tests for polygon rotations and Shape class interface
   - DONE Implement substraction from polygon
@@ -182,14 +183,23 @@ Plan:
   - DONE Create struct Renderer::MaterialDefinition
   - DONE Implement MaterialDefinition struct into SkyScraper
   - Add probability parameter to stochastic rules in LSystems
+  - DONE Create documentation in Ogre demo app
+  - DONE Clean-up textures and material scripts
   - DONE Implement texture tilling into skyscraper add plane
   - DONE Texture tiling in SkyScraper
-  - Research Static geometry and batching for buildings, zones
+  - DONE Finish writing split grammars
+  - DONE Start wrigin DESIGN FINALY
+  - DONE Come up with some sort of structure to the design chapter
+  - DONE Bounding rectangle for polygons
+  - DONE http://stackoverflow.com/questions/889596/calculating-the-bounding-rectangle-at-an-angle-of-a-polygon
+  - DONE Texturing polygons
+  - DONE Research Static geometry and batching for buildings, zones
   - Cite polygon triangulation
   - http://amazingtextures.com/textures/cat-buildings-28.htm
   - http://cg.tutsplus.com/articles/where-to-get-your-textures-19-free-photo-source-sites-for-cg-artists/
-  - Ogre3D static geometry http://www.ogre3d.org/tikiwiki/Intermediate+Tutorial+5&structure=Tutorials
+  - DONE Ogre3D static geometry http://www.ogre3d.org/tikiwiki/Intermediate+Tutorial+5&structure=Tutorials
   - Flatten terrain under roads
+  - Try out terrain
   - Another buildings
   - Documentation
   - Github
@@ -200,16 +210,11 @@ Plan:
   - Configuration into separate file? NAH
   - Minimal distance between two intersections
   - Think about separating intersections into a different module
-  - DONE Clean-up textures and material scripts
   - Refactor OgreCity
   - Clean debug messages
   - flattenTerrain() under buildings and roads
-  - DONE Create documentation in Ogre demo app
   - Think about sampling intersections too
-  - 
   - design error handling and exceptions
-  - BUILDINGS
-  - DONE think about thesis chapters
   
   - FIX area and centroid computation in Polygon!!! will not work in 3D
 

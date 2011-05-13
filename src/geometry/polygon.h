@@ -111,6 +111,8 @@ class Polygon
 
     bool isNonSelfIntersecting();
 
+    Polygon getBoundingRectangle();
+
     std::vector<Point> triangulate();
     std::vector<int> getSurfaceIndexes();
 

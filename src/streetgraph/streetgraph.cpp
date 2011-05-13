@@ -168,6 +168,7 @@ void StreetGraph::removeRoad(Road* road)
     delete end;
   }
 
+  
   roads->remove(road);
 }
 
@@ -326,6 +327,35 @@ void StreetGraph::checkConsistence()
         assert(false);
       }
     }
+  }
+}
+
+void StreetGraph::removeFilamentRoads()
+{
+  Road* currentRoad;
+  Intersection* roadBegining;
+  Intersection* roadEnd;
+  Roads filaments;
+
+  for (Roads::iterator road = roads->begin();
+       road != roads->end();
+       road++)
+  {
+    currentRoad = *road;
+    roadBegining = currentRoad->begining();
+    roadEnd = currentRoad->end();
+    if (roadBegining->numberOfWays() <= 1 ||
+        roadEnd->numberOfWays() <= 1)
+    {
+      filaments.push_back(currentRoad);
+    }
+  }
+
+  for (Roads::iterator filament = filaments.begin();
+       filament != filaments.end();
+       filament++)
+  {
+    removeRoad(*filament);
   }
 }
 

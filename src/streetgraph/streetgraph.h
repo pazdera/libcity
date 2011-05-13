@@ -123,6 +123,8 @@ class StreetGraph
      */
     Road* getRoadBetweenIntersections(Intersection* first, Intersection* second);
 
+    void removeFilamentRoads();
+
     std::string toString();
 
   private:
