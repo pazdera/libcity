@@ -56,6 +56,8 @@ class Line
     virtual double distance(Point const& point) const;
     virtual Point nearestPoint(Point const& point) const;
 
+    virtual double pointPositionTest(Point const& point) const;
+
     virtual std::string toString();
 
     bool operator==(Line const& another) const;

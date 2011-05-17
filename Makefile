@@ -7,12 +7,15 @@ ARCHIVER_FLAGS=rcs
 LIB_FILENAME=libcity
 TEST_FILENAME=unit_tests
 
+HEADERS_DIR=include/
+DOCUMENTATION_DIR=doc
+
 UNITTESTCPP_LIB=../UnitTest++/libUnitTest++.a
 UNITTESTCPP_INCLUDE_DIR=../UnitTest++/src/
 
-.PHONY: install uninstall static dynamic clean doc header test
+.PHONY: install uninstall static dynamic clean doc headers test
 
-all: static dynamic
+all: static dynamic headers
 
 # LIB Object files and sources ##########################
 
@@ -98,8 +101,9 @@ static: $(LIB_OBJECTS)
 dynamic: $(LIB_OBJECTS)
 	$(COMPILER) -shared -o $(LIB_FILENAME).so $(LIB_OBJECTS)
 
-header:
-	find src/ -name "*.h" -exec cat {} \; >libcity.h
+headers:
+	mkdir -p $(HEADERS_DIR)
+	cd src/ && find . -name "*.h" -exec rsync -R {} ../$(HEADERS_DIR) \; >/dev/null
 
 install:
 	
@@ -115,6 +119,7 @@ doc:
 
 clean:
 	rm -rf *.o *.so *~
-	rm -rf doc
+	rm -rf $(DOCUMENTATION_DIR)
+	rm -rf $(HEADERS_DIR)
 	rm $(LIB_OBJECTS)
 	rm $(TEST_OBJECTS)

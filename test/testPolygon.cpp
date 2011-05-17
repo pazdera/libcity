@@ -267,4 +267,88 @@ SUITE(PolygonClass)
 
     CHECK(triangles.size() == 6);
   }
+
+  TEST(Split)
+  {
+    Polygon p;
+    p.addVertex(Point(0,0));
+    p.addVertex(Point(10,0));
+    p.addVertex(Point(10,10));
+    p.addVertex(Point(0,10));
+
+    Line line(Point(5,0), Point(5,6));
+    std::list<Polygon*> newOnes = p.split(line);
+
+    CHECK(2 == newOnes.size());
+  }
+
+  TEST(HarderSplit)
+  {
+    Polygon p;
+    p.addVertex(Point(0,0));
+    p.addVertex(Point(10,0));
+    p.addVertex(Point(10,10));
+    p.addVertex(Point(0,10));
+
+    Line line(Point(0,0), Point(10,10));
+    std::list<Polygon*> newOnes = p.split(line);
+
+    CHECK(2 == newOnes.size());
+  }
+
+  TEST(SplitOnEdge)
+  {
+    Polygon p;
+    p.addVertex(Point(0,0));
+    p.addVertex(Point(10,0));
+    p.addVertex(Point(10,10));
+    p.addVertex(Point(0,10));
+
+    Line line(Point(0,0), Point(10,0));
+    std::list<Polygon*> newOnes = p.split(line);
+
+    CHECK(1 == newOnes.size());
+  }
+
+  TEST(SplitOnVertex)
+  {
+    Polygon p;
+    p.addVertex(Point(0,0));
+    p.addVertex(Point(10,0));
+    p.addVertex(Point(10,10));
+    p.addVertex(Point(0,10));
+
+    Line line(Point(-1,1), Point(1,-1));
+    std::list<Polygon*> newOnes = p.split(line);
+
+    CHECK(1 == newOnes.size());
+  }
+
+  TEST(SplitOutOfPolygon)
+  {
+    Polygon p;
+    p.addVertex(Point(0,0));
+    p.addVertex(Point(10,0));
+    p.addVertex(Point(10,10));
+    p.addVertex(Point(0,10));
+
+    Line line(Point(-1,0), Point(-1,10));
+    std::list<Polygon*> newOnes = p.split(line);
+
+    CHECK(1 == newOnes.size());
+  }
+
+  TEST(WeirdSplitCase)
+  {
+    Polygon p;
+    p.addVertex(Point(447.439, 1950.5, 0));
+    p.addVertex(Point(568.503, 1950.5, 0));
+    p.addVertex(Point(568.503, 2049.5, 0));
+    p.addVertex(Point(355.508, 2049.5, 0));
+
+    Line line(Point(365.508, 2049.5, 0), Point(365.508, 2048.5, 0));
+    std::list<Polygon*> newOnes = p.split(line);
+// DEBUG: original split:Line(Point(355.508, 2049.5, 0), Point(355.508, 2048.5, 0))
+    CHECK(2 == newOnes.size());
+  }
 }

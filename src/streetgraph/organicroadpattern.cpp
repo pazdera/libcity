@@ -28,6 +28,8 @@ OrganicRoadPattern::OrganicRoadPattern()
 
   setInitialPosition(Point(0,0));
   setInitialDirection(Vector(1,0));
+
+  setTurnAngle(60, 90);
 }
 
 OrganicRoadPattern::~OrganicRoadPattern()

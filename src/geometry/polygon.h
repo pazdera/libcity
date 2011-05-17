@@ -19,6 +19,7 @@
 class Point;
 class Vector;
 class LineSegment;
+class Line;
 
 class Polygon
 {
@@ -60,7 +61,7 @@ class Polygon
                            to numberOfVertices() - 1.
      @return Normalized normal vector.
       */
-    Vector edgeNormal(unsigned int edgeNumber);
+    Vector edgeNormal(unsigned int edgeNumber) const;
 
     /**
       Get normal vector to the plane this polygon makes.
@@ -105,13 +106,12 @@ class Polygon
      */
     void substractEdge(int edgeNumber, double distance);
 
-    std::list<Polygon*> split(LineSegment const& splitLine);
+    std::list<Polygon*> split(Line const& splitLine);
 
     bool encloses2D(Point const& point) const;
 
     bool isNonSelfIntersecting();
-
-    Polygon getBoundingRectangle();
+    bool isClosed() const;
 
     std::vector<Point> triangulate();
     std::vector<int> getSurfaceIndexes();

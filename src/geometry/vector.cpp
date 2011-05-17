@@ -253,3 +253,8 @@ Vector::Vector(Point const& from, Point const& to)
 {
   set(from, to);
 }
+
+Point Vector::toPoint()
+{
+  return Point(xDirection, yDirection, zDirection);
+}

@@ -15,6 +15,8 @@
 /* STL */
 #include <string>
 
+#include "point.h"
+
 class Point;
 
 class Vector
@@ -149,6 +151,8 @@ class Vector
     Vector operator*(double constant);
     Vector operator/(double constant);
     Vector operator+(Vector const& vector);
+
+    Point toPoint();
 
     /**
       Returns vector as a string for debugging purposes.

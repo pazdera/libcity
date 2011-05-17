@@ -28,6 +28,8 @@ RasterRoadPattern::RasterRoadPattern()
 
   setInitialPosition(Point(0,0));
   setInitialDirection(Vector(1,0));
+
+  setTurnAngle(90, 90);
 }
 
 RasterRoadPattern::~RasterRoadPattern()

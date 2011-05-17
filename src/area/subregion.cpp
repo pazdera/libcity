@@ -149,7 +149,7 @@ SubRegion::Edge* SubRegion::constructPolygonGraph(Polygon const& polygon)
 
   Edge* current = new Edge;
   Edge* first = current;
-  Edge* next;
+  Edge* next = 0;
   Edge* previous = 0;
   for (unsigned int i = 0; i < polygon.numberOfVertices(); i++)
   {

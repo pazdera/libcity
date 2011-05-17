@@ -14,6 +14,7 @@
 #include "point.h"
 #include "vector.h"
 #include "linesegment.h"
+#include "line.h"
 #include "ray.h"
 #include "../debug.h"
 
@@ -268,7 +269,7 @@ Vector Polygon::normal() const
   assert("HERE should be exception" == 0);
 }
 
-Vector Polygon::edgeNormal(unsigned int edgeNumber)
+Vector Polygon::edgeNormal(unsigned int edgeNumber) const
 {
   unsigned int verticesNumber = numberOfVertices();
   assert(edgeNumber < verticesNumber);
@@ -325,7 +326,7 @@ bool Polygon::isSubAreaOf(Polygon const& biggerPolygon)
 }
 
 
-std::list<Polygon*> Polygon::split(LineSegment const& splitLine)
+std::list<Polygon*> Polygon::split(Line const& splitLine)
 {
   std::list<Point> vertexList;
   std::list<Point> intersections;
@@ -341,30 +342,34 @@ std::list<Polygon*> Polygon::split(LineSegment const& splitLine)
 
     vertexList.push_back(vertex(i));
 
-    result = splitLine.intersection2D(currentEdge, &intersection);
-    if (result == LineSegment::INTERSECTING)
+    result = currentEdge.intersection2D(splitLine, &intersection);
+    if (result == Line::INTERSECTING)
     {
       if (intersection != currentEdge.begining() &&
           intersection != currentEdge.end())
       {
         vertexList.push_back(intersection);
+        intersections.push_back(intersection);
       }
-
-      intersections.push_back(intersection);
-//       /* Insert-sort into intersections */
-//       std::list<Point>::iterator appropriatePosition = intersections.begin();
-//       while (appropriatePosition != intersections.end() && *appropriatePosition < intersection)
-//       {
-//         appropriatePosition++;
-//       }
-//       intersections.insert(appropriatePosition, intersection);
+      else
+      {
+        intersections.push_back(intersection);
+      }
     }
   }
   intersections.sort();
+  intersections.unique();
 
   std::list<Polygon*> stack;
   std::list<Polygon*> output;
   Polygon* top;
+
+  /* Split line was out or was just touching a vertex */
+  if (intersections.size() <= 1)
+  {
+    output.push_back(new Polygon(*this));
+    return output;
+  }
 
   stack.push_back(new Polygon);
   for (std::list<Point>::iterator vertexIterator = vertexList.begin();
@@ -379,7 +384,11 @@ std::list<Polygon*> Polygon::split(LineSegment const& splitLine)
     {
       if (top->numberOfVertices() > 0 && areVerticesInPair(*vertexIterator, top->vertex(0), intersections))
       {
-        output.push_back(top);
+        if (top->isClosed())
+        {
+          output.push_back(top);
+        }
+
         stack.pop_back();
         top = stack.back();
         top->addVertex(*vertexIterator);
@@ -390,6 +399,15 @@ std::list<Polygon*> Polygon::split(LineSegment const& splitLine)
         top = stack.back();
         top->addVertex(*vertexIterator);
       }
+    }
+  }
+
+  if (stack.size() > 0)
+  {
+    top = stack.back();
+    if (top->isClosed())
+    {
+      output.push_back(top);
     }
   }
 
@@ -538,28 +556,16 @@ void Polygon::substractEdge(int edgeNumber, double distance)
 
 bool Polygon::isNonSelfIntersecting()
 {
-//   LineSegment first, second;
-//   Point intersection;
-//   for (unsigned int i = 0; i < numberOfVertices()-1; i++)
-//   {
-//     first = edge(i);
-//     for (unsigned int j = i+1; j < numberOfVertices(); j++)
-//     {
-//       second = edge(j);
-//       if (first.intersection2D(second, &intersection) == LineSegment::INTERSECTING)
-//       {
-//         if (intersection != first.begining() && intersection != first.end())
-//         {
-//           return false;
-//         }
-//       }
-//     }
-//   }
   std::vector<Point> points;
   std::vector<int> sequence;
 
   return triangulation(&points, &sequence);
 
+}
+
+bool Polygon::isClosed() const
+{
+  return numberOfVertices() >= 3;
 }
 
 std::string Polygon::toString() const

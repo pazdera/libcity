@@ -146,6 +146,12 @@ double Line::distance(Point const& point) const
   return Vector(closestPoint, point).length();
 }
 
+double Line::pointPositionTest(Point const& point) const
+{
+  //return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+  return (second->x() - first->x()) * (point.y() - first->y()) - (second->y() - first->y()) * (point.x() - first->x());
+}
+
 bool Line::operator==(Line const& another) const
 {
   return (begining() == another.begining() && end() == another.end()) ||
