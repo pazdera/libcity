@@ -75,20 +75,6 @@ class Path
 
     void shorten(Point const& newBegining, Point const& newEnd);
 
-    /**
-      NOT IMPLEMENTED
-     @todo
-       What should this do? Can it be removed?
-     */
-    void snap(Point const& intersection);
-
-    /**
-      NOT IMPLEMENTED
-     @todo
-       What should this do? Can it be removed?
-     */
-    void snap(Path const& road);
-
     std::string toString();
   private:
    LineSegment *representation;

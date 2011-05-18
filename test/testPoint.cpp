@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file point.class.test.h
+ * @file test/testPoint.cpp
  * @date 13.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *

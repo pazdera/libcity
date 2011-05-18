@@ -26,6 +26,11 @@ class Zone;
 class Lot;
 class SubRegion;
 
+/**
+  Area that represents a building block.
+  That is an area enclosed by a loop in a street graph.
+  Blocks are grouped to zones. Each block can be subdivided
+  into allotments */
 class Block : public Area
 {
   public:
@@ -38,6 +43,15 @@ class Block : public Area
 
     ~Block();
 
+    /**
+     Subdivision algorithm that subdivides a signle block
+     into a list of smaller areas - allotments.
+      @param[in] lotWidth Desired width of lots.
+      @param[in] lotHeight Desired height of lots.
+      @param[in] deviance Deviance factor in lot creation.
+
+      @return Lost of lots.
+     */
     void createLots(double lotWidth, double lotHeight, double deviance);
     std::list<Lot*> getLots();
 

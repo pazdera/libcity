@@ -14,8 +14,8 @@
 
 #include <iostream>
 
-/* Debugging is ON */
-#define DEBUG
+/* Debugging is OFF */
+// #define DEBUG
 
 #ifdef DEBUG
   #define debug(x) std::cerr << "DEBUG: " << x << std::endl

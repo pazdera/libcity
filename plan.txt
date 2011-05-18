@@ -198,9 +198,9 @@ Plan:
   - http://amazingtextures.com/textures/cat-buildings-28.htm
   - http://cg.tutsplus.com/articles/where-to-get-your-textures-19-free-photo-source-sites-for-cg-artists/
   - DONE Ogre3D static geometry http://www.ogre3d.org/tikiwiki/Intermediate+Tutorial+5&structure=Tutorials
-  - Flatten terrain under roads
-  - Try out terrain
-  - Another buildings
+  - NAH Flatten terrain under roads
+  - NAH Try out terrain
+  - DONE Another buildings
   - Documentation
   - Github
   - Store road information into lots (which edge has road access?)

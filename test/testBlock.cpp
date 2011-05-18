@@ -1,7 +1,7 @@
 /**
  * This code is part of libcity library.
  *
- * @file test/testPath.cpp
+ * @file test/testBlock.cpp
  * @date 25.04.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *

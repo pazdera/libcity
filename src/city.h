@@ -5,7 +5,7 @@
  * @date 06.03.2011
  * @author Radek Pazdera (xpazde00@stud.fit.vutbr.cz)
  *
- * @brief !!! NOT SURE YET
+ * @brief Library interface for the city creation process.
  *
  */
 

@@ -104,16 +104,6 @@ void Path::shorten(Point const& newBegining, Point const& newEnd)
   representation->setBegining(newEnd);
 }
 
-void Path::snap(Point const& intersection)
-{
-  
-}
-
-void Path::snap(Path const& road)
-{
-  
-}
-
 std::string Path::toString()
 {
   return "Path(" + representation->toString() + ")";

@@ -81,10 +81,6 @@ class StreetGraph
        more than one road may be added at a time. If an
        intersection with an existing road is detected,
        the new road is split into two.
-     @todo
-       Clarify connecting Roads with Intersections and
-       synchronising both levels of the graph. Beware
-       this is source of particularly horrible bugs.
 
      @param[in] path Path of the new road (low level part of the graph).
     */

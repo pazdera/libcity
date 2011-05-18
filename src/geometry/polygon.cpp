@@ -267,6 +267,7 @@ Vector Polygon::normal() const
   }
 
   assert("HERE should be exception" == 0);
+  return Vector(1,0,0);
 }
 
 Vector Polygon::edgeNormal(unsigned int edgeNumber) const

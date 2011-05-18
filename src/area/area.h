@@ -23,7 +23,13 @@ class RoadLSystem;
 class Intersection;
 class Block;
 
-class Area;
+/**
+  Base class for city areas (zones, districts, blocks, alottments).
+
+  Each area:
+    - has defined some constraints
+    - can be a part of an larger area (can have a parent)
+  */
 class Area
 {
   public:
