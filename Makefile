@@ -126,7 +126,7 @@ doc:
 	doxygen Doxyfile
 
 clean:
-	rm -rf *.o *.so *~
+	rm -rf *.o *.so *.a *~
 	rm -rf $(DOCUMENTATION_DIR)
 	rm -rf $(HEADERS_DIR)
 	rm -f $(LIB_OBJECTS)

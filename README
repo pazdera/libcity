@@ -1,7 +1,7 @@
 This is libcity.
 
-DESCRIPTION
-  
+AUTHOR
+ Radek Pazdera <radek.pazdera@gmail.com>
 
 BUILD
   For building the library just write
@@ -31,6 +31,8 @@ TESTING
   Makefile. See UNITTESTCPP_LIB and UNITTESTCPP_INCLUDE_DIR variables.
 
 LICENSE
+  Copyright (C) 2011 Radek Pazdera <radek.pazdera@gmail.com>
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
