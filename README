@@ -19,7 +19,19 @@ DOCUMENTATION
   Will create documentation into doc/ folder.
 
 INSTALLING
-  
+  In order to install this library to your linux-based
+  operating system you can use the generic Makefile,
+  that is supplied.
+
+  Write 
+    make  
+  to compile the code and
+    sudo make install
+  to install the binaries to /usr/local/bin and
+  header files /usr/local/include.
+
+  You might have to hack the Makefile a little to
+  make it work on some platforms (like windows, Mac OS and such).
 
 TESTING
   Unit tests for the library are available in the test/ subdirectory. The
