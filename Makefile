@@ -6,17 +6,29 @@ ARCHIVER_FLAGS=rcs
 
 LINKER=ld
 
-LIB_FILENAME=libcity
-TEST_FILENAME=unit_tests
+NAME=libcity
+MAJOR_VERSION=0
+MINOR_VERSION=1
+RELEASE=1
+
+LINKER_NAME=$(NAME).so
+SONAME=$(LINKER_NAME).$(MAJOR_VERSION)
+REAL_NAME=$(SONAME).$(MINOR_VERSION).$(RELEASE)
+
+STATIC_NAME=$(NAME).a
+
+DESTDIR=
+HEADERS_INSTALL_PATH=$(DESTDIR)/usr/local/include
+LIB_INSTALL_PATH=$(DESTDIR)/usr/local/lib
 
 HEADERS_DIR=include/
-DOCUMENTATION_DIR=doc
+DOCUMENTATION_DIR=doc/
+
+
+TESTS_EXECUTABLE=unit_tests
 
 UNITTESTCPP_LIB=../UnitTest++/libUnitTest++.a
 UNITTESTCPP_INCLUDE_DIR=../UnitTest++/src/
-
-HEADERS_INSTALL_PATH=/usr/local/include
-LIB_INSTALL_PATH=/usr/local/lib
 
 .PHONY: install uninstall static dynamic clean doc headers test
 
@@ -98,38 +110,40 @@ $(TEST_OBJECTS): %.o: %.cpp
 	$(COMPILER) $(COMPILER_FLAGS) -I$(UNITTESTCPP_INCLUDE_DIR) -c $< -o $@
 
 static: $(LIB_OBJECTS)
-	$(ARCHIVER) $(ARCHIVER_FLAGS) $(LIB_FILENAME).a $(LIB_OBJECTS)
+	$(ARCHIVER) $(ARCHIVER_FLAGS) $(STATIC_NAME) $(LIB_OBJECTS)
 
 dynamic: $(LIB_OBJECTS)
-	$(LINKER) -shared -soname $(LIB_FILENAME).so -o $(LIB_FILENAME).so $(LIB_OBJECTS)
+	$(LINKER) -shared -soname $(SONAME) -o $(REAL_NAME)  $(LIB_OBJECTS)
 
 
 headers:
 	mkdir -p $(HEADERS_DIR)
 	cd src/ && find . -name "*.h" -exec rsync -R {} ../$(HEADERS_DIR) \; >/dev/null
 
-install: all
-	mkdir -p $(HEADERS_INSTALL_PATH)/libcity
-	cp -r include/* $(HEADERS_INSTALL_PATH)/libcity
-	cp libcity.h $(HEADERS_INSTALL_PATH)
-	cp libcity.so $(LIB_INSTALL_PATH)
-	cp libcity.a $(LIB_INSTALL_PATH)
+install: dynamic headers
+	install -p -d $(HEADERS_INSTALL_PATH)/libcity/
+	cp -rp include/* $(HEADERS_INSTALL_PATH)/libcity
+	install -p libcity.h -D $(HEADERS_INSTALL_PATH)/libcity.h
+	install -m644 -p -s $(REAL_NAME) -D $(LIB_INSTALL_PATH)/$(REAL_NAME)
+	ln -sf $(REAL_NAME) $(LIB_INSTALL_PATH)/$(LINKER_NAME)
+	ln -sf $(REAL_NAME) $(LIB_INSTALL_PATH)/$(SONAME)
 
 uninstall:
 	rm -rf $(HEADERS_INSTALL_PATH)/libcity
 	rm -f $(HEADERS_INSTALL_PATH)/libcity.h
-	rm -f $(LIB_INSTALL_PATH)/libcity.so
-	rm -f $(LIB_INSTALL_PATH)/libcity.a
+	rm -f $(LIB_INSTALL_PATH)/$(REAL_NAME)
+	rm -f $(LIB_INSTALL_PATH)/$(LINKER_NAME)
+	rm -f $(LIB_INSTALL_PATH)/$(SONAME)
 
 test: $(TEST_OBJECTS) static
-	$(COMPILER) $(COMPILER_FLAGS) -I$(UNITTESTCPP_INCLUDE_DIR) -o $(TEST_FILENAME) $(TEST_OBJECTS) $(UNITTESTCPP_LIB) libcity.a
+	$(COMPILER) $(COMPILER_FLAGS) -I$(UNITTESTCPP_INCLUDE_DIR) -o $(TESTS_EXECUTABLE) $(TEST_OBJECTS) $(UNITTESTCPP_LIB) libcity.a
 
 doc:
 	rm -rf doc/
 	doxygen Doxyfile
 
 clean:
-	rm -rf *.o *.so *.a *~
+	rm -rf *.o *.so* *.a *~
 	rm -rf $(DOCUMENTATION_DIR)
 	rm -rf $(HEADERS_DIR)
 	rm -f $(LIB_OBJECTS)
