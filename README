@@ -4,12 +4,12 @@ AUTHOR
  Radek Pazdera <radek.pazdera@gmail.com>
 
 BUILD
-  For building the library just write
+  To build the library write
 
     make
 
-  This will build both the staticaly  and dynamicaly linked versions
-  and also extract headers from source directory into include/.
+  This will build both the staticaly and dynamicaly linked versions
+  and also extract headers from source tree into include/.
 
 DOCUMENTATION
   Documentation can be extracted from the source codes with doxygen.
@@ -18,20 +18,24 @@ DOCUMENTATION
 
   Will create documentation into doc/ folder.
 
-INSTALLING
-  In order to install this library to your linux-based
-  operating system you can use the generic Makefile,
-  that is supplied.
+INSTALL
+  In order to install this library to your Unix-like operating
+  system you can use the generic Makefile.
 
-  Write 
-    make  
+  Write
+
+    make
+
   to compile the code and
-    sudo make install
-  to install the binaries to /usr/local/bin and
-  header files /usr/local/include.
 
-  You might have to hack the Makefile a little to
-  make it work on some platforms (like windows, Mac OS and such).
+    sudo make install
+
+  to install the binaries to /usr/local/bin and header files to
+  /usr/local/include.
+
+  You might have to hack the Makefile to make it work on some
+  platforms (like Windows, Mac OS and others), but the code itself
+  should be platform-independent.
 
 TESTING
   Unit tests for the library are available in the test/ subdirectory. The
