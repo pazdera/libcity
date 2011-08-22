@@ -4,6 +4,8 @@ COMPILER_FLAGS=-Wall -fPIC -pedantic -g
 ARCHIVER=ar
 ARCHIVER_FLAGS=rcs
 
+LINKER=ld
+
 LIB_FILENAME=libcity
 TEST_FILENAME=unit_tests
 
@@ -99,7 +101,8 @@ static: $(LIB_OBJECTS)
 	$(ARCHIVER) $(ARCHIVER_FLAGS) $(LIB_FILENAME).a $(LIB_OBJECTS)
 
 dynamic: $(LIB_OBJECTS)
-	$(COMPILER) -shared -o $(LIB_FILENAME).so $(LIB_OBJECTS)
+	$(LINKER) -shared -soname $(LIB_FILENAME).so -o $(LIB_FILENAME).so $(LIB_OBJECTS)
+
 
 headers:
 	mkdir -p $(HEADERS_DIR)
