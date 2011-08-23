@@ -1,7 +1,8 @@
 *.a
-*.so
+*.so*
 *.o
 *~
 libcity
-libcity_test
+unit_tests
 doc
+include
