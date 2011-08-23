@@ -137,6 +137,7 @@ uninstall:
 
 test: $(TEST_OBJECTS) static
 	$(COMPILER) $(COMPILER_FLAGS) -I$(UNITTESTCPP_INCLUDE_DIR) -o $(TESTS_EXECUTABLE) $(TEST_OBJECTS) $(UNITTESTCPP_LIB) libcity.a
+	./$(TESTS_EXECUTABLE)
 
 doc:
 	rm -rf doc/
